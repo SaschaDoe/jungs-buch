@@ -1,0 +1,603 @@
+<script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+	import { chain as jvhChain } from '$lib/data/argument-chain-data';
+	import { chain as wgmChain } from '$lib/data/wgm-argument-chain-data';
+	import { chain as baChain } from '$lib/data/ba-argument-chain-data';
+	import { chain as wbChain } from '$lib/data/wb-argument-chain-data';
+	import { chain as pbChain } from '$lib/data/pb-argument-chain-data';
+	import { chain as mfChain } from '$lib/data/mf-argument-chain-data';
+	import { chain as wwChain } from '$lib/data/ww-argument-chain-data';
+	import { chain as rcChain } from '$lib/data/rc-argument-chain-data';
+	import {
+		books,
+		scienceFields,
+		themeClusters,
+		type BookMeta
+	} from '$lib/data/cross-book-data';
+
+	const bookChains: { id: string; chain: any[] }[] = [
+		{ id: 'jvh', chain: jvhChain },
+		{ id: 'wgm', chain: wgmChain },
+		{ id: 'ba', chain: baChain },
+		{ id: 'wb', chain: wbChain },
+		{ id: 'pb', chain: pbChain },
+		{ id: 'mf', chain: mfChain },
+		{ id: 'ww', chain: wwChain },
+		{ id: 'rc', chain: rcChain },
+	];
+
+	function getStatus(link: any): string { return link.status ?? link.strength ?? 'yellow'; }
+	function getShortLabel(link: any): string { return link.shortLabel ?? link.label ?? link.id; }
+	function getDependsOn(link: any): string[] { return link.dependsOn ?? link.dependencies ?? []; }
+
+	let graphEl: HTMLDivElement;
+	let cy: any = null;
+	let selectedBooks = $state<Set<string>>(new Set(books.map(b => b.id)));
+	let selectedFields = $state<Set<string>>(new Set(scienceFields.map(f => f.id)));
+	let showFilters = $state(true);
+	let showOverlaps = $state(true);
+	let selectedNode = $state<any>(null);
+	let tooltipContent = $state('');
+	let tooltipVisible = $state(false);
+	let tooltipX = $state(0);
+	let tooltipY = $state(0);
+	let graphReady = $state(false);
+
+	const statusColors: Record<string, string> = {
+		red: '#ef4444', yellow: '#f59e0b', green: '#10b981', untestable: '#8b5cf6'
+	};
+	const statusLabelsMap: Record<string, string> = {
+		red: 'Weak', yellow: 'Mixed', green: 'Strong', untestable: 'Untestable'
+	};
+
+	function getBook(id: string): BookMeta { return books.find(b => b.id === id)!; }
+
+	function buildOverlapEdges(): { source: string; target: string; theme: string }[] {
+		const result: { source: string; target: string; theme: string }[] = [];
+		for (const theme of themeClusters) {
+			if (!theme.fields.some(f => selectedFields.has(f))) continue;
+			const claims = theme.claims.filter(c => selectedBooks.has(c.bookId));
+			for (let i = 0; i < claims.length; i++) {
+				for (let j = i + 1; j < claims.length; j++) {
+					if (claims[i].bookId !== claims[j].bookId) {
+						result.push({
+							source: `${claims[i].bookId}--${claims[i].chainId}`,
+							target: `${claims[j].bookId}--${claims[j].chainId}`,
+							theme: theme.name
+						});
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	function buildElements() {
+		const nodes: any[] = [];
+		const edges: any[] = [];
+
+		for (const { id: bookId, chain } of bookChains) {
+			if (!selectedBooks.has(bookId)) continue;
+			const book = getBook(bookId);
+
+			for (const link of chain) {
+				const status = getStatus(link);
+				const nodeId = `${bookId}--${link.id}`;
+				nodes.push({
+					data: {
+						id: nodeId,
+						label: getShortLabel(link),
+						bookId,
+						chainId: link.id,
+						status,
+						type: link.type,
+						claim: link.claim,
+						bookColor: book.color,
+						bookTitle: book.shortTitle,
+						statusColor: statusColors[status] || '#64748b',
+					}
+				});
+
+				for (const depId of getDependsOn(link)) {
+					const sourceId = `${bookId}--${depId}`;
+					if (chain.some((l: any) => l.id === depId)) {
+						edges.push({
+							data: {
+								id: `e-${sourceId}-${nodeId}`,
+								source: sourceId,
+								target: nodeId,
+								bookColor: book.color,
+								isOverlap: false
+							}
+						});
+					}
+				}
+			}
+		}
+
+		if (showOverlaps) {
+			const overlaps = buildOverlapEdges();
+			const nodeIds = new Set(nodes.map(n => n.data.id));
+			const seen = new Set<string>();
+			for (const ov of overlaps) {
+				if (!nodeIds.has(ov.source) || !nodeIds.has(ov.target)) continue;
+				const key = `${ov.source}||${ov.target}`;
+				if (seen.has(key)) continue;
+				seen.add(key);
+				edges.push({
+					data: {
+						id: `ov-${edges.length}`,
+						source: ov.source,
+						target: ov.target,
+						theme: ov.theme,
+						isOverlap: true,
+					}
+				});
+			}
+		}
+
+		return [...nodes, ...edges];
+	}
+
+	let cytoscapeLib: any = null;
+
+	async function createGraph() {
+		if (!graphEl) return;
+		if (cy) { cy.destroy(); cy = null; }
+
+		if (!cytoscapeLib) {
+			cytoscapeLib = (await import('cytoscape')).default;
+		}
+
+		const elements = buildElements();
+		console.log(`Building graph: ${elements.filter((e: any) => !e.data.source).length} nodes, ${elements.filter((e: any) => e.data.source).length} edges`);
+
+		cy = cytoscapeLib({
+			container: graphEl,
+			elements,
+			layout: {
+				name: 'cose',
+				animate: false,
+				randomize: true,
+				nodeRepulsion: 500000,
+				idealEdgeLength: 180,
+				edgeElasticity: 50,
+				gravity: 0.05,
+				numIter: 2000,
+				nodeDimensionsIncludeLabels: true,
+				padding: 60,
+				componentSpacing: 250,
+			} as any,
+			style: [
+				{
+					selector: 'node[!isLabel]',
+					style: {
+						'label': 'data(label)',
+						'text-valign': 'center' as any,
+						'text-halign': 'center' as any,
+						'color': '#e2e8f0',
+						'font-size': '10px',
+						'font-weight': 600,
+						'font-family': 'Inter, sans-serif',
+						'background-color': '#1e293b',
+						'border-width': 3,
+						'border-color': 'data(bookColor)',
+						'shape': 'roundrectangle' as any,
+						'width': 160,
+						'height': 36,
+						'text-wrap': 'wrap' as any,
+						'text-max-width': '140px' as any,
+						'cursor': 'pointer' as any,
+					}
+				},
+				{
+					selector: 'node[?isLabel]',
+					style: {
+						'label': 'data(label)',
+						'text-valign': 'center' as any,
+						'text-halign': 'center' as any,
+						'color': 'data(bookColor)',
+						'font-size': '22px',
+						'font-weight': 800,
+						'font-family': 'Inter, sans-serif',
+						'background-opacity': 0,
+						'border-width': 0,
+						'width': 1,
+						'height': 1,
+						'text-opacity': 0.6,
+						'events': 'no' as any,
+						'ghost': 'yes' as any,
+					}
+				},
+				{
+					selector: 'edge[!isOverlap]',
+					style: {
+						'width': 1.5,
+						'line-color': 'data(bookColor)',
+						'line-opacity': 0.35,
+						'target-arrow-color': 'data(bookColor)',
+						'target-arrow-shape': 'triangle' as any,
+						'arrow-scale': 0.7,
+						'curve-style': 'bezier' as any,
+					}
+				},
+				{
+					selector: 'edge[?isOverlap]',
+					style: {
+						'width': 1.5,
+						'line-color': '#60a5fa',
+						'line-opacity': 0.45,
+						'line-style': 'dashed' as any,
+						'target-arrow-shape': 'none' as any,
+						'curve-style': 'bezier' as any,
+					}
+				},
+				{
+					selector: 'node.highlighted',
+					style: {
+						'border-width': 5,
+						'z-index': 999,
+					}
+				}
+			],
+			userZoomingEnabled: true,
+			userPanningEnabled: true,
+			boxSelectionEnabled: false,
+			minZoom: 0.1,
+			maxZoom: 3,
+		});
+
+		// Events
+		cy.on('mouseover', 'node', (evt: any) => {
+			const node = evt.target;
+			node.addClass('highlighted');
+			const pos = node.renderedPosition();
+			const book = getBook(node.data('bookId'));
+			tooltipContent = `<strong>${book.shortTitle}</strong><br/>${node.data('label')}<br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}`;
+			tooltipX = pos.x;
+			tooltipY = pos.y - 30;
+			tooltipVisible = true;
+		});
+
+		cy.on('mouseout', 'node', (evt: any) => {
+			evt.target.removeClass('highlighted');
+			tooltipVisible = false;
+		});
+
+		cy.on('tap', 'node', (evt: any) => {
+			selectedNode = evt.target.data();
+		});
+
+		cy.on('tap', (evt: any) => {
+			if (evt.target === cy) selectedNode = null;
+		});
+
+		cy.on('mouseover', 'edge[?isOverlap]', (evt: any) => {
+			const edge = evt.target;
+			const mp = edge.renderedMidpoint();
+			tooltipContent = `<strong>Overlap:</strong> ${edge.data('theme')}`;
+			tooltipX = mp.x;
+			tooltipY = mp.y - 15;
+			tooltipVisible = true;
+		});
+
+		cy.on('mouseout', 'edge[?isOverlap]', () => {
+			tooltipVisible = false;
+		});
+
+		// Add floating book labels at the centroid of each book's nodes
+		for (const { id: bookId } of bookChains) {
+			if (!selectedBooks.has(bookId)) continue;
+			const book = getBook(bookId);
+			const bookNodes = cy.nodes(`[bookId = "${bookId}"]`);
+			if (bookNodes.length === 0) continue;
+			const bb = bookNodes.boundingBox();
+			const cx = (bb.x1 + bb.x2) / 2;
+			const cy2 = bb.y1 - 30; // above the cluster
+			cy.add({
+				data: {
+					id: `label-${bookId}`,
+					label: book.shortTitle,
+					bookColor: book.color,
+					isLabel: true,
+				},
+				position: { x: cx, y: cy2 },
+				locked: false,
+				grabbable: false,
+				selectable: false,
+			});
+		}
+
+		cy.fit(undefined, 30);
+		graphReady = true;
+	}
+
+	function toggleBook(id: string) {
+		const next = new Set(selectedBooks);
+		if (next.has(id)) next.delete(id); else next.add(id);
+		selectedBooks = next;
+	}
+	function toggleField(id: string) {
+		const next = new Set(selectedFields);
+		if (next.has(id)) next.delete(id); else next.add(id);
+		selectedFields = next;
+	}
+	function selectAllBooks() { selectedBooks = new Set(books.map(b => b.id)); }
+	function selectNoBooks() { selectedBooks = new Set(); }
+	function selectAllFields() { selectedFields = new Set(scienceFields.map(f => f.id)); }
+	function selectNoFields() { selectedFields = new Set(); }
+
+	function handleRebuild() {
+		createGraph();
+	}
+
+	onMount(() => {
+		createGraph();
+	});
+
+	onDestroy(() => {
+		cy?.destroy();
+	});
+</script>
+
+<svelte:head>
+	<title>Kausalpfade — Buchvergleich</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</svelte:head>
+
+<div class="app">
+	<header class="hero">
+		<div class="hero-inner">
+			<div class="nav-links">
+				<a href="/" class="back-link">&larr; Hauptseite</a>
+				<a href="/forschungslandschaft" class="back-link">Forschungslandschaft</a>
+			</div>
+			<p class="book-label">Cross-Book Analysis</p>
+			<h1>Causal Paths Compared</h1>
+			<p class="subtitle">
+				All argument chains from 8 books in one interactive graph. Drag nodes, zoom in/out, click for details.
+				Dashed blue lines show where books overlap on the same topic.
+			</p>
+		</div>
+	</header>
+
+	<!-- Filter bar -->
+	<button class="filter-toggle" onclick={() => (showFilters = !showFilters)}>
+		{showFilters ? 'Hide' : 'Show'} Filters
+		<span class="filter-count">{selectedBooks.size}/{books.length} books</span>
+	</button>
+
+	{#if showFilters}
+		<div class="filters">
+			<div class="filter-section">
+				<div class="filter-header">
+					<span class="filter-title">Books</span>
+					<div class="filter-actions">
+						<button class="filter-action" onclick={selectAllBooks}>All</button>
+						<button class="filter-action" onclick={selectNoBooks}>None</button>
+					</div>
+				</div>
+				<div class="filter-chips">
+					{#each books as book}
+						<button
+							class="chip"
+							class:chip-active={selectedBooks.has(book.id)}
+							style="--chip-color: {book.color}"
+							onclick={() => toggleBook(book.id)}
+						>
+							<span class="chip-dot" style="background: {book.color}"></span>
+							{book.shortTitle}
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<div class="filter-section">
+				<div class="filter-header">
+					<span class="filter-title">Overlap connections (fields)</span>
+					<div class="filter-actions">
+						<button class="filter-action" onclick={selectAllFields}>All</button>
+						<button class="filter-action" onclick={selectNoFields}>None</button>
+						<label class="overlap-toggle">
+							<input type="checkbox" bind:checked={showOverlaps} />
+							Show overlaps
+						</label>
+					</div>
+				</div>
+				<div class="filter-chips">
+					{#each scienceFields as field}
+						<button
+							class="chip"
+							class:chip-active={selectedFields.has(field.id)}
+							style="--chip-color: {field.color}"
+							onclick={() => toggleField(field.id)}
+						>
+							<span class="chip-dot" style="background: {field.color}"></span>
+							{field.name}
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<button class="rebuild-btn" onclick={handleRebuild}>
+				Apply Filters &amp; Rebuild Graph
+			</button>
+		</div>
+	{/if}
+
+	<!-- Graph -->
+	<div class="graph-wrapper">
+		<div class="graph-container" bind:this={graphEl}>
+			{#if tooltipVisible && tooltipContent}
+				<div class="graph-tooltip" style="left: {tooltipX}px; top: {tooltipY}px">
+					{@html tooltipContent}
+				</div>
+			{/if}
+		</div>
+		<div class="graph-legend">
+			<span class="legend-title">Evidence:</span>
+			<span class="gl-item"><span class="gl-dot" style="background: #10b981"></span> Strong</span>
+			<span class="gl-item"><span class="gl-dot" style="background: #f59e0b"></span> Mixed</span>
+			<span class="gl-item"><span class="gl-dot" style="background: #ef4444"></span> Weak</span>
+			<span class="gl-item"><span class="gl-dot" style="background: #8b5cf6"></span> Untestable</span>
+			<span class="gl-sep"></span>
+			<span class="gl-item"><span class="gl-line-dash"></span> Cross-book overlap</span>
+		</div>
+	</div>
+
+	<!-- Detail panel -->
+	{#if selectedNode}
+		{@const book = getBook(selectedNode.bookId)}
+		<div class="detail-panel">
+			<button class="detail-close" onclick={() => (selectedNode = null)}>&times;</button>
+			<div class="detail-header">
+				<span class="detail-book-dot" style="background: {book.color}"></span>
+				<span class="detail-book-name">{book.shortTitle}</span>
+				<span class="detail-status" style="background: {statusColors[selectedNode.status]}">{statusLabelsMap[selectedNode.status]}</span>
+				<span class="detail-type">{selectedNode.type}</span>
+			</div>
+			<h3 class="detail-label">{selectedNode.label}</h3>
+			<p class="detail-claim">{selectedNode.claim}</p>
+			<a href="{book.route}" class="detail-link">Open in {book.shortTitle} &rarr;</a>
+		</div>
+	{/if}
+
+	<footer class="app-footer">
+		<p>Cross-book causal path analysis &middot; <a href="/">Back to all books</a></p>
+	</footer>
+</div>
+
+<style>
+	:global(body) {
+		margin: 0;
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+		background: #0f172a;
+		color: #e2e8f0;
+		-webkit-font-smoothing: antialiased;
+	}
+	.app {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 20px 60px;
+		min-height: 100vh;
+	}
+	.hero { padding: 36px 0 20px; text-align: center; }
+	.hero-inner { max-width: 640px; margin: 0 auto; }
+	.nav-links { display: flex; gap: 16px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+	.back-link { font-size: 0.78rem; color: #64748b; text-decoration: none; transition: color 0.2s; }
+	.back-link:hover { color: #94a3b8; }
+	.book-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; color: #64748b; margin: 0 0 10px; }
+	.hero h1 {
+		font-size: 2.2rem; font-weight: 800;
+		background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+		-webkit-background-clip: text; -webkit-text-fill-color: transparent;
+		background-clip: text; margin: 0 0 8px; line-height: 1.15;
+	}
+	.subtitle { color: #94a3b8; font-size: 0.88rem; line-height: 1.6; margin: 0; }
+
+	.filter-toggle {
+		display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 20px;
+		margin: 12px 0 0; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(148, 163, 184, 0.12);
+		border-radius: 10px; color: #e2e8f0; font-size: 0.85rem; font-weight: 600;
+		cursor: pointer; transition: background 0.2s;
+	}
+	.filter-toggle:hover { background: rgba(30, 41, 59, 0.9); }
+	.filter-count { color: #64748b; font-weight: 400; margin-left: auto; font-size: 0.78rem; }
+
+	.filters {
+		background: rgba(30, 41, 59, 0.4); border-radius: 0 0 10px 10px;
+		border: 1px solid rgba(148, 163, 184, 0.08); border-top: none; padding: 16px 20px;
+	}
+	.filter-section { margin-bottom: 12px; }
+	.filter-section:last-child { margin-bottom: 0; }
+	.filter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+	.filter-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; font-weight: 600; }
+	.filter-actions { display: flex; gap: 10px; align-items: center; }
+	.filter-action { font-size: 0.72rem; color: #60a5fa; background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0; }
+	.filter-action:hover { color: #93c5fd; }
+	.overlap-toggle { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: #94a3b8; cursor: pointer; }
+	.overlap-toggle input { cursor: pointer; }
+
+	.filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+	.chip {
+		display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 18px;
+		font-size: 0.75rem; background: rgba(148, 163, 184, 0.08); border: 1px solid rgba(148, 163, 184, 0.12);
+		color: #94a3b8; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+	}
+	.chip:hover { background: rgba(148, 163, 184, 0.15); }
+	.chip-active {
+		background: color-mix(in srgb, var(--chip-color) 15%, transparent);
+		border-color: color-mix(in srgb, var(--chip-color) 40%, transparent);
+		color: #e2e8f0;
+	}
+	.chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+	.rebuild-btn {
+		margin-top: 14px; padding: 10px 24px; border-radius: 8px; border: 1px solid rgba(96, 165, 250, 0.3);
+		background: rgba(96, 165, 250, 0.1); color: #60a5fa; font-size: 0.82rem; font-weight: 600;
+		cursor: pointer; transition: all 0.2s; width: 100%;
+	}
+	.rebuild-btn:hover { background: rgba(96, 165, 250, 0.2); border-color: rgba(96, 165, 250, 0.5); }
+
+	.graph-wrapper {
+		background: rgba(15, 23, 42, 0.6); border-radius: 12px;
+		border: 1px solid rgba(148, 163, 184, 0.1); overflow: hidden;
+		margin-top: 16px;
+	}
+	.graph-container { width: 100%; height: 75vh; min-height: 500px; position: relative; }
+
+	.graph-tooltip {
+		position: absolute; transform: translate(-50%, -100%);
+		background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(148, 163, 184, 0.25);
+		border-radius: 8px; padding: 10px 14px; pointer-events: none; z-index: 1000;
+		max-width: 280px; min-width: 160px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+		font-size: 0.8rem; line-height: 1.5; color: #e2e8f0;
+	}
+
+	.graph-legend {
+		display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+		padding: 10px 16px; border-top: 1px solid rgba(148, 163, 184, 0.08);
+		background: rgba(15, 23, 42, 0.4);
+	}
+	.legend-title { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+	.gl-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #94a3b8; }
+	.gl-dot { width: 10px; height: 10px; border-radius: 50%; }
+	.gl-sep { width: 1px; height: 14px; background: rgba(148, 163, 184, 0.15); }
+	.gl-line-dash { width: 22px; height: 0; border-top: 2px dashed #60a5fa; }
+
+	.detail-panel {
+		position: fixed; bottom: 20px; right: 20px; width: 380px; max-width: calc(100vw - 40px);
+		background: rgba(15, 23, 42, 0.97); border: 1px solid rgba(148, 163, 184, 0.2);
+		border-radius: 14px; padding: 20px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+		z-index: 1100;
+	}
+	.detail-close {
+		position: absolute; top: 12px; right: 14px; background: none; border: none;
+		color: #64748b; font-size: 1.4rem; cursor: pointer; padding: 0; line-height: 1;
+	}
+	.detail-close:hover { color: #e2e8f0; }
+	.detail-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+	.detail-book-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+	.detail-book-name { font-weight: 700; font-size: 0.88rem; color: #f1f5f9; }
+	.detail-status { font-size: 0.68rem; padding: 2px 10px; border-radius: 10px; color: #0f172a; font-weight: 700; }
+	.detail-type { font-size: 0.72rem; color: #64748b; margin-left: auto; }
+	.detail-label { font-size: 1.05rem; font-weight: 700; color: #e2e8f0; margin: 0 0 8px; }
+	.detail-claim { font-size: 0.85rem; color: #94a3b8; line-height: 1.6; margin: 0 0 14px; }
+	.detail-link { font-size: 0.82rem; color: #60a5fa; text-decoration: none; }
+	.detail-link:hover { text-decoration: underline; }
+
+	.app-footer {
+		text-align: center; padding: 24px 0; color: #475569; font-size: 0.82rem;
+		border-top: 1px solid rgba(148, 163, 184, 0.1); margin-top: 24px;
+	}
+	.app-footer a { color: #60a5fa; text-decoration: none; }
+	.app-footer a:hover { text-decoration: underline; }
+
+	@media (max-width: 640px) {
+		.hero h1 { font-size: 1.5rem; }
+		.graph-container { height: 60vh; min-height: 400px; }
+		.detail-panel { bottom: 10px; right: 10px; left: 10px; width: auto; }
+	}
+</style>
