@@ -37,6 +37,7 @@
 	let selectedFields = $state<Set<string>>(new Set(scienceFields.map(f => f.id)));
 	let showFilters = $state(true);
 	let showOverlaps = $state(true);
+	let viewMode = $state<'overlaps' | 'chains'>('overlaps');
 	let selectedNode = $state<any>(null);
 	let selectedLink = $state<any>(null);
 	let selectedBookId = $state<string>('');
@@ -344,8 +345,8 @@
 			});
 		}
 
-		// AFTER layout: add overlap edges (they don't affect positioning)
-		if (showOverlaps) {
+		// AFTER layout: add overlap edges (only in overlaps mode)
+		if (showOverlaps && viewMode === 'overlaps') {
 			const overlaps = buildOverlapEdges();
 			const nodeIds = new Set(nodes.map((n: any) => n.data.id));
 			const seen = new Set<string>();
@@ -382,23 +383,18 @@
 		updateLabelOpacity();
 
 		// Events — only on non-label nodes
-		function toPageCoords(renderedPos: { x: number; y: number }) {
-			const rect = graphEl.getBoundingClientRect();
-			return { x: rect.left + renderedPos.x, y: rect.top + renderedPos.y };
-		}
-
 		cy.on('mouseover', 'node[!isLabel]', (evt: any) => {
 			const node = evt.target;
 			node.addClass('highlighted');
-			const pos = toPageCoords(node.renderedPosition());
+			const e = evt.originalEvent;
 			const book = getBook(node.data('bookId'));
-			const ovCount = cy.edges('[?isOverlap]').filter((e: any) =>
-				e.source().id() === node.id() || e.target().id() === node.id()
+			const ovCount = cy.edges('[?isOverlap]').filter((ed: any) =>
+				ed.source().id() === node.id() || ed.target().id() === node.id()
 			).length;
 			const ovText = ovCount > 0 ? `<br/><span style="color:#60a5fa">${ovCount} overlap(s) with other books</span>` : '';
 			tooltipContent = `<span style="color:${book.color};font-weight:800">${book.shortTitle}</span><br/><strong>${node.data('label')}</strong><br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}${ovText}`;
-			tooltipX = pos.x;
-			tooltipY = pos.y - 10;
+			tooltipX = e.clientX;
+			tooltipY = e.clientY - 12;
 			tooltipVisible = true;
 		});
 
@@ -418,17 +414,13 @@
 			selectedBookId = d.bookId;
 			selectedLink = findFullLink(d.bookId, d.chainId);
 
-			// Clear previous
 			clearHighlighting();
-
-			// Mark clicked node
 			node.addClass('selected-node');
 
-			// Find all same-book nodes (ONLY this book)
+			// Same-book nodes & edges always highlighted
 			const sameBookNodes = cy.nodes(`[bookId = "${d.bookId}"][!isLabel]`);
 			sameBookNodes.addClass('same-book');
 
-			// Find same-book internal edges
 			const sameBookEdges = cy.edges().filter((e: any) => {
 				const src = e.source().data('bookId');
 				const tgt = e.target().data('bookId');
@@ -436,33 +428,34 @@
 			});
 			sameBookEdges.addClass('same-book-edge');
 
-			// Only overlap edges from the CLICKED node (not entire book)
-			const overlapEdges = cy.edges('[?isOverlap]').filter((e: any) => {
-				return e.source().id() === node.id() || e.target().id() === node.id();
-			});
-			overlapEdges.addClass('active-overlap');
+			if (viewMode === 'overlaps') {
+				// Show overlap connections from this specific node
+				const overlapEdges = cy.edges('[?isOverlap]').filter((e: any) => {
+					return e.source().id() === node.id() || e.target().id() === node.id();
+				});
+				overlapEdges.addClass('active-overlap');
 
-			// Overlap peers = only nodes at the other end of THIS node's overlaps
-			const overlapPeerIds = new Set<string>();
-			overlapEdges.forEach((e: any) => {
-				const otherId = e.source().id() === node.id() ? e.target().id() : e.source().id();
-				overlapPeerIds.add(otherId);
-			});
-			overlapPeerIds.forEach(id => {
-				cy.getElementById(id).addClass('overlap-peer');
-			});
+				const overlapPeerIds = new Set<string>();
+				overlapEdges.forEach((e: any) => {
+					const otherId = e.source().id() === node.id() ? e.target().id() : e.source().id();
+					overlapPeerIds.add(otherId);
+				});
+				overlapPeerIds.forEach(id => {
+					cy.getElementById(id).addClass('overlap-peer');
+				});
 
-			// Dim everything else
-			cy.nodes('[!isLabel]').filter((n: any) => {
-				return !n.hasClass('same-book') && !n.hasClass('overlap-peer') && !n.hasClass('selected-node');
-			}).addClass('dimmed');
-
-			cy.edges().filter((e: any) => {
-				return !e.hasClass('same-book-edge') && !e.hasClass('active-overlap');
-			}).addClass('dimmed');
-
-			// Log for debugging
-			console.log(`${d.bookId}: ${sameBookNodes.length} nodes, ${overlapEdges.length} overlaps to ${overlapPeerIds.size} peers`);
+				// Dim everything else
+				cy.nodes('[!isLabel]').filter((n: any) => {
+					return !n.hasClass('same-book') && !n.hasClass('overlap-peer') && !n.hasClass('selected-node');
+				}).addClass('dimmed');
+				cy.edges().filter((e: any) => {
+					return !e.hasClass('same-book-edge') && !e.hasClass('active-overlap');
+				}).addClass('dimmed');
+			} else {
+				// Chains mode: dim everything except this book
+				cy.nodes('[!isLabel]').filter((n: any) => !n.hasClass('same-book')).addClass('dimmed');
+				cy.edges().filter((e: any) => !e.hasClass('same-book-edge')).addClass('dimmed');
+			}
 		});
 
 		cy.on('tap', (evt: any) => {
@@ -475,14 +468,14 @@
 
 		cy.on('mouseover', 'edge[?isOverlap]', (evt: any) => {
 			const edge = evt.target;
-			const mp = toPageCoords(edge.renderedMidpoint());
+			const e = evt.originalEvent;
 			const srcData = edge.source().data();
 			const tgtData = edge.target().data();
 			const srcBook = getBook(srcData.bookId);
 			const tgtBook = getBook(tgtData.bookId);
 			tooltipContent = `<strong>Shared topic:</strong> ${edge.data('theme')}<br/><span style="color:${srcBook.color}">${srcBook.shortTitle}:</span> ${srcData.label}<br/><span style="color:${tgtBook.color}">${tgtBook.shortTitle}:</span> ${tgtData.label}`;
-			tooltipX = mp.x;
-			tooltipY = mp.y - 10;
+			tooltipX = e.clientX;
+			tooltipY = e.clientY - 12;
 			tooltipVisible = true;
 		});
 
@@ -608,6 +601,22 @@
 			</button>
 		</div>
 	{/if}
+
+	<!-- Mode toggle -->
+	<div class="mode-bar">
+		<span class="mode-label">View mode:</span>
+		<button class="mode-btn" class:mode-active={viewMode === 'overlaps'} onclick={() => { viewMode = 'overlaps'; handleRebuild(); }}>
+			Thematic Overlaps
+		</button>
+		<button class="mode-btn" class:mode-active={viewMode === 'chains'} onclick={() => { viewMode = 'chains'; handleRebuild(); }}>
+			Book Chains Only
+		</button>
+		<span class="mode-desc">
+			{viewMode === 'overlaps'
+				? 'Dashed lines connect claims from different books on the same topic'
+				: 'Click a node to see only that book\'s causal chain'}
+		</span>
+	</div>
 
 	<!-- Graph -->
 	{#if tooltipVisible && tooltipContent}
@@ -759,6 +768,25 @@
 		color: #e2e8f0;
 	}
 	.chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+	.mode-bar {
+		display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+		padding: 12px 16px; margin-top: 12px;
+		background: rgba(30, 41, 59, 0.5); border-radius: 10px;
+		border: 1px solid rgba(148, 163, 184, 0.1);
+	}
+	.mode-label { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+	.mode-btn {
+		padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+		border: 1px solid rgba(148, 163, 184, 0.15); background: rgba(148, 163, 184, 0.05);
+		color: #94a3b8; cursor: pointer; transition: all 0.15s;
+	}
+	.mode-btn:hover { background: rgba(148, 163, 184, 0.12); }
+	.mode-active {
+		background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.4);
+		color: #60a5fa;
+	}
+	.mode-desc { font-size: 0.72rem; color: #475569; margin-left: auto; }
 
 	.rebuild-btn {
 		margin-top: 14px; padding: 10px 24px; border-radius: 8px; border: 1px solid rgba(96, 165, 250, 0.3);
