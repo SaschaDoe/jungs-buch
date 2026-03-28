@@ -249,6 +249,68 @@
 						'border-width': 5,
 						'z-index': 999,
 					}
+				},
+				// Clicked node
+				{
+					selector: 'node.selected-node',
+					style: {
+						'border-width': 5,
+						'border-color': '#ffffff',
+						'z-index': 1000,
+					}
+				},
+				// Same book as clicked
+				{
+					selector: 'node.same-book',
+					style: {
+						'opacity': 1,
+						'z-index': 10,
+					}
+				},
+				// Overlap-connected nodes from other books
+				{
+					selector: 'node.overlap-peer',
+					style: {
+						'opacity': 1,
+						'border-width': 4,
+						'z-index': 50,
+						'shadow-blur': 12,
+						'shadow-color': '#60a5fa',
+						'shadow-opacity': 0.6,
+						'shadow-offset-x': 0,
+						'shadow-offset-y': 0,
+					} as any
+				},
+				// Dimmed (everything else when a node is selected)
+				{
+					selector: 'node.dimmed',
+					style: {
+						'opacity': 0.12,
+					}
+				},
+				{
+					selector: 'edge.dimmed',
+					style: {
+						'opacity': 0.05,
+					}
+				},
+				// Active overlap edges (connected to selected node)
+				{
+					selector: 'edge.active-overlap',
+					style: {
+						'width': 3,
+						'line-color': '#60a5fa',
+						'line-opacity': 0.8,
+						'z-index': 100,
+					}
+				},
+				// Active intra-book edges
+				{
+					selector: 'edge.same-book-edge',
+					style: {
+						'opacity': 1,
+						'z-index': 10,
+					}
 				}
 			],
 			userZoomingEnabled: true,
@@ -335,17 +397,80 @@
 			tooltipVisible = false;
 		});
 
+		function clearHighlighting() {
+			cy.elements().removeClass('selected-node same-book overlap-peer dimmed same-book-edge active-overlap');
+		}
+
 		cy.on('tap', 'node[!isLabel]', (evt: any) => {
-			const d = evt.target.data();
+			const node = evt.target;
+			const d = node.data();
 			selectedNode = d;
 			selectedBookId = d.bookId;
 			selectedLink = findFullLink(d.bookId, d.chainId);
+
+			// Clear previous
+			clearHighlighting();
+
+			// Mark clicked node
+			node.addClass('selected-node');
+
+			// Find all same-book nodes
+			const sameBookNodes = cy.nodes(`[bookId = "${d.bookId}"][!isLabel]`);
+			sameBookNodes.addClass('same-book');
+
+			// Find same-book edges
+			const sameBookEdges = cy.edges().filter((e: any) => {
+				const src = e.source().data('bookId');
+				const tgt = e.target().data('bookId');
+				return src === d.bookId && tgt === d.bookId && !e.data('isOverlap');
+			});
+			sameBookEdges.addClass('same-book-edge');
+
+			// Find overlap edges connected to this node
+			const overlapEdges = cy.edges('[?isOverlap]').filter((e: any) => {
+				return e.source().id() === node.id() || e.target().id() === node.id();
+			});
+			overlapEdges.addClass('active-overlap');
+
+			// Find overlap peers (nodes at other end of overlap edges)
+			const overlapPeerIds = new Set<string>();
+			overlapEdges.forEach((e: any) => {
+				const otherId = e.source().id() === node.id() ? e.target().id() : e.source().id();
+				overlapPeerIds.add(otherId);
+			});
+			// Also find all overlap edges connected to ANY node of this book
+			const bookOverlapEdges = cy.edges('[?isOverlap]').filter((e: any) => {
+				const srcBook = e.source().data('bookId');
+				const tgtBook = e.target().data('bookId');
+				return srcBook === d.bookId || tgtBook === d.bookId;
+			});
+			bookOverlapEdges.addClass('active-overlap');
+			bookOverlapEdges.forEach((e: any) => {
+				const srcBook = e.source().data('bookId');
+				const tgtBook = e.target().data('bookId');
+				if (srcBook !== d.bookId) overlapPeerIds.add(e.source().id());
+				if (tgtBook !== d.bookId) overlapPeerIds.add(e.target().id());
+			});
+
+			overlapPeerIds.forEach(id => {
+				cy.getElementById(id).addClass('overlap-peer');
+			});
+
+			// Dim everything else
+			cy.nodes('[!isLabel]').filter((n: any) => {
+				return !n.hasClass('same-book') && !n.hasClass('overlap-peer') && !n.hasClass('selected-node');
+			}).addClass('dimmed');
+
+			cy.edges().filter((e: any) => {
+				return !e.hasClass('same-book-edge') && !e.hasClass('active-overlap');
+			}).addClass('dimmed');
 		});
 
 		cy.on('tap', (evt: any) => {
 			if (evt.target === cy) {
 				selectedNode = null;
 				selectedLink = null;
+				clearHighlighting();
 			}
 		});
 
