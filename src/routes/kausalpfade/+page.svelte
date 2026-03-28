@@ -192,7 +192,10 @@
 						'border-width': 0,
 						'width': 1,
 						'height': 1,
-						'text-opacity': 0.15,
+						'text-opacity': 0.5,
+						'text-outline-color': '#0f172a',
+						'text-outline-width': 4,
+						'text-outline-opacity': 1,
 						'z-index': 0,
 						'events': 'no' as any,
 					}
@@ -283,8 +286,13 @@
 		// Zoom handler: fade labels when zoomed in, show when zoomed out
 		function updateLabelOpacity() {
 			const zoom = cy.zoom();
-			// Labels visible when zoomed out, fade away when zoomed in past 0.4
-			const opacity = Math.max(0, Math.min(0.2, (0.5 - zoom) * 0.8));
+			// Fully visible below 0.3, fade between 0.3-0.6, completely gone above 0.6
+			let opacity = 0;
+			if (zoom < 0.3) {
+				opacity = 0.5;
+			} else if (zoom < 0.6) {
+				opacity = 0.5 * (1 - (zoom - 0.3) / 0.3);
+			}
 			cy.nodes('[?isLabel]').style('text-opacity', opacity);
 		}
 		cy.on('zoom', updateLabelOpacity);
