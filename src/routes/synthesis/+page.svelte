@@ -40,20 +40,60 @@
 		return books.find(b => b.id === id)?.shortTitle || id;
 	}
 
+	function applyFilter() {
+		if (!cy) return;
+		cy.elements().removeClass('filtered-out');
+		if (filterTier !== 'all') {
+			// Show only selected tier + its dependencies
+			const showIds = new Set<string>();
+			for (const n of synthNodes) {
+				if (n.tier === filterTier) showIds.add(n.id);
+				// In 'derived' filter, also show core (foundations)
+				if (filterTier === 'derived' && (n.tier === 'core' || n.tier === 'derived')) showIds.add(n.id);
+			}
+			cy.nodes().forEach((n: any) => {
+				if (!showIds.has(n.id())) n.addClass('filtered-out');
+			});
+			cy.edges().forEach((e: any) => {
+				if (!showIds.has(e.source().id()) || !showIds.has(e.target().id())) e.addClass('filtered-out');
+			});
+		}
+	}
+
 	async function createGraph() {
 		if (!graphEl) return;
 		if (cy) { cy.destroy(); cy = null; }
 
 		const cytoscape = (await import('cytoscape')).default;
-		const dagre = (await import('cytoscape-dagre')).default;
-		try { cytoscape.use(dagre); } catch (_) {}
 
-		const visibleNodes = filterTier === 'all'
-			? synthNodes
-			: synthNodes.filter(n => n.tier === filterTier);
-		const visibleIds = new Set(visibleNodes.map(n => n.id));
+		// Build all nodes with concentric positions
+		const coreNodes = synthNodes.filter(n => n.tier === 'core');
+		const derivedNodes = synthNodes.filter(n => n.tier === 'derived');
+		const gapNodes = synthNodes.filter(n => n.tier === 'gap');
 
-		const nodes = visibleNodes.map(n => ({
+		const centerX = 0, centerY = 0;
+		const coreRadius = 600;
+		const derivedRadius = 1200;
+		const gapRadius = 1800;
+
+		function circlePositions(items: SynthNode[], radius: number) {
+			const positions = new Map<string, { x: number; y: number }>();
+			items.forEach((n, i) => {
+				const angle = (2 * Math.PI * i) / items.length - Math.PI / 2;
+				positions.set(n.id, {
+					x: centerX + radius * Math.cos(angle),
+					y: centerY + radius * Math.sin(angle),
+				});
+			});
+			return positions;
+		}
+
+		const posMap = new Map<string, { x: number; y: number }>();
+		circlePositions(coreNodes, coreRadius).forEach((v, k) => posMap.set(k, v));
+		circlePositions(derivedNodes, derivedRadius).forEach((v, k) => posMap.set(k, v));
+		circlePositions(gapNodes, gapRadius).forEach((v, k) => posMap.set(k, v));
+
+		const nodes = synthNodes.map(n => ({
 			data: {
 				id: n.id,
 				label: n.label,
@@ -63,12 +103,12 @@
 				bgColor: tierBg[n.tier],
 				textColor: tierText[n.tier],
 				domainColor: getDomain(n.domain)?.color || '#64748b',
-			}
+			},
+			position: posMap.get(n.id) || { x: 0, y: 0 },
 		}));
 
-		const edges = visibleNodes.flatMap(n =>
+		const edges = synthNodes.flatMap(n =>
 			n.dependsOn
-				.filter(depId => visibleIds.has(depId))
 				.map(depId => ({
 					data: {
 						id: `e-${depId}-${n.id}`,
@@ -79,18 +119,10 @@
 				}))
 		);
 
-		// Layout: core nodes first (dagre), then position derived/gap around them
 		cy = cytoscape({
 			container: graphEl,
 			elements: [...nodes, ...edges],
-			layout: {
-				name: 'dagre',
-				rankDir: 'TB',
-				nodeSep: 120,
-				rankSep: 100,
-				edgeSep: 40,
-				padding: 50,
-			} as any,
+			layout: { name: 'preset' },
 			style: [
 				{
 					selector: 'node',
@@ -148,6 +180,10 @@
 				{
 					selector: 'node.connected',
 					style: { 'opacity': 1, 'z-index': 50 }
+				},
+				{
+					selector: '.filtered-out',
+					style: { 'display': 'none' as any }
 				}
 			],
 			userZoomingEnabled: true,
@@ -190,12 +226,13 @@
 			node.addClass('selected-node');
 
 			// Find all connected nodes (upstream and downstream)
+			const allIds = new Set(synthNodes.map(n => n.id));
 			const connectedIds = new Set<string>([node.id()]);
 			function addUpstream(id: string) {
 				const sn2 = synthNodes.find(n => n.id === id);
 				if (!sn2) return;
 				for (const dep of sn2.dependsOn) {
-					if (visibleIds.has(dep) && !connectedIds.has(dep)) {
+					if (allIds.has(dep) && !connectedIds.has(dep)) {
 						connectedIds.add(dep);
 						addUpstream(dep);
 					}
@@ -203,7 +240,7 @@
 			}
 			function addDownstream(id: string) {
 				for (const n of synthNodes) {
-					if (n.dependsOn.includes(id) && visibleIds.has(n.id) && !connectedIds.has(n.id)) {
+					if (n.dependsOn.includes(id) && allIds.has(n.id) && !connectedIds.has(n.id)) {
 						connectedIds.add(n.id);
 						addDownstream(n.id);
 					}
@@ -267,7 +304,7 @@
 	<div class="filter-bar">
 		<span class="filter-label">Show:</span>
 		{#each [['all', 'All tiers'], ['core', 'Core evidence only'], ['derived', 'Core + Derived'], ['gap', 'Gaps only']] as [val, label]}
-			<button class="tier-btn" class:tier-active={filterTier === val} onclick={() => { filterTier = val; createGraph(); }}>
+			<button class="tier-btn" class:tier-active={filterTier === val} onclick={() => { filterTier = val; applyFilter(); }}>
 				{label}
 			</button>
 		{/each}
