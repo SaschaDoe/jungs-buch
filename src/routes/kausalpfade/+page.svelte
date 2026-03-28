@@ -248,15 +248,17 @@
 		const { nodes, edges } = buildLayoutElements();
 
 		// Book grid positions (3 cols x 3 rows, generous spacing)
+		// Grid arranged so books with most overlap are neighbors:
+		// PB↔RC (shared node), WGM↔BA (same author), JVH near RC
 		const bookCenters: Record<string, { x: number; y: number }> = {
-			'pb':  { x: 0,    y: 0 },
-			'ww':  { x: 1500, y: 0 },
-			'mf':  { x: 3000, y: 0 },
-			'wgm': { x: 0,    y: 1400 },
-			'ba':  { x: 1500, y: 1400 },
-			'wb':  { x: 3000, y: 1400 },
-			'rc':  { x: 750,  y: 2800 },
-			'jvh': { x: 2250, y: 2800 },
+			'mf':  { x: 0,    y: 0 },       // top-left
+			'ww':  { x: 1500, y: 0 },       // top-center
+			'wb':  { x: 3000, y: 0 },       // top-right
+			'wgm': { x: 0,    y: 1400 },    // mid-left
+			'ba':  { x: 1500, y: 1400 },    // mid-center (near WGM = same author)
+			'jvh': { x: 3000, y: 1400 },    // mid-right
+			'pb':  { x: 750,  y: 2800 },    // bot-left (next to RC = shared node)
+			'rc':  { x: 2250, y: 2800 },    // bot-right (next to PB + near JVH)
 		};
 
 		// Step 1: Create a hidden graph to run dagre per-book
