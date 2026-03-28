@@ -37,6 +37,26 @@
 	let showFilters = $state(true);
 	let showOverlaps = $state(true);
 	let selectedNode = $state<any>(null);
+	let selectedLink = $state<any>(null);
+	let selectedBookId = $state<string>('');
+
+	const statusIcons: Record<string, string> = {
+		red: '\u{1F534}', yellow: '\u{1F7E1}', green: '\u{1F7E2}', untestable: '\u{1F7E3}'
+	};
+	const chainTypeLabels: Record<string, { label: string; color: string }> = {
+		premise: { label: 'Premise', color: '#6366f1' },
+		observation: { label: 'Observation', color: '#3b82f6' },
+		causal: { label: 'Causal claim', color: '#f59e0b' },
+		theory: { label: 'Theoretical framework', color: '#8b5cf6' },
+		consequence: { label: 'Consequence', color: '#ef4444' },
+		solution: { label: 'Prescriptive recommendation', color: '#10b981' }
+	};
+
+	function findFullLink(bookId: string, chainId: string): any {
+		const bc = bookChains.find(b => b.id === bookId);
+		if (!bc) return null;
+		return bc.chain.find((l: any) => l.id === chainId) || null;
+	}
 	let tooltipContent = $state('');
 	let tooltipVisible = $state(false);
 	let tooltipX = $state(0);
@@ -316,11 +336,17 @@
 		});
 
 		cy.on('tap', 'node[!isLabel]', (evt: any) => {
-			selectedNode = evt.target.data();
+			const d = evt.target.data();
+			selectedNode = d;
+			selectedBookId = d.bookId;
+			selectedLink = findFullLink(d.bookId, d.chainId);
 		});
 
 		cy.on('tap', (evt: any) => {
-			if (evt.target === cy) selectedNode = null;
+			if (evt.target === cy) {
+				selectedNode = null;
+				selectedLink = null;
+			}
 		});
 
 		cy.on('mouseover', 'edge[?isOverlap]', (evt: any) => {
@@ -476,19 +502,60 @@
 	</div>
 
 	<!-- Detail panel -->
-	{#if selectedNode}
+	{#if selectedNode && selectedLink}
 		{@const book = getBook(selectedNode.bookId)}
-		<div class="detail-panel">
-			<button class="detail-close" onclick={() => (selectedNode = null)}>&times;</button>
-			<div class="detail-header">
-				<span class="detail-book-dot" style="background: {book.color}"></span>
-				<span class="detail-book-name">{book.shortTitle}</span>
-				<span class="detail-status" style="background: {statusColors[selectedNode.status]}">{statusLabelsMap[selectedNode.status]}</span>
-				<span class="detail-type">{selectedNode.type}</span>
+		{@const status = getStatus(selectedLink)}
+		{@const color = statusColors[status]}
+		{@const typeInfo = chainTypeLabels[selectedNode.type] || { label: selectedNode.type, color: '#64748b' }}
+		{@const statusLabel = status === 'red' ? 'Problematisch' : status === 'yellow' ? 'Wacklig' : status === 'green' ? 'Solide belegt' : 'Nicht testbar'}
+		{@const deps = getDependsOn(selectedLink)}
+		{@const bookChain = bookChains.find(b => b.id === selectedNode.bookId)?.chain || []}
+		<div class="node-detail" style="--nd-color: {color}">
+			<div class="nd-header">
+				<span class="nd-num" style="background: {color}">{selectedLink.step ?? '?'}</span>
+				<span class="nd-name">{getShortLabel(selectedLink)}</span>
+				<span class="nd-type" style="color: {typeInfo.color}">{typeInfo.label}</span>
+				<span class="nd-status" style="background: {color}">{statusIcons[status]} {statusLabel}</span>
+				<span class="nd-book" style="color: {book.color}">{book.shortTitle}</span>
+				<button class="nd-close" onclick={() => { selectedNode = null; selectedLink = null; }}>&#10005;</button>
 			</div>
-			<h3 class="detail-label">{selectedNode.label}</h3>
-			<p class="detail-claim">{selectedNode.claim}</p>
-			<a href="{book.route}" class="detail-link">Open in {book.shortTitle} &rarr;</a>
+
+			<p class="nd-claim">{selectedLink.claim}</p>
+
+			{#if deps.length > 0}
+				<div class="nd-deps">
+					<span class="nd-deps-label">Depends on:</span>
+					{#each deps as depId}
+						{@const dep = bookChain.find((c) => c.id === depId)}
+						{#if dep}
+							<button class="nd-dep-chip" style="border-color: {statusColors[getStatus(dep)]}" onclick={() => {
+								const fullDep = findFullLink(selectedNode.bookId, depId);
+								if (fullDep) {
+									selectedLink = fullDep;
+									selectedNode = { ...selectedNode, chainId: depId, label: getShortLabel(fullDep), status: getStatus(fullDep), type: fullDep.type, claim: fullDep.claim };
+								}
+							}}>
+								{statusIcons[getStatus(dep)]} {dep.step ?? ''}. {getShortLabel(dep)}
+							</button>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+
+			{#if selectedLink.evidenceRefs?.length > 0}
+				<div class="nd-evidence">
+					<strong>Evidence:</strong>
+					{#each selectedLink.evidenceRefs as ref, i}
+						<a class="ev-link" href="{book.route}/references?search={encodeURIComponent(ref.authorSearch)}">{ref.label}</a>{#if i < selectedLink.evidenceRefs.length - 1}<span class="ev-sep">&middot;</span>{/if}
+					{/each}
+				</div>
+			{/if}
+
+			{#if selectedLink.explanation}
+				<div class="nd-explanation">{selectedLink.explanation}</div>
+			{/if}
+
+			<a href="{book.route}" class="nd-book-link">View full analysis in {book.shortTitle} &rarr;</a>
 		</div>
 	{/if}
 
@@ -595,26 +662,55 @@
 	.gl-sep { width: 1px; height: 14px; background: rgba(148, 163, 184, 0.15); }
 	.gl-line-dash { width: 22px; height: 0; border-top: 2px dashed #60a5fa; }
 
-	.detail-panel {
-		position: fixed; bottom: 20px; right: 20px; width: 380px; max-width: calc(100vw - 40px);
-		background: rgba(15, 23, 42, 0.97); border: 1px solid rgba(148, 163, 184, 0.2);
-		border-radius: 14px; padding: 20px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-		z-index: 1100;
+	/* Node detail panel — matches per-book style */
+	.node-detail {
+		padding: 20px; margin: 16px 0;
+		background: rgba(15, 23, 42, 0.7); border-radius: 12px;
+		border: 1px solid rgba(148, 163, 184, 0.1);
+		border-left: 4px solid var(--nd-color);
 	}
-	.detail-close {
-		position: absolute; top: 12px; right: 14px; background: none; border: none;
-		color: #64748b; font-size: 1.4rem; cursor: pointer; padding: 0; line-height: 1;
+	.nd-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+	.nd-num {
+		width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+		justify-content: center; font-size: 0.85rem; font-weight: 700; color: white; flex-shrink: 0;
 	}
-	.detail-close:hover { color: #e2e8f0; }
-	.detail-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-	.detail-book-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-	.detail-book-name { font-weight: 700; font-size: 0.88rem; color: #f1f5f9; }
-	.detail-status { font-size: 0.68rem; padding: 2px 10px; border-radius: 10px; color: #0f172a; font-weight: 700; }
-	.detail-type { font-size: 0.72rem; color: #64748b; margin-left: auto; }
-	.detail-label { font-size: 1.05rem; font-weight: 700; color: #e2e8f0; margin: 0 0 8px; }
-	.detail-claim { font-size: 0.85rem; color: #94a3b8; line-height: 1.6; margin: 0 0 14px; }
-	.detail-link { font-size: 0.82rem; color: #60a5fa; text-decoration: none; }
-	.detail-link:hover { text-decoration: underline; }
+	.nd-name { font-weight: 700; font-size: 1.05rem; color: #f1f5f9; }
+	.nd-type { font-size: 0.75rem; }
+	.nd-status {
+		font-size: 0.72rem; padding: 4px 12px; border-radius: 12px; color: white;
+		font-weight: 600; white-space: nowrap;
+	}
+	.nd-book { font-size: 0.75rem; font-weight: 600; }
+	.nd-close {
+		margin-left: auto; background: none; border: none; color: #64748b;
+		cursor: pointer; font-size: 1.1rem; padding: 4px;
+	}
+	.nd-close:hover { color: #ef4444; }
+	.nd-claim { font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 12px; }
+	.nd-deps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+	.nd-deps-label { font-size: 0.78rem; color: #64748b; font-weight: 500; }
+	.nd-dep-chip {
+		font-size: 0.75rem; padding: 4px 10px; border-radius: 10px;
+		background: rgba(30, 41, 59, 0.8); color: #cbd5e1;
+		border: 1.5px solid; cursor: pointer; font-family: inherit;
+		transition: background 0.2s;
+	}
+	.nd-dep-chip:hover { background: rgba(30, 41, 59, 1); }
+	.nd-evidence { font-size: 0.82rem; color: #64748b; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+	.ev-link {
+		color: #60a5fa; text-decoration: none; font-weight: 500;
+		padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.08);
+		border: 1px solid rgba(59, 130, 246, 0.15); transition: all 0.2s;
+		font-size: 0.78rem; white-space: nowrap;
+	}
+	.ev-link:hover { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+	.ev-sep { color: #334155; }
+	.nd-explanation {
+		font-size: 0.85rem; color: #94a3b8; line-height: 1.6; margin-bottom: 12px;
+		padding: 14px; background: rgba(30, 41, 59, 0.6); border-radius: 8px;
+	}
+	.nd-book-link { font-size: 0.82rem; color: #60a5fa; text-decoration: none; }
+	.nd-book-link:hover { text-decoration: underline; }
 
 	.app-footer {
 		text-align: center; padding: 24px 0; color: #475569; font-size: 0.82rem;
@@ -626,6 +722,6 @@
 	@media (max-width: 640px) {
 		.hero h1 { font-size: 1.5rem; }
 		.graph-container { height: 60vh; min-height: 400px; }
-		.detail-panel { bottom: 10px; right: 10px; left: 10px; width: auto; }
+		.node-detail { margin: 12px 0; padding: 16px; }
 	}
 </style>
