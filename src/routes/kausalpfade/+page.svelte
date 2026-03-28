@@ -250,13 +250,13 @@
 		// Book grid positions (3 cols x 3 rows, generous spacing)
 		const bookCenters: Record<string, { x: number; y: number }> = {
 			'pb':  { x: 0,    y: 0 },
-			'ww':  { x: 2000, y: 0 },
-			'mf':  { x: 4000, y: 0 },
-			'wgm': { x: 0,    y: 1800 },
-			'ba':  { x: 2000, y: 1800 },
-			'wb':  { x: 4000, y: 1800 },
-			'rc':  { x: 1000, y: 3600 },
-			'jvh': { x: 3000, y: 3600 },
+			'ww':  { x: 1500, y: 0 },
+			'mf':  { x: 3000, y: 0 },
+			'wgm': { x: 0,    y: 1400 },
+			'ba':  { x: 1500, y: 1400 },
+			'wb':  { x: 3000, y: 1400 },
+			'rc':  { x: 750,  y: 2800 },
+			'jvh': { x: 2250, y: 2800 },
 		};
 
 		// Step 1: Create a hidden graph to run dagre per-book
