@@ -46,6 +46,12 @@
 	const statusColors: Record<string, string> = {
 		red: '#ef4444', yellow: '#f59e0b', green: '#10b981', untestable: '#8b5cf6'
 	};
+	const statusBg: Record<string, string> = {
+		red: '#3b1111', yellow: '#3b2f11', green: '#113b28', untestable: '#1f113b'
+	};
+	const statusText: Record<string, string> = {
+		red: '#fca5a5', yellow: '#fde68a', green: '#a7f3d0', untestable: '#c4b5fd'
+	};
 	const statusLabelsMap: Record<string, string> = {
 		red: 'Weak', yellow: 'Mixed', green: 'Strong', untestable: 'Untestable'
 	};
@@ -95,7 +101,9 @@
 						claim: link.claim,
 						bookColor: book.color,
 						bookTitle: book.shortTitle,
-						statusColor: statusColors[status] || '#64748b',
+						borderColor: statusColors[status] || '#64748b',
+						bgColor: statusBg[status] || '#1e293b',
+						textColor: statusText[status] || '#e2e8f0',
 					}
 				});
 
@@ -155,13 +163,13 @@
 						'label': 'data(label)',
 						'text-valign': 'center' as any,
 						'text-halign': 'center' as any,
-						'color': '#e2e8f0',
+						'color': 'data(textColor)',
 						'font-size': '10px',
 						'font-weight': 600,
 						'font-family': 'Inter, sans-serif',
-						'background-color': '#1e293b',
-						'border-width': 3,
-						'border-color': 'data(bookColor)',
+						'background-color': 'data(bgColor)',
+						'border-width': 2.5,
+						'border-color': 'data(borderColor)',
 						'shape': 'roundrectangle' as any,
 						'width': 160,
 						'height': 36,
@@ -177,14 +185,14 @@
 						'text-valign': 'center' as any,
 						'text-halign': 'center' as any,
 						'color': 'data(bookColor)',
-						'font-size': '50px',
+						'font-size': '180px',
 						'font-weight': 900,
 						'font-family': 'Inter, sans-serif',
 						'background-opacity': 0,
 						'border-width': 0,
 						'width': 1,
 						'height': 1,
-						'text-opacity': 0.35,
+						'text-opacity': 0.15,
 						'z-index': 0,
 						'events': 'no' as any,
 					}
@@ -275,8 +283,8 @@
 		// Zoom handler: fade labels when zoomed in, show when zoomed out
 		function updateLabelOpacity() {
 			const zoom = cy.zoom();
-			// Labels visible when zoomed out (zoom < 0.5), fade when zoomed in
-			const opacity = Math.max(0, Math.min(0.5, (0.6 - zoom) * 1.5));
+			// Labels visible when zoomed out, fade away when zoomed in past 0.4
+			const opacity = Math.max(0, Math.min(0.2, (0.5 - zoom) * 0.8));
 			cy.nodes('[?isLabel]').style('text-opacity', opacity);
 		}
 		cy.on('zoom', updateLabelOpacity);
