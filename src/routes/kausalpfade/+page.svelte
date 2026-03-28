@@ -386,7 +386,12 @@
 			node.addClass('highlighted');
 			const pos = node.renderedPosition();
 			const book = getBook(node.data('bookId'));
-			tooltipContent = `<strong>${book.shortTitle}</strong><br/>${node.data('label')}<br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}`;
+			// Count how many overlap edges this node has
+			const ovCount = cy.edges('[?isOverlap]').filter((e: any) =>
+				e.source().id() === node.id() || e.target().id() === node.id()
+			).length;
+			const ovText = ovCount > 0 ? `<br/><span style="color:#60a5fa">${ovCount} overlap(s) with other books</span>` : '';
+			tooltipContent = `<span style="color:${book.color};font-weight:800">${book.shortTitle}</span><br/><strong>${node.data('label')}</strong><br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}${ovText}`;
 			tooltipX = pos.x;
 			tooltipY = pos.y - 30;
 			tooltipVisible = true;
@@ -466,7 +471,11 @@
 		cy.on('mouseover', 'edge[?isOverlap]', (evt: any) => {
 			const edge = evt.target;
 			const mp = edge.renderedMidpoint();
-			tooltipContent = `<strong>Overlap:</strong> ${edge.data('theme')}`;
+			const srcData = edge.source().data();
+			const tgtData = edge.target().data();
+			const srcBook = getBook(srcData.bookId);
+			const tgtBook = getBook(tgtData.bookId);
+			tooltipContent = `<strong>Shared topic:</strong> ${edge.data('theme')}<br/><span style="color:${srcBook.color}">${srcBook.shortTitle}:</span> ${srcData.label}<br/><span style="color:${tgtBook.color}">${tgtBook.shortTitle}:</span> ${tgtData.label}`;
 			tooltipX = mp.x;
 			tooltipY = mp.y - 15;
 			tooltipVisible = true;
