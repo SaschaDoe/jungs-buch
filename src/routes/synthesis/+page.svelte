@@ -72,9 +72,24 @@
 		const gapNodes = synthNodes.filter(n => n.tier === 'gap');
 
 		const centerX = 0, centerY = 0;
-		const coreRadius = 600;
 		const derivedRadius = 1200;
 		const gapRadius = 1800;
+
+		// Core nodes: fill the center area organically (not a perfect circle)
+		function scatteredDisk(items: SynthNode[], maxRadius: number) {
+			const positions = new Map<string, { x: number; y: number }>();
+			// Use a sunflower/Fibonacci spiral for even organic distribution
+			const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+			items.forEach((n, i) => {
+				const r = maxRadius * Math.sqrt((i + 0.5) / items.length);
+				const angle = i * goldenAngle;
+				positions.set(n.id, {
+					x: centerX + r * Math.cos(angle),
+					y: centerY + r * Math.sin(angle),
+				});
+			});
+			return positions;
+		}
 
 		function circlePositions(items: SynthNode[], radius: number) {
 			const positions = new Map<string, { x: number; y: number }>();
@@ -89,7 +104,7 @@
 		}
 
 		const posMap = new Map<string, { x: number; y: number }>();
-		circlePositions(coreNodes, coreRadius).forEach((v, k) => posMap.set(k, v));
+		scatteredDisk(coreNodes, 700).forEach((v, k) => posMap.set(k, v));
 		circlePositions(derivedNodes, derivedRadius).forEach((v, k) => posMap.set(k, v));
 		circlePositions(gapNodes, gapRadius).forEach((v, k) => posMap.set(k, v));
 
