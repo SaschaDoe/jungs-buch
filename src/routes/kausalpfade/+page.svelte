@@ -247,6 +247,33 @@
 
 		const { nodes, edges } = buildLayoutElements();
 
+		// Pre-assign book regions so each book's nodes start clustered
+		const bookCenters: Record<string, { x: number; y: number }> = {
+			'pb':  { x: -1800, y: -1200 },  // top-left
+			'ww':  { x: 0,     y: -1200 },  // top-center
+			'mf':  { x: 1800,  y: -1200 },  // top-right
+			'wgm': { x: -1200, y: 0 },      // mid-left
+			'ba':  { x: 0,     y: 0 },      // center
+			'wb':  { x: 1200,  y: 0 },      // mid-right
+			'rc':  { x: -600,  y: 1200 },   // bottom-left
+			'jvh': { x: 600,   y: 1200 },   // bottom-right
+		};
+
+		// Assign initial positions to nodes
+		for (const node of nodes) {
+			const bookId = node.data.bookId;
+			if (node.data.isShared) {
+				// Shared nodes: average of their books' centers
+				const ids = node.data.sharedBookIds.split(',');
+				const cx = ids.reduce((s: number, id: string) => s + (bookCenters[id]?.x || 0), 0) / ids.length;
+				const cy2 = ids.reduce((s: number, id: string) => s + (bookCenters[id]?.y || 0), 0) / ids.length;
+				node.position = { x: cx + (Math.random() - 0.5) * 200, y: cy2 + (Math.random() - 0.5) * 200 };
+			} else if (bookCenters[bookId]) {
+				const c = bookCenters[bookId];
+				node.position = { x: c.x + (Math.random() - 0.5) * 600, y: c.y + (Math.random() - 0.5) * 600 };
+			}
+		}
+
 		// Create graph with ONLY intra-book edges for layout
 		cy = cytoscapeLib({
 			container: graphEl,
@@ -254,15 +281,15 @@
 			layout: {
 				name: 'cose',
 				animate: false,
-				randomize: true,
-				nodeRepulsion: 800000,
-				idealEdgeLength: 120,
+				randomize: false,
+				nodeRepulsion: 600000,
+				idealEdgeLength: 100,
 				edgeElasticity: 80,
-				gravity: 0.01,
-				numIter: 2500,
+				gravity: 0.02,
+				numIter: 2000,
 				nodeDimensionsIncludeLabels: true,
-				padding: 80,
-				componentSpacing: 400,
+				padding: 60,
+				componentSpacing: 300,
 			} as any,
 			style: [
 				{
