@@ -288,8 +288,9 @@
 			tempCy.layout({
 				name: 'dagre',
 				rankDir: 'TB',
-				nodeSep: 40,
-				rankSep: 55,
+				nodeSep: 80,
+				rankSep: 90,
+				edgeSep: 30,
 				padding: 0,
 			} as any).run();
 
