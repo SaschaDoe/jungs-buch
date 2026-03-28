@@ -288,6 +288,18 @@
 		cy.fit(undefined, 40);
 	}
 
+	function clearSelection() {
+		selectedNode = null;
+		cy?.elements().removeClass('selected-node connected dimmed active');
+	}
+
+	function handlePageClick(e: MouseEvent) {
+		// If click is outside the graph container AND not on the detail panel, clear selection
+		if (!graphEl?.contains(e.target as Node) && !(e.target as HTMLElement).closest('.node-detail')) {
+			clearSelection();
+		}
+	}
+
 	onMount(() => createGraph());
 	onDestroy(() => cy?.destroy());
 </script>
@@ -299,7 +311,9 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </svelte:head>
 
-<div class="app">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="app" onclick={handlePageClick}>
 	<header class="hero">
 		<div class="hero-inner">
 			<div class="nav-links">
