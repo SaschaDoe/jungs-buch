@@ -72,7 +72,8 @@
 		return result;
 	}
 
-	function buildElements() {
+	function buildLayoutElements() {
+		// Only intra-book nodes + edges for layout (no overlaps — they pull clusters together)
 		const nodes: any[] = [];
 		const edges: any[] = [];
 
@@ -115,28 +116,7 @@
 			}
 		}
 
-		if (showOverlaps) {
-			const overlaps = buildOverlapEdges();
-			const nodeIds = new Set(nodes.map(n => n.data.id));
-			const seen = new Set<string>();
-			for (const ov of overlaps) {
-				if (!nodeIds.has(ov.source) || !nodeIds.has(ov.target)) continue;
-				const key = `${ov.source}||${ov.target}`;
-				if (seen.has(key)) continue;
-				seen.add(key);
-				edges.push({
-					data: {
-						id: `ov-${edges.length}`,
-						source: ov.source,
-						target: ov.target,
-						theme: ov.theme,
-						isOverlap: true,
-					}
-				});
-			}
-		}
-
-		return [...nodes, ...edges];
+		return { nodes, edges };
 	}
 
 	let cytoscapeLib: any = null;
@@ -149,24 +129,24 @@
 			cytoscapeLib = (await import('cytoscape')).default;
 		}
 
-		const elements = buildElements();
-		console.log(`Building graph: ${elements.filter((e: any) => !e.data.source).length} nodes, ${elements.filter((e: any) => e.data.source).length} edges`);
+		const { nodes, edges } = buildLayoutElements();
 
+		// Create graph with ONLY intra-book edges for layout
 		cy = cytoscapeLib({
 			container: graphEl,
-			elements,
+			elements: [...nodes, ...edges],
 			layout: {
 				name: 'cose',
 				animate: false,
 				randomize: true,
-				nodeRepulsion: 500000,
-				idealEdgeLength: 180,
-				edgeElasticity: 50,
-				gravity: 0.05,
-				numIter: 2000,
+				nodeRepulsion: 800000,
+				idealEdgeLength: 120,
+				edgeElasticity: 80,
+				gravity: 0.01,
+				numIter: 2500,
 				nodeDimensionsIncludeLabels: true,
-				padding: 60,
-				componentSpacing: 250,
+				padding: 80,
+				componentSpacing: 400,
 			} as any,
 			style: [
 				{
@@ -197,16 +177,16 @@
 						'text-valign': 'center' as any,
 						'text-halign': 'center' as any,
 						'color': 'data(bookColor)',
-						'font-size': '22px',
-						'font-weight': 800,
+						'font-size': '50px',
+						'font-weight': 900,
 						'font-family': 'Inter, sans-serif',
 						'background-opacity': 0,
 						'border-width': 0,
 						'width': 1,
 						'height': 1,
-						'text-opacity': 0.6,
+						'text-opacity': 0.35,
+						'z-index': 0,
 						'events': 'no' as any,
-						'ghost': 'yes' as any,
 					}
 				},
 				{
@@ -226,7 +206,7 @@
 					style: {
 						'width': 1.5,
 						'line-color': '#60a5fa',
-						'line-opacity': 0.45,
+						'line-opacity': 0.3,
 						'line-style': 'dashed' as any,
 						'target-arrow-shape': 'none' as any,
 						'curve-style': 'bezier' as any,
@@ -243,12 +223,67 @@
 			userZoomingEnabled: true,
 			userPanningEnabled: true,
 			boxSelectionEnabled: false,
-			minZoom: 0.1,
+			minZoom: 0.05,
 			maxZoom: 3,
 		});
 
-		// Events
-		cy.on('mouseover', 'node', (evt: any) => {
+		// AFTER layout: add floating book labels at centroid of each cluster
+		for (const { id: bookId } of bookChains) {
+			if (!selectedBooks.has(bookId)) continue;
+			const book = getBook(bookId);
+			const bookNodes = cy.nodes(`[bookId = "${bookId}"]`);
+			if (bookNodes.length === 0) continue;
+			const bb = bookNodes.boundingBox();
+			const cx = (bb.x1 + bb.x2) / 2;
+			const cy2 = (bb.y1 + bb.y2) / 2;
+			cy.add({
+				data: {
+					id: `label-${bookId}`,
+					label: book.shortTitle,
+					bookColor: book.color,
+					isLabel: true,
+				},
+				position: { x: cx, y: cy2 },
+				locked: false,
+				grabbable: false,
+				selectable: false,
+			});
+		}
+
+		// AFTER layout: add overlap edges (they don't affect positioning)
+		if (showOverlaps) {
+			const overlaps = buildOverlapEdges();
+			const nodeIds = new Set(nodes.map((n: any) => n.data.id));
+			const seen = new Set<string>();
+			for (const ov of overlaps) {
+				if (!nodeIds.has(ov.source) || !nodeIds.has(ov.target)) continue;
+				const key = `${ov.source}||${ov.target}`;
+				if (seen.has(key)) continue;
+				seen.add(key);
+				cy.add({
+					data: {
+						id: `ov-${seen.size}`,
+						source: ov.source,
+						target: ov.target,
+						theme: ov.theme,
+						isOverlap: true,
+					}
+				});
+			}
+		}
+
+		// Zoom handler: fade labels when zoomed in, show when zoomed out
+		function updateLabelOpacity() {
+			const zoom = cy.zoom();
+			// Labels visible when zoomed out (zoom < 0.5), fade when zoomed in
+			const opacity = Math.max(0, Math.min(0.5, (0.6 - zoom) * 1.5));
+			cy.nodes('[?isLabel]').style('text-opacity', opacity);
+		}
+		cy.on('zoom', updateLabelOpacity);
+		updateLabelOpacity();
+
+		// Events — only on non-label nodes
+		cy.on('mouseover', 'node[!isLabel]', (evt: any) => {
 			const node = evt.target;
 			node.addClass('highlighted');
 			const pos = node.renderedPosition();
@@ -259,12 +294,12 @@
 			tooltipVisible = true;
 		});
 
-		cy.on('mouseout', 'node', (evt: any) => {
+		cy.on('mouseout', 'node[!isLabel]', (evt: any) => {
 			evt.target.removeClass('highlighted');
 			tooltipVisible = false;
 		});
 
-		cy.on('tap', 'node', (evt: any) => {
+		cy.on('tap', 'node[!isLabel]', (evt: any) => {
 			selectedNode = evt.target.data();
 		});
 
@@ -284,29 +319,6 @@
 		cy.on('mouseout', 'edge[?isOverlap]', () => {
 			tooltipVisible = false;
 		});
-
-		// Add floating book labels at the centroid of each book's nodes
-		for (const { id: bookId } of bookChains) {
-			if (!selectedBooks.has(bookId)) continue;
-			const book = getBook(bookId);
-			const bookNodes = cy.nodes(`[bookId = "${bookId}"]`);
-			if (bookNodes.length === 0) continue;
-			const bb = bookNodes.boundingBox();
-			const cx = (bb.x1 + bb.x2) / 2;
-			const cy2 = bb.y1 - 30; // above the cluster
-			cy.add({
-				data: {
-					id: `label-${bookId}`,
-					label: book.shortTitle,
-					bookColor: book.color,
-					isLabel: true,
-				},
-				position: { x: cx, y: cy2 },
-				locked: false,
-				grabbable: false,
-				selectable: false,
-			});
-		}
 
 		cy.fit(undefined, 30);
 		graphReady = true;
