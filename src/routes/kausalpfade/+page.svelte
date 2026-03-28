@@ -414,11 +414,11 @@
 			// Mark clicked node
 			node.addClass('selected-node');
 
-			// Find all same-book nodes
+			// Find all same-book nodes (ONLY this book)
 			const sameBookNodes = cy.nodes(`[bookId = "${d.bookId}"][!isLabel]`);
 			sameBookNodes.addClass('same-book');
 
-			// Find same-book edges
+			// Find same-book internal edges
 			const sameBookEdges = cy.edges().filter((e: any) => {
 				const src = e.source().data('bookId');
 				const tgt = e.target().data('bookId');
@@ -426,32 +426,18 @@
 			});
 			sameBookEdges.addClass('same-book-edge');
 
-			// Find overlap edges connected to this node
+			// Only overlap edges from the CLICKED node (not entire book)
 			const overlapEdges = cy.edges('[?isOverlap]').filter((e: any) => {
 				return e.source().id() === node.id() || e.target().id() === node.id();
 			});
 			overlapEdges.addClass('active-overlap');
 
-			// Find overlap peers (nodes at other end of overlap edges)
+			// Overlap peers = only nodes at the other end of THIS node's overlaps
 			const overlapPeerIds = new Set<string>();
 			overlapEdges.forEach((e: any) => {
 				const otherId = e.source().id() === node.id() ? e.target().id() : e.source().id();
 				overlapPeerIds.add(otherId);
 			});
-			// Also find all overlap edges connected to ANY node of this book
-			const bookOverlapEdges = cy.edges('[?isOverlap]').filter((e: any) => {
-				const srcBook = e.source().data('bookId');
-				const tgtBook = e.target().data('bookId');
-				return srcBook === d.bookId || tgtBook === d.bookId;
-			});
-			bookOverlapEdges.addClass('active-overlap');
-			bookOverlapEdges.forEach((e: any) => {
-				const srcBook = e.source().data('bookId');
-				const tgtBook = e.target().data('bookId');
-				if (srcBook !== d.bookId) overlapPeerIds.add(e.source().id());
-				if (tgtBook !== d.bookId) overlapPeerIds.add(e.target().id());
-			});
-
 			overlapPeerIds.forEach(id => {
 				cy.getElementById(id).addClass('overlap-peer');
 			});
@@ -464,6 +450,9 @@
 			cy.edges().filter((e: any) => {
 				return !e.hasClass('same-book-edge') && !e.hasClass('active-overlap');
 			}).addClass('dimmed');
+
+			// Log for debugging
+			console.log(`${d.bookId}: ${sameBookNodes.length} nodes, ${overlapEdges.length} overlaps to ${overlapPeerIds.size} peers`);
 		});
 
 		cy.on('tap', (evt: any) => {
@@ -680,7 +669,10 @@
 				<div class="nd-explanation">{selectedLink.explanation}</div>
 			{/if}
 
-			<a href="{book.route}" class="nd-book-link">View full analysis in {book.shortTitle} &rarr;</a>
+			<div class="nd-stats">
+			<span class="nd-stat">{book.shortTitle}: {bookChains.find(b => b.id === selectedNode.bookId)?.chain.length ?? 0} nodes in chain</span>
+		</div>
+		<a href="{book.route}" class="nd-book-link">View full analysis in {book.shortTitle} &rarr;</a>
 		</div>
 	{/if}
 
@@ -834,6 +826,8 @@
 		font-size: 0.85rem; color: #94a3b8; line-height: 1.6; margin-bottom: 12px;
 		padding: 14px; background: rgba(30, 41, 59, 0.6); border-radius: 8px;
 	}
+	.nd-stats { margin-bottom: 10px; }
+	.nd-stat { font-size: 0.75rem; color: #64748b; }
 	.nd-book-link { font-size: 0.82rem; color: #60a5fa; text-decoration: none; }
 	.nd-book-link:hover { text-decoration: underline; }
 
