@@ -31,6 +31,7 @@
 	function getDependsOn(link: any): string[] { return link.dependsOn ?? link.dependencies ?? []; }
 
 	let graphEl: HTMLDivElement;
+	let graphWrapperEl: HTMLDivElement;
 	let cy: any = null;
 	let selectedBooks = $state<Set<string>>(new Set(books.map(b => b.id)));
 	let selectedFields = $state<Set<string>>(new Set(scienceFields.map(f => f.id)));
@@ -381,19 +382,23 @@
 		updateLabelOpacity();
 
 		// Events — only on non-label nodes
+		function toPageCoords(renderedPos: { x: number; y: number }) {
+			const rect = graphEl.getBoundingClientRect();
+			return { x: rect.left + renderedPos.x, y: rect.top + renderedPos.y };
+		}
+
 		cy.on('mouseover', 'node[!isLabel]', (evt: any) => {
 			const node = evt.target;
 			node.addClass('highlighted');
-			const pos = node.renderedPosition();
+			const pos = toPageCoords(node.renderedPosition());
 			const book = getBook(node.data('bookId'));
-			// Count how many overlap edges this node has
 			const ovCount = cy.edges('[?isOverlap]').filter((e: any) =>
 				e.source().id() === node.id() || e.target().id() === node.id()
 			).length;
 			const ovText = ovCount > 0 ? `<br/><span style="color:#60a5fa">${ovCount} overlap(s) with other books</span>` : '';
 			tooltipContent = `<span style="color:${book.color};font-weight:800">${book.shortTitle}</span><br/><strong>${node.data('label')}</strong><br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}${ovText}`;
 			tooltipX = pos.x;
-			tooltipY = pos.y - 30;
+			tooltipY = pos.y - 10;
 			tooltipVisible = true;
 		});
 
@@ -470,14 +475,14 @@
 
 		cy.on('mouseover', 'edge[?isOverlap]', (evt: any) => {
 			const edge = evt.target;
-			const mp = edge.renderedMidpoint();
+			const mp = toPageCoords(edge.renderedMidpoint());
 			const srcData = edge.source().data();
 			const tgtData = edge.target().data();
 			const srcBook = getBook(srcData.bookId);
 			const tgtBook = getBook(tgtData.bookId);
 			tooltipContent = `<strong>Shared topic:</strong> ${edge.data('theme')}<br/><span style="color:${srcBook.color}">${srcBook.shortTitle}:</span> ${srcData.label}<br/><span style="color:${tgtBook.color}">${tgtBook.shortTitle}:</span> ${tgtData.label}`;
 			tooltipX = mp.x;
-			tooltipY = mp.y - 15;
+			tooltipY = mp.y - 10;
 			tooltipVisible = true;
 		});
 
@@ -605,13 +610,13 @@
 	{/if}
 
 	<!-- Graph -->
-	<div class="graph-wrapper">
+	{#if tooltipVisible && tooltipContent}
+		<div class="graph-tooltip" style="left: {tooltipX}px; top: {tooltipY}px">
+			{@html tooltipContent}
+		</div>
+	{/if}
+	<div class="graph-wrapper" bind:this={graphWrapperEl}>
 		<div class="graph-container" bind:this={graphEl}>
-			{#if tooltipVisible && tooltipContent}
-				<div class="graph-tooltip" style="left: {tooltipX}px; top: {tooltipY}px">
-					{@html tooltipContent}
-				</div>
-			{/if}
 		</div>
 		<div class="graph-legend">
 			<span class="legend-title">Evidence:</span>
@@ -770,10 +775,10 @@
 	.graph-container { width: 100%; height: 75vh; min-height: 500px; position: relative; }
 
 	.graph-tooltip {
-		position: absolute; transform: translate(-50%, -100%);
-		background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(148, 163, 184, 0.25);
-		border-radius: 8px; padding: 10px 14px; pointer-events: none; z-index: 1000;
-		max-width: 280px; min-width: 160px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+		position: fixed; transform: translate(-50%, -100%);
+		background: rgba(15, 23, 42, 0.97); border: 1px solid rgba(148, 163, 184, 0.25);
+		border-radius: 8px; padding: 10px 14px; pointer-events: none; z-index: 99999;
+		max-width: 340px; min-width: 180px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 		font-size: 0.8rem; line-height: 1.5; color: #e2e8f0;
 	}
 
