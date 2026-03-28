@@ -59,6 +59,10 @@
 		if (!bc) return null;
 		return bc.chain.find((l: any) => l.id === chainId) || null;
 	}
+
+	function clearHighlighting() {
+		if (cy) cy.elements().removeClass('selected-node same-book overlap-peer dimmed same-book-edge active-overlap');
+	}
 	let tooltipContent = $state('');
 	let tooltipVisible = $state(false);
 	let tooltipX = $state(0);
@@ -345,8 +349,8 @@
 			});
 		}
 
-		// AFTER layout: add overlap edges (only in overlaps mode)
-		if (showOverlaps && viewMode === 'overlaps') {
+		// AFTER layout: always add overlap edges (toggle visibility via mode)
+		if (showOverlaps) {
 			const overlaps = buildOverlapEdges();
 			const nodeIds = new Set(nodes.map((n: any) => n.data.id));
 			const seen = new Set<string>();
@@ -402,10 +406,6 @@
 			evt.target.removeClass('highlighted');
 			tooltipVisible = false;
 		});
-
-		function clearHighlighting() {
-			cy.elements().removeClass('selected-node same-book overlap-peer dimmed same-book-edge active-overlap');
-		}
 
 		cy.on('tap', 'node[!isLabel]', (evt: any) => {
 			const node = evt.target;
@@ -605,10 +605,10 @@
 	<!-- Mode toggle -->
 	<div class="mode-bar">
 		<span class="mode-label">View mode:</span>
-		<button class="mode-btn" class:mode-active={viewMode === 'overlaps'} onclick={() => { viewMode = 'overlaps'; handleRebuild(); }}>
+		<button class="mode-btn" class:mode-active={viewMode === 'overlaps'} onclick={() => { viewMode = 'overlaps'; if (cy) { cy.edges('[?isOverlap]').style('display', 'element'); clearHighlighting(); } }}>
 			Thematic Overlaps
 		</button>
-		<button class="mode-btn" class:mode-active={viewMode === 'chains'} onclick={() => { viewMode = 'chains'; handleRebuild(); }}>
+		<button class="mode-btn" class:mode-active={viewMode === 'chains'} onclick={() => { viewMode = 'chains'; if (cy) { cy.edges('[?isOverlap]').style('display', 'none'); clearHighlighting(); } }}>
 			Book Chains Only
 		</button>
 		<span class="mode-desc">
