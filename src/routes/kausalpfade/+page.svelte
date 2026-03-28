@@ -84,6 +84,34 @@
 
 	function getBook(id: string): BookMeta { return books.find(b => b.id === id)!; }
 
+	// Shared nodes: claims that are genuinely identical across books
+	interface SharedNode {
+		id: string;
+		label: string;
+		claim: string;
+		status: 'red' | 'yellow' | 'green' | 'untestable';
+		type: string;
+		bookIds: string[];       // books that share this claim
+		replacedIds: string[];   // original node IDs that get merged
+	}
+
+	const sharedNodes: SharedNode[] = [
+		{
+			id: 'shared--boys-emotional-reactive',
+			label: 'Boys born MORE emotional',
+			claim: 'Newborn boys are more emotionally reactive than girls (cry more when frustrated). Parents differentially suppress boys\' emotional expression. The adult pattern of male emotional restraint is learned through cultural training, not innate.',
+			status: 'green',
+			type: 'premise',
+			bookIds: ['pb', 'rc'],
+			replacedIds: ['pb--boys-more-emotional', 'rc--emotional-potential'],
+		},
+	];
+
+	const replacedNodeMap = new Map<string, SharedNode>();
+	for (const sn of sharedNodes) {
+		for (const rid of sn.replacedIds) replacedNodeMap.set(rid, sn);
+	}
+
 	function buildOverlapEdges(): { source: string; target: string; theme: string }[] {
 		const result: { source: string; target: string; theme: string }[] = [];
 		for (const theme of themeClusters) {
@@ -105,9 +133,9 @@
 	}
 
 	function buildLayoutElements() {
-		// Only intra-book nodes + edges for layout (no overlaps — they pull clusters together)
 		const nodes: any[] = [];
 		const edges: any[] = [];
+		const addedSharedIds = new Set<string>();
 
 		for (const { id: bookId, chain } of bookChains) {
 			if (!selectedBooks.has(bookId)) continue;
@@ -115,39 +143,93 @@
 
 			for (const link of chain) {
 				const status = getStatus(link);
-				const nodeId = `${bookId}--${link.id}`;
-				nodes.push({
-					data: {
-						id: nodeId,
-						label: getShortLabel(link),
-						bookId,
-						chainId: link.id,
-						status,
-						type: link.type,
-						claim: link.claim,
-						bookColor: book.color,
-						bookTitle: book.shortTitle,
-						borderColor: statusColors[status] || '#64748b',
-						bgColor: statusBg[status] || '#1e293b',
-						textColor: statusText[status] || '#e2e8f0',
-					}
-				});
+				const originalId = `${bookId}--${link.id}`;
+				const shared = replacedNodeMap.get(originalId);
 
-				for (const depId of getDependsOn(link)) {
-					const sourceId = `${bookId}--${depId}`;
-					if (chain.some((l: any) => l.id === depId)) {
-						edges.push({
+				if (shared) {
+					// This node is merged — add shared node once
+					if (!addedSharedIds.has(shared.id)) {
+						const sharedBookColors = shared.bookIds.map(bid => getBook(bid).color);
+						addedSharedIds.add(shared.id);
+						nodes.push({
 							data: {
-								id: `e-${sourceId}-${nodeId}`,
-								source: sourceId,
-								target: nodeId,
-								bookColor: book.color,
-								isOverlap: false
+								id: shared.id,
+								label: shared.label,
+								bookId: shared.bookIds.join('+'),
+								chainId: shared.id,
+								status: shared.status,
+								type: shared.type,
+								claim: shared.claim,
+								bookColor: '#ffffff',
+								bookTitle: shared.bookIds.map(bid => getBook(bid).shortTitle).join(' + '),
+								borderColor: statusColors[shared.status] || '#64748b',
+								bgColor: statusBg[shared.status] || '#1e293b',
+								textColor: '#ffffff',
+								isShared: true,
+								sharedBookIds: shared.bookIds.join(','),
+								sharedBookColors: sharedBookColors.join(','),
 							}
 						});
 					}
+					// Redirect edges to the shared node
+					for (const depId of getDependsOn(link)) {
+						const depOriginal = `${bookId}--${depId}`;
+						const depShared = replacedNodeMap.get(depOriginal);
+						const sourceId = depShared ? depShared.id : depOriginal;
+						if (chain.some((l: any) => l.id === depId)) {
+							const edgeId = `e-${sourceId}-${shared.id}-${bookId}`;
+							if (!edges.some(e => e.data.id === edgeId)) {
+								edges.push({
+									data: { id: edgeId, source: sourceId, target: shared.id, bookColor: book.color, isOverlap: false }
+								});
+							}
+						}
+					}
+				} else {
+					// Normal node
+					nodes.push({
+						data: {
+							id: originalId,
+							label: getShortLabel(link),
+							bookId,
+							chainId: link.id,
+							status,
+							type: link.type,
+							claim: link.claim,
+							bookColor: book.color,
+							bookTitle: book.shortTitle,
+							borderColor: statusColors[status] || '#64748b',
+							bgColor: statusBg[status] || '#1e293b',
+							textColor: statusText[status] || '#e2e8f0',
+						}
+					});
+
+					for (const depId of getDependsOn(link)) {
+						const depOriginal = `${bookId}--${depId}`;
+						const depShared = replacedNodeMap.get(depOriginal);
+						const sourceId = depShared ? depShared.id : depOriginal;
+						if (chain.some((l: any) => l.id === depId)) {
+							edges.push({
+								data: {
+									id: `e-${sourceId}-${originalId}`,
+									source: sourceId,
+									target: originalId,
+									bookColor: book.color,
+									isOverlap: false
+								}
+							});
+						}
+					}
 				}
 			}
+		}
+
+		// Also redirect edges that DEPEND ON replaced nodes
+		for (const edge of edges) {
+			const srcShared = replacedNodeMap.get(edge.data.source);
+			if (srcShared) edge.data.source = srcShared.id;
+			const tgtShared = replacedNodeMap.get(edge.data.target);
+			if (tgtShared) edge.data.target = tgtShared.id;
 		}
 
 		return { nodes, edges };
@@ -201,6 +283,28 @@
 						'height': 36,
 						'text-wrap': 'wrap' as any,
 						'text-max-width': '140px' as any,
+						'cursor': 'pointer' as any,
+					}
+				},
+				{
+					selector: 'node[?isShared]',
+					style: {
+						'label': 'data(label)',
+						'text-valign': 'center' as any,
+						'text-halign': 'center' as any,
+						'color': '#ffffff',
+						'font-size': '11px',
+						'font-weight': 700,
+						'font-family': 'Inter, sans-serif',
+						'background-color': '#1a1a2e',
+						'border-width': 3,
+						'border-color': '#ffffff',
+						'border-style': 'double' as any,
+						'shape': 'roundrectangle' as any,
+						'width': 185,
+						'height': 42,
+						'text-wrap': 'wrap' as any,
+						'text-max-width': '165px' as any,
 						'cursor': 'pointer' as any,
 					}
 				},
@@ -418,13 +522,24 @@
 			node.addClass('selected-node');
 
 			// Same-book nodes & edges always highlighted
-			const sameBookNodes = cy.nodes(`[bookId = "${d.bookId}"][!isLabel]`);
+			// For shared nodes, highlight ALL books they belong to
+			const bookIds = d.isShared ? d.sharedBookIds.split(',') : [d.bookId];
+			const sameBookNodes = cy.nodes('[!isLabel]').filter((n: any) => {
+				const nBookId = n.data('bookId');
+				const nSharedIds = n.data('sharedBookIds');
+				return bookIds.some((bid: string) => nBookId === bid || (nSharedIds && nSharedIds.split(',').includes(bid)));
+			});
 			sameBookNodes.addClass('same-book');
 
 			const sameBookEdges = cy.edges().filter((e: any) => {
+				if (e.data('isOverlap')) return false;
 				const src = e.source().data('bookId');
 				const tgt = e.target().data('bookId');
-				return src === d.bookId && tgt === d.bookId && !e.data('isOverlap');
+				const srcShared = e.source().data('sharedBookIds')?.split(',') || [];
+				const tgtShared = e.target().data('sharedBookIds')?.split(',') || [];
+				return bookIds.some((bid: string) =>
+					(src === bid || srcShared.includes(bid)) && (tgt === bid || tgtShared.includes(bid))
+				);
 			});
 			sameBookEdges.addClass('same-book-edge');
 
