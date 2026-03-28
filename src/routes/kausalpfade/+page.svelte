@@ -247,50 +247,84 @@
 
 		const { nodes, edges } = buildLayoutElements();
 
-		// Pre-assign book regions so each book's nodes start clustered
+		// Book grid positions (3 cols x 3 rows, generous spacing)
 		const bookCenters: Record<string, { x: number; y: number }> = {
-			'pb':  { x: -1800, y: -1200 },  // top-left
-			'ww':  { x: 0,     y: -1200 },  // top-center
-			'mf':  { x: 1800,  y: -1200 },  // top-right
-			'wgm': { x: -1200, y: 0 },      // mid-left
-			'ba':  { x: 0,     y: 0 },      // center
-			'wb':  { x: 1200,  y: 0 },      // mid-right
-			'rc':  { x: -600,  y: 1200 },   // bottom-left
-			'jvh': { x: 600,   y: 1200 },   // bottom-right
+			'pb':  { x: 0,    y: 0 },
+			'ww':  { x: 2000, y: 0 },
+			'mf':  { x: 4000, y: 0 },
+			'wgm': { x: 0,    y: 1800 },
+			'ba':  { x: 2000, y: 1800 },
+			'wb':  { x: 4000, y: 1800 },
+			'rc':  { x: 1000, y: 3600 },
+			'jvh': { x: 3000, y: 3600 },
 		};
 
-		// Assign initial positions to nodes
+		// Step 1: Create a hidden graph to run dagre per-book
+		const dagre = (await import('cytoscape-dagre')).default;
+		try { cytoscapeLib.use(dagre); } catch (_) {}
+
+		const positionMap = new Map<string, { x: number; y: number }>();
+
+		// Run dagre layout for each book separately
+		const activeBookIds = [...new Set(nodes.map((n: any) => n.data.bookId))];
+		for (const bid of activeBookIds) {
+			// For shared nodes, pick the first book
+			const bookNodes = nodes.filter((n: any) => {
+				if (n.data.isShared) return n.data.sharedBookIds.split(',')[0] === bid;
+				return n.data.bookId === bid;
+			});
+			const bookNodeIds = new Set(bookNodes.map((n: any) => n.data.id));
+			const bookEdges = edges.filter((e: any) =>
+				bookNodeIds.has(e.data.source) && bookNodeIds.has(e.data.target)
+			);
+
+			if (bookNodes.length === 0) continue;
+
+			const tempCy = cytoscapeLib({
+				elements: [...bookNodes, ...bookEdges],
+				headless: true,
+				styleEnabled: false,
+			});
+			tempCy.layout({
+				name: 'dagre',
+				rankDir: 'TB',
+				nodeSep: 40,
+				rankSep: 55,
+				padding: 0,
+			} as any).run();
+
+			// Get the center of the first real book in this cluster
+			const realBid = bid.includes('+') ? bid.split('+')[0] : bid;
+			const center = bookCenters[realBid] || { x: 2000, y: 2000 };
+
+			// Get bounding box of dagre result to center it
+			const bb = tempCy.nodes().boundingBox();
+			const bbCx = (bb.x1 + bb.x2) / 2;
+			const bbCy = (bb.y1 + bb.y2) / 2;
+
+			tempCy.nodes().forEach((n: any) => {
+				const pos = n.position();
+				positionMap.set(n.id(), {
+					x: center.x + (pos.x - bbCx),
+					y: center.y + (pos.y - bbCy),
+				});
+			});
+			tempCy.destroy();
+		}
+
+		// Assign positions to all nodes
 		for (const node of nodes) {
-			const bookId = node.data.bookId;
-			if (node.data.isShared) {
-				// Shared nodes: average of their books' centers
-				const ids = node.data.sharedBookIds.split(',');
-				const cx = ids.reduce((s: number, id: string) => s + (bookCenters[id]?.x || 0), 0) / ids.length;
-				const cy2 = ids.reduce((s: number, id: string) => s + (bookCenters[id]?.y || 0), 0) / ids.length;
-				node.position = { x: cx + (Math.random() - 0.5) * 200, y: cy2 + (Math.random() - 0.5) * 200 };
-			} else if (bookCenters[bookId]) {
-				const c = bookCenters[bookId];
-				node.position = { x: c.x + (Math.random() - 0.5) * 600, y: c.y + (Math.random() - 0.5) * 600 };
+			const pos = positionMap.get(node.data.id);
+			if (pos) {
+				node.position = pos;
 			}
 		}
 
-		// Create graph with ONLY intra-book edges for layout
+		// Create the real graph with preset layout (positions already assigned)
 		cy = cytoscapeLib({
 			container: graphEl,
 			elements: [...nodes, ...edges],
-			layout: {
-				name: 'cose',
-				animate: false,
-				randomize: false,
-				nodeRepulsion: 600000,
-				idealEdgeLength: 100,
-				edgeElasticity: 80,
-				gravity: 0.02,
-				numIter: 2000,
-				nodeDimensionsIncludeLabels: true,
-				padding: 60,
-				componentSpacing: 300,
-			} as any,
+			layout: { name: 'preset' },
 			style: [
 				{
 					selector: 'node[!isLabel]',
