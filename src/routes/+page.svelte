@@ -134,6 +134,20 @@
 
 		<h2 class="section-title section-title-extra">Übergreifend</h2>
 
+		<a href="/synthesis" class="card card-synthesis">
+			<div class="card-icon">&#127793;</div>
+			<div class="card-content">
+				<h2>The Perfect Book</h2>
+				<p>
+					What would the ideal book on raising boys look like?
+					Green evidence core, derived suggestions, and missing research &mdash;
+					synthesized from all 8 books + external sources.
+				</p>
+				<span class="card-meta">Synthesis &middot; Evidence Map &middot; Research Gaps</span>
+			</div>
+			<span class="card-arrow">&rarr;</span>
+		</a>
+
 		<a href="/kausalpfade" class="card card-causal">
 			<div class="card-icon">&#128279;</div>
 			<div class="card-content">
@@ -268,6 +282,7 @@
 	.card-male-female { --card-color: #6366f1; }
 	.card-warriors { --card-color: #ef4444; }
 	.card-raising-cain { --card-color: #14b8a6; }
+	.card-synthesis { --card-color: #10b981; }
 	.card-causal { --card-color: #f472b6; }
 	.card-fields { --card-color: #60a5fa; }
 
