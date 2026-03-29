@@ -148,6 +148,34 @@
 			<span class="card-arrow">&rarr;</span>
 		</a>
 
+		<a href="/outline" class="card card-outline">
+			<div class="card-icon">&#128214;</div>
+			<div class="card-content">
+				<h2>Book Outline</h2>
+				<p>
+					The complete 20-chapter outline for The Perfect Book &mdash;
+					myths debunked, science landscape, contradictions,
+					and evidence-based interventions.
+				</p>
+				<span class="card-meta">Outline &middot; Myths &middot; Contradictions &middot; Chapters</span>
+			</div>
+			<span class="card-arrow">&rarr;</span>
+		</a>
+
+		<a href="/read" class="card card-read">
+			<div class="card-icon">&#128216;</div>
+			<div class="card-content">
+				<h2>Read the Book</h2>
+				<p class="card-subtitle">Raising Boys &mdash; What the Science Actually Says</p>
+				<p>
+					The complete 20-chapter book as PDF &mdash;
+					read directly in your browser or download for offline reading.
+				</p>
+				<span class="card-meta">PDF Reader &middot; 20 Chapters &middot; Download</span>
+			</div>
+			<span class="card-arrow">&rarr;</span>
+		</a>
+
 		<a href="/kausalpfade" class="card card-causal">
 			<div class="card-icon">&#128279;</div>
 			<div class="card-content">
@@ -283,6 +311,8 @@
 	.card-warriors { --card-color: #ef4444; }
 	.card-raising-cain { --card-color: #14b8a6; }
 	.card-synthesis { --card-color: #10b981; }
+	.card-outline { --card-color: #60a5fa; }
+	.card-read { --card-color: #f59e0b; }
 	.card-causal { --card-color: #f472b6; }
 	.card-fields { --card-color: #60a5fa; }
 
