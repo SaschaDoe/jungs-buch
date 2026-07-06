@@ -427,14 +427,16 @@
 					Ausgearbeitete Paar-Gegenüberstellungen: Dimension für Dimension, fast
 					deckungsgleiche Positionen vs. echte Abweichungen, mit Fazit. Bewusst selektiv
 					&mdash; nur Paare, bei denen der Direktvergleich etwas Eigenes zeigt.
-					Das Vergleichs-Viereck: <em>Notes on Being a Man</em>, <em>Of Boys and Men</em>,
-					<em>Jungs von heute</em> und <em>Boys Adrift</em> — jedes Paar ausgearbeitet.
-					Höhepunkte: das Original und seine Selbsthilfe-Übersetzung (NBM/OBM), entgegengesetzte
-					Prämissen mit demselben Zielbild (NBM/JVH), das offene Rivalen-Paar (BA/OBM, inkl.
-					der Redshirting-Konvergenz) und die Frage, ob Galloway ein Sax-Buch mit
-					Reeves-Etikett schreibt (BA/NBM).
+					Das Vergleichs-Fünfeck: <em>Notes on Being a Man</em>, <em>Of Boys and Men</em>,
+					<em>Jungs von heute</em>, <em>Boys Adrift</em> und <em>Raising Cain</em> &mdash;
+					alle 10 Paare ausgearbeitet, damit alle fünf Hebel der Debatte abgedeckt sind:
+					Selbstformung, Struktur, Erziehung, Biologie, Emotion. Höhepunkte: das Original und
+					seine Selbsthilfe-Übersetzung (NBM/OBM), das offene Rivalen-Paar mit der
+					Redshirting-Konvergenz (BA/OBM), das Qualitäts-Gipfeltreffen der zwei Bücher ohne
+					rote Audit-Glieder (RC/OBM) und die Fallstudie, die ihr Lehrbuch nie gelesen hat
+					(RC/NBM).
 				</p>
-				<span class="card-meta">6 Vergleiche &middot; 4 Bücher im Viereck &middot; Deckungsgleich vs. Divergent</span>
+				<span class="card-meta">10 Vergleiche &middot; 5 Bücher im Fünfeck &middot; Deckungsgleich vs. Divergent</span>
 			</div>
 			<span class="card-arrow">&rarr;</span>
 		</a>

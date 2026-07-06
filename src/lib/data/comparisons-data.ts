@@ -412,5 +412,237 @@ export const comparisons: BookComparison[] = [
 		],
 		verdict:
 			'Die Antwort auf die Titelfrage lautet: mechanisch ja, politisch nein. Galloways Kausal-Kern (Dopamin, Porn, T, Initiation) ist die Sax-Tradition — modernisiert, von ihren zwei am schlechtesten gealterten Faktoren befreit und mit Reeves-Zitaten beglaubigt. Sein echter Fortschritt gegenüber Sax liegt nicht in der Evidenz (beide sind kausal dünn), sondern in der Rahmung: Feminismus-kompatibel statt kulturkämpferisch, Selbstformung statt Paternalismus, Emotionsöffnung statt reiner Härtung. Als Longitudinal-Paar gelesen zeigen die Bücher beides: dass die Diagnose von 2007 real war — und dass die populärste Kausalerzählung (Bildschirm-Dopamin) in 18 Jahren vom Rand in den Mainstream wanderte, ohne den Kausalitäts-Beweis mitzubringen.'
+	},
+	{
+		id: 'rc-vs-ba',
+		bookA: 'rc',
+		bookB: 'ba',
+		tagline: 'Duell der US-Erziehungsklassiker: Gefühl gegen Biologie',
+		relationship:
+			'Die beiden prägenden amerikanischen Jungen-Elternbücher ihrer Ära, acht Jahre auseinander (1999/2007), geschrieben für dieselben Eltern über dieselben Symptome — unmotivierte, wütende, abgehängte Jungen — mit konkurrierenden Diagnosen: Kindlon & Thompson (zwei Schulpsychologen mit Jahrzehnten Klinikpraxis) erklären die Krise über EMOTIONALE FEHLERZIEHUNG — Jungen wird das Gefühlsvokabular systematisch aberzogen, der Rest (Wut, Rückzug, Substanzen, Gewalt) ist Folgeschaden. Sax (Arzt) erklärt dieselben Symptome über fünf biologisch-mediale Faktoren — Schule gegen die Jungen-Natur, Videospiele, Stimulanzien, Chemikalien, verlorene Riten. Der Audit-Vergleich ist eine kleine Sensation: Das ÄLTERE Buch ist das methodisch robustere (8 von 12 Gliedern grün, null rote — gegen Sax\u2019 gelb-rote Kausal-Etage). Und die Überlappungen der beiden Rivalen (Schul-Mismatch, Disziplin-Kritik, Väter) sind wieder einmal das Belastbarste an beiden.',
+		dimensions: [
+			{
+				dimension: 'Kausalmodell',
+				a: 'Emotionale Fehlerziehung: Jungen kommen mit voller Gefühlskapazität zur Welt und werden kulturell „emotional verkrüppelt“ — durch Eltern-Spiegelung, Culture of Cruelty unter Peers, harte Disziplin. Mechanismen klinisch hergeleitet, Grundlagen entwicklungspsychologisch repliziert.',
+				b: 'Fünf Faktoren: Schule, Videospiele, ADHD-Stimulanzien, endokrine Disruptoren, verlorene Riten — medizinisch gerahmt, im Audit Faktor für Faktor zwischen umstritten und spekulativ.',
+				delta: 'Kultur- vs. Biologie-Erklärung für identische Symptome. Der Audit gibt der Klinik recht: Kindlon/Thompsons Fundament (Chaplin & Aldao-kompatible Entwicklungsbefunde, Dodge-Experimente, Vater-Längsschnitte) hat gehalten; Sax\u2019 riskanteste Faktoren (Stimulanzien-Schaden, Endokrin-These) sind 18 Jahre später weiter unbelegt.'
+			},
+			{
+				dimension: 'Schule',
+				a: 'Schul-Mismatch: Curriculum und Disziplinarsystem passen nicht zur Entwicklung von Jungen; Zero-Tolerance und Beschämung treffen Jungen überproportional (epidemiologische Daten).',
+				b: 'Gleiche Diagnose, andere Therapie: verfrühter Lehrplan, verlorenes experientielles Lernen — Lösung: geschlechtergetrennte Klassen, später einschulen.',
+				delta: 'Die Diagnose (Schule benachteiligt Jungen strukturell) teilen beide — im Graph derselbe Shared Node. Die Therapien trennen sich: emotionale Nachrüstung der bestehenden Schule (RC) vs. bauliche Trennung (BA). Die Single-Sex-Evidenz (Pahlke: ~null) spricht für die RC-Richtung.'
+			},
+			{
+				dimension: 'Die Rolle der Härte',
+				a: 'Culture of Cruelty: Die Grausamkeit unter Jungen (Hänseln, Hierarchie, Homophobie-Policing) ist ein HAUPTSCHADEN — sie erzwingt die emotionale Panzerung.',
+				b: 'Wettbewerb und Raufen sind GESUNDE Jungen-Bedürfnisse, deren Verbot schadet; Härte-Erfahrungen gehören zur Initiation.',
+				delta: 'Der direkteste inhaltliche Widerspruch des Paars: Dieselbe Pausenhof-Realität ist einmal Pathogen, einmal Nährstoff. Die differenzierte Lage: strukturiertes Kräftemessen (Sport, Rough-and-Tumble) hat Evidenz für Nutzen, unstrukturierte Peer-Grausamkeit für Schaden — beide Bücher verallgemeinern ihre Hälfte.'
+			},
+			{
+				dimension: 'Väter',
+				a: 'Vater-Sohn-Kapitel mit Landmark-Längsschnitten (26/27-Jahre-Follow-ups): väterliche emotionale Präsenz prädiziert Entwicklung — der stärkste Evidenz-Baustein des Buches.',
+				b: 'Vater als Kulturverlust: mediale Buffoon-Darstellung, fehlende Riten, fehlende Männergemeinschaft.',
+				delta: 'Konvergenz mit Qualitätsgefälle: RC belegt die Vater-Wirkung längsschnittlich, Sax beklagt sie kulturkritisch. Gemeinsame Botschaft (Väter/Mentoren sind nicht optional) gehört zum belastbaren Kern des Korpus.'
+			},
+			{
+				dimension: 'Evidenzprofil',
+				a: '8 grün / 4 gelb / 0 rot / 0 untestbar — für ein Elternbuch von 1999 außergewöhnlich. Schwächen: anekdotische Kapitel (Cruelty, Isolation), untested Interventionen, Stichprobe weißer Privatschuljungen.',
+				b: 'Deskriptiv grün, kausal gelb-rot; zwei Faktoren empirisch nie eingelöst; Anekdoten als Belege.',
+				delta: 'Das Audit-Ergebnis stellt die Intuition auf den Kopf: Der Arzt argumentiert unsauberer als die Therapeuten. RC altert besser, weil es dort vorsichtig blieb, wo Sax kausal zupackte.'
+			}
+		],
+		nearIdentical: [
+			'Schul-Mismatch: Das Schulsystem passt strukturell nicht zu Jungen — im Graph derselbe Shared Node, mit epidemiologischen Daten bei beiden.',
+			'Disziplin-Kritik: Zero-Tolerance und Beschämungspraktiken treffen Jungen überproportional und verschärfen die Spirale.',
+			'Väter und männliche Mentoren sind entwicklungsentscheidend.',
+			'Die Diagnose selbst: wütende, unmotivierte, abgehängte Jungen als reale, datierbare Krise — nicht als Panik.',
+			'Anti-Fatalismus: Eltern können viel bewirken (bei beiden zugleich die am dünnsten belegte Etage).',
+			'Substanzen/Bildschirme füllen ein Vakuum — RC nennt es emotionale Leere, BA Dopamin-Kaperung; die Beobachtung ist dieselbe.'
+		],
+		divergent: [
+			'Ursache: kulturelle Gefühls-Aberziehung vs. biologisch-mediale Fünf-Faktoren-Vergiftung.',
+			'Härte & Wettbewerb: Pathogen (Culture of Cruelty) vs. Nährstoff (Initiation, Kräftemessen).',
+			'Schul-Therapie: emotionale Nachrüstung vs. Geschlechtertrennung.',
+			'Biologie-Gewicht: „biology is not destiny“ (RC) vs. hard-wired Differenz (BA).',
+			'Testosteron: Randnotiz vs. Motivations-Motor.',
+			'Audit-Alterung: das 1999er-Buch hält 2025 besser als das 2007er — Klinik-Vorsicht schlägt Medizin-Kausalmut.'
+		],
+		verdict:
+			'Das Duell der Klassiker endet mit einem Auswärtssieg der Therapeuten: Raising Cain trägt seine Thesen auf replizierten Entwicklungsbefunden und Längsschnitten, Boys Adrift auf einem Hypothesen-Katalog, von dem zwei Posten nie eingelöst wurden. Beide haben denselben blinden Fleck (untested Lösungen, Anekdoten-Kapitel) und denselben harten Kern gemeinsam — Schule, Disziplin, Väter —, der damit erneut als das Belastbarste der Jungenliteratur bestätigt ist. Die eigentliche Lektion des Paars: Die Frage „Gefühl oder Biologie?“ war schon immer falsch gestellt — die Symptomlisten beider Bücher sind austauschbar, nur ihre Lieblingsursachen nicht.'
+	},
+	{
+		id: 'rc-vs-obm',
+		bookA: 'rc',
+		bookB: 'obm',
+		tagline: 'Klinik trifft Struktur: die zwei robustesten Bücher des Korpus',
+		relationship:
+			'Das Qualitäts-Gipfeltreffen: die methodisch stärkste klinische Quelle (Raising Cain: 8/12 grün, null rot) gegen die methodisch stärkste strukturelle (Of Boys and Men: null rot, Brookings-Apparat). Beide beschreiben dieselben Endpunkte — Depression, Suizid, Schulversagen, Substanzkonsum, Vater-Entkopplung — aber auf verschiedenen Ebenen: Kindlon/Thompson sehen den einzelnen Jungen im Sprechzimmer, Reeves die Kohorte in der Statistik. Der Konflikt ist präzise lokalisierbar: Reeves kritisiert den individualistischen Reflex der Emotional-Literacy-Tradition — man könne Jungen nicht aus einer Strukturkrise heraustherapieren; Kalamazoo zeigt, dass wohlmeinende Förderung bei Jungen oft verpufft. Umgekehrt hat Reeves für das, was im Sprechzimmer sitzt, buchstäblich kein Kapitel. Es ist das komplementärste Paar der Reihe: kaum echte Widersprüche, aber zwei Bücher, die einander systematisch die blinden Flecken füllen.',
+		dimensions: [
+			{
+				dimension: 'Analyseebene',
+				a: 'Der einzelne Junge: Innenleben, Gefühlsvokabular, Scham, Vater-Beziehung — hergeleitet aus Jahrzehnten Schulklinik-Praxis.',
+				b: 'Die Kohorte: Bildungs-, Arbeitsmarkt- und Mortalitätsstatistik; der Einzelne kommt als Fallzahl vor.',
+				delta: 'Kein Widerspruch, sondern Arbeitsteilung: RC erklärt, WIE sich die Krise im einzelnen Jungen anfühlt und festsetzt; Reeves erklärt, WARUM sie ganze Jahrgänge trifft. Wer nur eines liest, hält entweder alles für Therapie- oder alles für Politikversagen.'
+			},
+			{
+				dimension: 'Wo die Bücher kollidieren',
+				a: 'Lösung: emotionale Alphabetisierung — Eltern und Schulen sollen Jungen ein Gefühlsvokabular geben; Interventionen klinisch plausibel, aber ungetestet.',
+				b: 'Einwand: Der individualistische Reflex therapiert Symptome einer Strukturkrise; Kalamazoo-Befund als Warnung, dass Förderprogramme bei Jungen oft nicht ankommen. Lösung: Systeme umbauen (Redshirt, HEAL, Direct Dads).',
+				delta: 'Der einzige echte Konflikt — und er ist empirisch offen: Emotional-Literacy-Programme haben bis heute gemischte Evaluationen, Reeves\u2019 Policies sind größtenteils noch nie implementiert. Beide Lösungs-Etagen sind Wetten; nur die Diagnosen darunter sind belegt.'
+			},
+			{
+				dimension: 'Biologie',
+				a: '„Biology is not destiny“: kleine Anfangsunterschiede, große Sozialisationswirkung — vorsichtig anti-deterministisch, ohne die Gleichheits-These von Dittmann.',
+				b: 'Nature AND Nurture: Timing-Differenzen real (PFC ~2 Jahre), Typ-Differenzen klein; gegen beide Extreme.',
+				delta: 'Praktisch dieselbe Mittelposition mit anderer Betonung — RC von der Kultur-Seite kommend, Reeves von der Daten-Seite. Zusammen markieren sie den Konsens-Korridor, den Sax und Dittmann je in eine Richtung verlassen.'
+			},
+			{
+				dimension: 'Väter',
+				a: 'Vater-Sohn als klinisches Kernkapitel, gestützt auf 26/27-Jahre-Längsschnitte: emotionale Vater-Präsenz wirkt bis ins Erwachsenenalter.',
+				b: 'Dad Deficit strukturell: 1 von 5 Vätern lebt nicht beim Kind; Familienrecht behandelt Väter als „walking ATMs“; Eggebeen: 22% der Eltern-Beiträge sind elternteil-spezifisch.',
+				delta: 'Die stärkste Doppel-Validierung des Paars: Mikro-Längsschnitt (RC) und Makro-Statistik (Reeves) zeigen unabhängig dieselbe Vater-Wirkung. Nach dem Redshirting-Signal (BA/OBM) das zweitstärkste Konvergenz-Argument der Vergleichsreihe.'
+			},
+			{
+				dimension: 'Evidenzprofil & blinde Flecken',
+				a: '8 grün / 4 gelb / 0 rot — aber: Stichprobe weißer, wohlhabender Privatschuljungen; Mechanismen klinisch inferiert; Lösungen ungetestet.',
+				b: '0 rot, Meta-Analysen, Regierungsdaten — aber: kein Zugang zum Innenleben; Black-Men-Kapitel bleibt Statistik; Policies unimplementiert.',
+				delta: 'Spiegelbildliche Löcher: RC generalisiert von einer schmalen Stichprobe auf alle Jungen, Reeves von Aggregatdaten auf keinen konkreten. Wer beide kombiniert, hat das vollständigste Bild, das der Korpus hergibt.'
+			}
+		],
+		nearIdentical: [
+			'Verdeckte männliche Depression und Suizidgefälle als Kernbefund (klinisch bei RC, epidemiologisch bei Reeves).',
+			'Schul-Mismatch: Schule passt strukturell nicht zu Jungen — derselbe Shared Node im Graph; RC liefert Disziplin-Daten, Reeves den PFC-Timing-Mechanismus.',
+			'Väter sind nicht ersetzbar-optional: Längsschnitte (RC) + Eggebeen/Strukturdaten (Reeves).',
+			'Biologie-Mittelposition: Differenzen real, aber klein/formbar — gegen Determinismus UND Gleichheits-These.',
+			'Substanzen/Rückzug als Selbstmedikation einer tieferliegenden Leere.',
+			'Feminismus-kompatible Grundhaltung: Jungen fördern ohne Frauen-Errungenschaften zurückzudrehen.'
+		],
+		divergent: [
+			'Interventionsebene: Gefühlsvokabular für den Einzelnen vs. Systemumbau — der einzige echte Konflikt, empirisch unentschieden.',
+			'Reeves\u2019 Individualismus-Kritik trifft RCs Lösungs-Kapitel direkt (Kalamazoo als Warnschuss).',
+			'Reichweite der Stichprobe: Privatschul-Klinik vs. nationale Kohorten.',
+			'Ökonomie: bei RC praktisch abwesend, bei Reeves die halbe Erklärung (Arbeitsmarkt, Löhne, Ehe-Gradient).',
+			'Zeithorizont: RC (1999) kennt weder Smartphones noch Manosphere; Reeves integriert beide Debatten.',
+			'Emotionen als Datentyp: erlebte Innenwelt vs. Survey-Variable.'
+		],
+		verdict:
+			'Das komplementärste Paar der Reihe — und zusammengelesen der Goldstandard des Korpus: Die beiden einzigen Bücher ohne rote Audit-Glieder decken einander exakt die blinden Flecken ab (Innenleben vs. Struktur, Sprechzimmer vs. Statistik). Ihr einziger echter Streit — therapiert man Jungen oder Systeme? — ist zugleich die offenste empirische Frage der ganzen Debatte, denn beide Lösungs-Etagen sind ungetestete Wetten auf getesteten Diagnosen. Arbeitshypothese nach diesem Vergleich: Die Antwort ist ein UND, kein ODER — Reeves\u2019 Strukturen bestimmen, wie viele Jungen ins Sprechzimmer müssen; Kindlon/Thompson bestimmen, was dort mit ihnen geschieht.'
+	},
+	{
+		id: 'rc-vs-jvh',
+		bookA: 'rc',
+		bookB: 'jvh',
+		tagline: 'Die Ahnenlinie: US-Klinik wird deutsche Gleichstellungspädagogik',
+		relationship:
+			'Das Original und seine deutsche Enkelin: Dittmanns Kern-Apparat — Jungen werden mit voller Gefühlskapazität geboren, der Boy Code erzieht sie ab, Pseudoresilienz maskiert die Not — stammt direkt aus der Kindlon/Thompson-Pollack-Tradition und wird bei ihr ausdrücklich referiert. Jungs von heute (2023) ist damit die Übersetzung von Raising Cain (1999) in ein anderes Land, eine andere Generation und vor allem einen anderen RAHMEN: Aus der politisch bewusst zurückhaltenden Klinik-Beobachtung wird ein Gleichstellungs-Programm mit Connell/Böhnisch-Theorieetage, Care-Arbeit-Agenda und Tate-Kapitel. Der Vergleich zeigt präzise, was die Übersetzung kostet und was sie hinzugewinnt — und er erklärt nebenbei, warum das deutsche Buch angreifbarer ist als sein amerikanisches Original, obwohl es dieselbe Kernthese vertritt.',
+		dimensions: [
+			{
+				dimension: 'Kernthese & Herkunft',
+				a: 'Emotionale Fehlerziehung, klinisch beobachtet: Jungen verlieren ihr Gefühlsvokabular durch Elternspiegelung, Peer-Grausamkeit, Schuldisziplin. Keine politische Theorie-Etage darüber.',
+				b: 'Dieselbe These, übernommen und theoretisch überbaut: Boy Code + hegemoniale Männlichkeit (Connell) + Externalisierung (Böhnisch) + „Gehirne sind gleich“-Prämisse.',
+				delta: 'Die Übersetzung fügt genau die zwei Etagen hinzu, die im Audit zu Dittmanns kritischen Schwachstellen wurden: die Gleichheits-Prämisse (die RC so nie behauptet — „biology is not destiny“ ist schwächer als „Gehirne sind gleich“) und die Männlichkeits-Theorie als Monokausalität. Das Original ist robuster, WEIL es theorieärmer ist.'
+			},
+			{
+				dimension: 'Evidenzbasis',
+				a: '8 grün / 4 gelb / 0 rot: replizierte Entwicklungspsychologie, Dodge-Experimente, Vater-Längsschnitte, nationale Gesundheitsstatistik — plus klinische Fälle als Illustration, nicht als Beweis.',
+				b: 'Solide Beobachtungs-Glieder (Destatis-Care-Gap, DCU/Tate, BMFSFJ, Way) — aber die tragenden Prämissen ruhen auf Baby-X-artigen Einzelbefunden und populärwissenschaftlicher Verdichtung.',
+				delta: 'Generationen-Paradox: Das 24 Jahre ältere Buch hat den haltbareren Apparat. Dittmanns NEUE Daten (Care Gap, Algorithmen) sind echter Fortschritt; ihr ALTES Fundament ist eine zugespitzte Version dessen, was RC vorsichtiger formulierte.'
+			},
+			{
+				dimension: 'Was die Übersetzung hinzugewinnt',
+				a: 'Fehlt bei RC: Care-Arbeit, Konsens/Porno-Kompetenz, Berufswahl, digitale Radikalisierung — 1999 schlicht noch kein Thema oder kein US-Klinik-Thema.',
+				b: 'Die Praxis-Kapitel: Hausarbeit erziehen, Drei-Ampeln-Konsensmodell, Care-Berufe, Tate-Medienpädagogik — konkreter Alltagsstoff für Eltern von heute.',
+				delta: 'Der echte Mehrwert der Enkelin liegt nicht in der Theorie, sondern in der Aktualisierung: Dittmann beantwortet Erziehungsfragen, die es 1999 nicht gab. Diese Kapitel überleben auch den Prämissen-Einsturz unbeschadet.'
+			},
+			{
+				dimension: 'Politische Rahmung',
+				a: 'Bewusst lagerneutral: Kindlon/Thompson vermeiden Patriarchats- wie Biologie-Vokabular; das Buch wurde quer durch die Lager gelesen.',
+				b: 'Explizit gleichstellungspolitisch: Jungenförderung als Beitrag zur gerechten Gesellschaft; Zielbild Caring Masculinity.',
+				delta: 'Erklärt die Rezeptions-Differenz: RC konnte konservative wie progressive Eltern erreichen; Dittmann adressiert ein Milieu und immunisiert das andere — derselbe Effekt wie bei Sax, nur spiegelverkehrt.'
+			},
+			{
+				dimension: 'Zielbild',
+				a: 'Emotional ganze Jungen: ein Gefühlsvokabular, Bindungsfähigkeit, „emotional literacy“ — bewusst OHNE neues Männlichkeitsbild.',
+				b: 'Caring Masculinity: ein positives Gegen-Männlichkeitsbild als Erziehungsziel.',
+				delta: 'Subtil, aber folgenreich: RC will Jungen von Männlichkeits-VORGABEN entlasten, Dittmann setzt eine neue (bessere) Vorgabe. Connell würde bei beiden anmerken, dass auch „caring“ eine Norm ist — RC entgeht dem Einwand, Dittmann nicht.'
+			}
+		],
+		nearIdentical: [
+			'Die Kernthese: volle emotionale Kapazität bei Geburt, kulturelle Aberziehung, Maske/Pseudoresilienz — Dittmann übernimmt sie ausdrücklich aus dieser Tradition (Shared Nodes im Graph).',
+			'Schul-Kritik: Disziplin und Struktur treffen Jungen überproportional.',
+			'Verdeckte Not hinter Wut und Coolness als Erkennungs-Auftrag an Eltern.',
+			'Freundschafts-These (bei beiden via Way-Tradition): Jungen verlieren Intimität in der Adoleszenz.',
+			'Anti-Determinismus: Biologie erklärt die Krise nicht (RC vorsichtig, JVH zugespitzt).',
+			'Eltern als Haupthebel — bei beiden die am dünnsten belegte Etage (und von Prüfer im Korpus gleichermaßen getroffen).'
+		],
+		divergent: [
+			'Theorie-Etage: keine (RC) vs. Connell/Böhnisch-Überbau (JVH) — der Überbau macht die Enkelin angreifbarer als das Original.',
+			'Prämissen-Stärke: „biology is not destiny“ vs. „Gehirne sind gleich“ — vorsichtige vs. maximale Formulierung derselben Richtung.',
+			'Politik: lagerneutral vs. gleichstellungsprogrammatisch.',
+			'Zielbild: Entlastung von Männlichkeits-Normen vs. neue Caring-Norm.',
+			'Themen-Update: Porn-Konsens, Care-Arbeit, Tate — nur bei Dittmann (echter Mehrwert).',
+			'Evidenz-Architektur: Längsschnitte + Klinik vs. Sekundär-Synthese mit Prämissen-Risiko.'
+		],
+		verdict:
+			'Übersetzung mit Aufpreis: Dittmann erbt von Kindlon/Thompson eine im Kern haltbare These und bezahlt für die deutsche Neuauflage mit zwei Zuspitzungen (Gehirn-Gleichheit, Männlichkeits-Monokausalität), die das Original nie brauchte — die Enkelin ist moderner UND fragiler als die Großeltern. Die faire Gesamtrechnung: Wer die These verstehen will, liest Raising Cain; wer 2025 einen Sohn erzieht, findet bei Dittmann die Kapitel, die es 1999 nicht geben konnte (Konsens, Care, Algorithmen). Und die Lektion für den Korpus: Klinische Beobachtung altert besser als ihre politische Verpackung — in beide Richtungen, wie der Spiegelfall Sax zeigt.'
+	},
+	{
+		id: 'rc-vs-nbm',
+		bookA: 'rc',
+		bookB: 'nbm',
+		tagline: 'Die Fallstudie, die ihr Lehrbuch nie gelesen hat',
+		relationship:
+			'Das methodisch einzigartigste Paar der Reihe: Raising Cain (1999) beschreibt klinisch, wie emotionale Fehlerziehung einen Jungen formt — Vater-Verlust, Scham, Wut als einzig erlaubtes Gefühl, Panzerung, Substanzen als Kantenschleifer, späte (oder nie erfolgende) Öffnung. Notes on Being a Man (2025) dokumentiert exakt diese Kurve autobiografisch: der Neunjährige am Treppenabsatz beim tobenden Vater, die Scham des armen Kindes, „mild depression and anger issues“, 16 tränenlose Jahre, Alkohol „to sand the edges“, die Emotionsöffnung ab Mitte vierzig — ohne Kindlon/Thompson je zu zitieren und unter ausdrücklicher Ablehnung ihres Vokabulars. Galloway ist damit die unabhängigste Bestätigung, die die Emotional-Miseducation-These je bekommen hat: ein Proband, der das Studienergebnis liefert, während er das Studiendesign beschimpft. Zugleich zeigt seine SELBSTDEUTUNG (Testosteron, Dopamin, PFC), wie ein Betroffener die kulturelle Erklärung der eigenen Biografie durch eine biologische ersetzt — das Paar ist ein Lehrstück über Theorie-Wahl.',
+		dimensions: [
+			{
+				dimension: 'Dieselbe Kurve, zwei Perspektiven',
+				a: 'Klinisch, von außen: Jungen verlieren ihr Gefühlsvokabular durch Beschämung und Härtung; Folgen sind Wut-Monokultur, Rückzug, Selbstmedikation; Heilung über emotionale Alphabetisierung.',
+				b: 'Autobiografisch, von innen: genau diese Sequenz als gelebte Biografie — inklusive der Heilung (bewusstes „lean into your emotions“, Freundschafts-Investition, Umarmungs- und Kuss-Praxis mit den Söhnen).',
+				delta: 'Punkt für Punkt deckungsgleich, bis in Details (Wut vom Vater „geerbt“ = RCs inter-generationale Weitergabe; SCAFA = Verhaltensaktivierung; „name what you feel“ ist wörtlich RCs Kern-Rezept). Eine bessere unabhängige n=1-Validierung einer klinischen These gibt es im Korpus nicht.'
+			},
+			{
+				dimension: 'Die Selbstdeutung des Probanden',
+				a: 'Würde Galloways Biografie als Paradefall kultureller Fehlerziehung lesen: Vater-Modell, Scham-Ökonomie, Männlichkeits-Skript der 70er.',
+				b: 'Galloway selbst erklärt sein Verhalten biologisch: T-Schübe, unreifer PFC, Dopamin — „more nature than nurture“. Die Kultur-Erklärung seiner eigenen Geschichte lehnt er als Vokabular ab.',
+				delta: 'Das Lehrstück des Paars: Die Daten (seine Biografie) passen auf die RC-Theorie mindestens so gut wie auf seine eigene — er wählt die Erklärung nach Milieu-Kompatibilität, nicht nach Fit. Genau diese Wahlfreiheit zwischen Erklärungen bei identischer Praxis war schon die Pointe von NBM vs. JVH.'
+			},
+			{
+				dimension: 'Culture of Cruelty',
+				a: 'Kernkapitel: Die Grausamkeitskultur unter Jungen (Hierarchie, Demütigung, Homophobie-Policing) erzwingt die Panzerung — anekdotenreich, mit einer starken Survey-Stütze.',
+				b: 'Liefert die Anekdoten dazu frei Haus: der Hackordnungs-Alltag der Schulzeit, der Cool-Adjacent-Status, Jays Schicksal (Conversion-Camp, AIDS) als Extremfall des Policing — und die Frat als AMBIVALENTES Gegenbeispiel: dieselbe Männergruppe als Grausamkeits- UND Fürsorge-Raum („guardrails“).',
+				delta: 'Galloways Frat-Kapitel ist die beste Ergänzung zu RCs düsterem Bild: Männergruppen härten nicht nur, sie halten auch — je nach Struktur. RC unterbelichtet diese zweite Hälfte; Way liefert später die Daten dafür.'
+			},
+			{
+				dimension: 'Väter',
+				a: 'Vater-Kapitel mit Längsschnitt-Anker: emotionale Vater-Präsenz wirkt Jahrzehnte nach — im Guten wie im Schaden.',
+				b: 'Der Beleg in Ich-Form: der Gran-Torino-Scheinwerfer-Blick des verlassenen Jungen, die lebenslange Prägung — und die bewusste Drei-Generationen-Korrektur („Be me + better“) als gelebtes RC-Programm.',
+				delta: 'Vollständige Konvergenz inklusive Lösungsrichtung (Präsenz, „garbage time“, Affection). Galloways Vater-Kapitel könnten als Fallvignetten in einer RC-Neuauflage stehen.'
+			},
+			{
+				dimension: 'Evidenz & Reichweite',
+				a: '8 grün / 0 rot, aber: Privatschul-Stichprobe, Vor-Internet-Ära, erreicht primär bildungsbürgerliche Eltern.',
+				b: '2 rote Glieder, Blog-Quellen — aber Millionenreichweite exakt in der Zielgruppe (junge Männer), die RC nie erreicht hat.',
+				delta: 'Asymmetrische Stärken: RC hat die Theorie, NBM die Distribution. Galloway schmuggelt de facto RC-Botschaften (Gefühle benennen, Verletzlichkeit, Vater-Präsenz) in ein Publikum, das „emotional literacy“ als Therapeuten-Sprech abtun würde.'
+			}
+		],
+		nearIdentical: [
+			'Die komplette Verlaufskurve: Beschämung → Panzerung → Wut-Monokultur → Selbstmedikation → (späte) Öffnung — klinisch beschrieben (RC), autobiografisch dokumentiert (NBM).',
+			'Wut als einziges erlaubtes Männergefühl (RCs Anger-Funnel = Galloways Bill-Burr-Riff „angry… or fine“).',
+			'Verdeckte Depression als Nichts-Fühlen statt Traurigkeit.',
+			'Vater-Präsenz als Jahrzehnte wirkender Faktor, inklusive inter-generationaler Weitergabe und bewusster Korrektur.',
+			'Substanzen als Emotions-Management („sand the edges“ = RCs Selbstmedikations-Kapitel).',
+			'Die Lösungsrichtung: Gefühle benennen, Verletzlichkeit riskieren, Affection praktizieren — Galloways „Notes“ sind RC-Rezepte in Podcast-Sprache.'
+		],
+		divergent: [
+			'Erklärungsrahmen: kulturelle Fehlerziehung (RC) vs. T/PFC/Dopamin (NBM) — dieselben Daten, entgegengesetzte Theorie-Wahl.',
+			'Vokabular: RC nutzt die klinische Sprache, die Galloway („toxic masculinity“-Umfeld) ausdrücklich verwirft.',
+			'Männergruppen: primär Grausamkeits-Raum (RC) vs. auch Guardrail-Raum (NBM/Frat) — Galloways echte Ergänzung.',
+			'Männlichkeits-Zielbild: RC will Jungen von Vorgaben entlasten; Galloway setzt eine neue Trias (Protect/Provide/Procreate).',
+			'Evidenzstandard: 0 rote vs. 2 rote Glieder.',
+			'Adressat und Reichweite: bildungsbürgerliche Eltern (1999) vs. junge Männer im Podcast-Ökosystem (2025).'
+		],
+		verdict:
+			'Der methodisch wertvollste Vergleich der Reihe: Galloway bestätigt die Raising-Cain-These als unfreiwilliger Proband — dieselbe Verlaufskurve, dieselben Rezepte, Punkt für Punkt, bei ausdrücklicher Ablehnung des Vokabulars. Für die Bibliothek heißt das zweierlei. Erstens: Die Emotional-Miseducation-These hat jetzt neben Klinik (RC), Längsschnitt (Way) und Fragebogen (Levant/Prüfer) auch eine prominente Ich-Erzählung — sie ist der am breitesten unabhängig gestützte Befund des gesamten Korpus. Zweitens: Die Erklärungs-Etiketten darüber (Kultur vs. Biologie) sind offenbar frei wählbar, ohne dass sich an Befund oder Therapie etwas ändert — Galloway lebt RCs Programm und nennt es Testosteron-Management. Wer junge Männer erreichen will, lernt hier die Lektion: Es ist das Vokabular, das entscheidet, ob die Botschaft ankommt — nicht die Theorie dahinter.'
 	}
 ];
