@@ -220,5 +220,197 @@ export const comparisons: BookComparison[] = [
 		],
 		verdict:
 			'Das Paar zeigt, was passiert, wenn dieselbe Krise einmal empirisch und einmal weltanschaulich gerahmt wird: Reeves und Dittmann stimmen in Diagnose, Care-Agenda und Zielbild weitgehend überein — aber Reeves’ Mittelposition zur Biologie und sein Kalamazoo-Befund treffen Dittmanns zwei tragende Prämissen (Gehirne gleich, Erziehung als Lösung) frontal. Die faire Lesart: Dittmanns Beobachtungs- und Praxiskapitel (Care Gap, Konsens-Erziehung, Radikalisierung, Care-Berufe) sind auch nach Reeves-Standard wertvoll und für deutsche Eltern konkreter als alles bei Reeves; ihre Kausaltheorie sollte man durch Reeves’ Nature-AND-Nurture-Rahmen ersetzen. Umgekehrt bleibt Reeves gegenüber Eltern seltsam stumm — für den deutschen Alltag ist Dittmann die Anwendungsschicht, die ihm fehlt. Zusammen mit Galloway ergibt sich die Dreiecks-Pointe: Struktur (Reeves), Erziehung (Dittmann), Selbstformung (Galloway) — drei Hebel, ein Zielbild.'
+	},
+	{
+		id: 'ba-vs-obm',
+		bookA: 'ba',
+		bookB: 'obm',
+		tagline: 'Das Rivalen-Paar: zwei Empirie-Ansprüche, ein direkter Schlagabtausch',
+		relationship:
+			'Das einzige Paar des Korpus, in dem sich die Bücher offen bekriegen: Reeves weist Sax NAMENTLICH zurück — als medizinische Überklage, die aus realen Timing-Befunden harte Dimorphismus-Pädagogik macht. Zugleich ist Boys Adrift (2007) die Vorlage, auf die Of Boys and Men (2022) antwortet: dieselbe Diagnose (Bildungsgap, Failure to Launch, unmotivierte junge Männer), dieselbe Grundüberzeugung, dass Biologie eine Rolle spielt, sogar dieselbe Kern-Policy (Jungen später einschulen). Der Streit liegt nicht im OB, sondern im WIE: Sax erklärt die Krise über fünf medizinisch-kausale Faktoren (Schule, Videospiele, ADHD-Medikamente, endokrine Disruptoren, verlorene Initiationsriten), Reeves über Strukturen (Brain-Timing im Schulsystem, Arbeitsmarktwandel, Familienrecht). Fünfzehn Jahre und ein Evidenz-Standard trennen sie — und der Vergleich zeigt, wie viel von Sax übrig bleibt, wenn man ihn durch den Brookings-Filter schickt: die Diagnose fast vollständig, die Kausalfaktoren fast gar nicht.',
+		dimensions: [
+			{
+				dimension: 'Diagnose der Krise',
+				a: 'Früh und alarmistisch (2007): Bildungsgap (NAEP), Failure to Launch, Motivationsverlust — im Audit die stärkste Etage des Buches, durch Bundesdaten gut gestützt. Sax hat die Krise VOR der Debatte benannt.',
+				b: 'Dieselbe Diagnose, 15 Jahre später, mit besseren Daten: Bildungsgap global (PISA/NCES), Deaths of Despair, Arbeitsmarkt-Abstieg (Autor/Wasserman). Bestätigt Sax’ Alarm rückwirkend fast vollständig.',
+				delta: 'Der unbequeme Punkt für Reeves-Leser: Sax hatte mit der Diagnose zuerst recht, als sie noch als Panikmache galt. Reeves liefert die Validierung — ohne Sax dafür zu würdigen.'
+			},
+			{
+				dimension: 'Kausalmodell',
+				a: 'Fünf medizinische Faktoren: (1) verfrühte/verkopfte Schule, (2) Videospiele kapern den „Will to Power“, (3) ADHD-Überdiagnose + Stimulanzien schädigen das Motivationszentrum, (4) endokrine Disruptoren feminisieren Jungen, (5) verlorene Initiationsriten. Im Audit: Faktor für Faktor zwischen umstritten und spekulativ.',
+				b: 'Strukturell: PFC-Timing trifft auf ein beschleunigtes Schulsystem; Automatisierung/Globalisierung treffen männliche Jobs; Familienrecht entkoppelt Väter. Jeder Baustein mit Peer-Review-Quelle.',
+				delta: 'Der Kern des Streits. Sax’ Faktoren sind kausal stark erzählt und schwach belegt (Nucleus-accumbens-These unbewiesen, Wildlife-Extrapolation spekulativ, Nietzsche-Rahmen untestbar); Reeves’ Strukturbefunde sind schwächer erzählt und robust belegt. Wer Ursachen zitieren will, nimmt Reeves; Sax’ Faktoren sind Hypothesen-Katalog, nicht Befund.'
+			},
+			{
+				dimension: 'Biologie-Position',
+				a: 'Dimorphismus stark: hard-wired Geschlechterunterschiede in Lernen, Hören, Motivation; Testosteron als Motor; daraus folgt geschlechtergetrennte Pädagogik.',
+				b: 'Mittelposition: Timing-Differenzen ja (PFC ~2 Jahre), Typ-Differenzen klein (Ritchie: 48% Overlap selbst beim größten Unterschied). Lehnt Sax’ Sprung von „Reifung verschieden“ zu „Wesen verschieden“ explizit ab.',
+				delta: 'Die präziseste Bruchlinie: Beide akzeptieren Biologie — Sax macht aus einem TIMING-Befund eine TYP-Pädagogik, Reeves bleibt beim Timing. Die Single-Sex-Schooling-Evidenz (Pahlke-Meta: ~null Effekt) gibt Reeves recht.'
+			},
+			{
+				dimension: 'Die gemeinsame Policy: später einschulen',
+				a: 'Sax empfiehlt seit 2005/2007, Jungen später einzuschulen bzw. den Lehrplan zu entschleunigen — begründet über Hirnreifung und kindgerechtes Lernen.',
+				b: 'Redshirt the Boys: alle Jungen default ein Jahr später — begründet über Cascio/Schanzenbach- und Cook/Kang-Daten.',
+				delta: 'Das stärkste Konvergenz-Signal des ganzen Korpus: Dieselbe konkrete Maßnahme aus verfeindeten Rahmen, einmal klinisch, einmal ökonometrisch hergeleitet. Wenn zwei Rivalen unabhängig hier landen, verdient Redshirting mehr Aufmerksamkeit als jede andere Einzelforderung der Bibliothek.'
+			},
+			{
+				dimension: 'Evidenzprofil',
+				a: 'Deskriptive Etage grün (Bundesdaten), Kausal-Etage gelb bis rot: umstrittene Gaming-Meta-Analysen, unbewiesene Stimulanzien-These, spekulative Endokrin-Extrapolation, anekdotische Fallgeschichten als Beleg.',
+				b: 'Robusteste Quelle des Korpus: 0 rote Glieder, markierte Unsicherheit, Meta-Analysen und Regierungsstatistik.',
+				delta: 'Sax ist der Preis der Früherkennung: Wer 2007 Alarm schlägt, hat 2007er-Evidenz. Reeves ist der Gewinn der Geduld — aber er konnte nur so solide sein, weil die Debatte (auch durch Sax) schon 15 Jahre lief.'
+			},
+			{
+				dimension: 'Politische Anschlussfähigkeit',
+				a: 'Kulturkampf-nah: Kritik an „feminisierter“ Schule, Gender-Medizin-Rhetorik, konservatives Publikum; von der Linken pauschal verworfen, von der Rechten pauschal übernommen.',
+				b: 'Demonstrativ zentristisch: eigene Kapitel gegen Links UND Rechts; anschlussfähig in Policy-Debatten beider Seiten.',
+				delta: 'Erklärt die Rezeptions-Asymmetrie: Inhaltlich überlappen die Bücher stark, aber Sax’ Rahmung machte die Jungenkrise jahrelang zum Lager-Thema — Reeves’ Leistung ist zur Hälfte Entgiftung derselben Diagnose.'
+			}
+		],
+		nearIdentical: [
+			'Die Diagnose: Bildungsgap + Failure to Launch + Motivationskrise junger Männer — Sax (2007) und Reeves (2022) beschreiben dasselbe Phänomen mit denselben Datenquellen-Typen.',
+			'Später einschulen (Redshirting) — dieselbe konkrete Policy aus entgegengesetzten Begründungen; das stärkste unabhängige Konvergenz-Signal des Korpus.',
+			'Mehr männliche Lehrer und Rollenvorbilder in Schule und Erziehung.',
+			'Biologie ist real: beide gegen die „Gehirne sind gleich“-Position (Reeves moderat, Sax stark).',
+			'Videospiele/Bildschirme als Problemverstärker für Jungen (Sax als Kernfaktor, Reeves am Rande).',
+			'Sorge um vaterlose Jungen und den Verlust männlicher Entwicklungspfade.'
+		],
+		divergent: [
+			'Kausalmodell: fünf medizinische Faktoren vs. strukturelle Erklärung — Reeves weist Sax’ Biologismus namentlich zurück.',
+			'Single-Sex Schooling: Sax’ Kernempfehlung, von der Meta-Analytik (Pahlke) nicht gestützt und von Reeves nicht übernommen.',
+			'Endokrine Disruptoren und Stimulanzien-Schäden: nur Sax, empirisch bis heute nicht eingelöst.',
+			'Timing- vs. Typ-Differenzen: Reeves’ präziseste Korrektur an Sax.',
+			'Evidenz-Standard: Fallgeschichten und umstrittene Metas vs. Brookings-Apparat.',
+			'Politische Rahmung: Kulturkampf-Anschluss vs. Zentrismus als Methode.'
+		],
+		verdict:
+			'Reeves ist Sax minus Überklage: Die Diagnose übersteht den Brookings-Filter fast vollständig, die fünf Kausalfaktoren fast gar nicht — übrig bleiben Timing-Biologie und Schulstruktur. Fair gelesen war Sax der Frühwarner, der mit der Krise recht hatte und mit den Ursachen überzog; Reeves der Spätvalidierer, der die Diagnose entgiftete und belegte. Die Pointe für die Praxis: Wo beide RIVALEN unabhängig konvergieren — Redshirting, männliche Lehrer, Biologie-ernst-nehmen-ohne-Determinismus — liegt der belastbarste Kern der gesamten Jungenkrisen-Literatur.'
+	},
+	{
+		id: 'ba-vs-jvh',
+		bookA: 'ba',
+		bookB: 'jvh',
+		tagline: 'Die Maximaldistanz: zwei Elternratgeber, unvereinbare Rezepte',
+		relationship:
+			'Das Paar mit der größten Spannweite des Korpus: zwei Erziehungsratgeber für dieselben Söhne, geschrieben von den entgegengesetzten Polen der Nature/Nurture-Achse. Sax (Arzt, 2007, USA) sieht Jungen als biologisch eigene Spezies, die von feminisierter Schule, Bildschirmen, Medikamenten und Chemikalien von ihrer Natur abgeschnitten wird; Dittmann (Journalistin, 2023, Deutschland) sieht Jungen als Opfer der Männlichkeitsnormen, die ihnen anerzogen werden. Beim NBM-vs-JVH-Vergleich trug die These „Verbündete, die sich für Feinde halten“ — hier ist der Test, ob sie auch am Extrempol hält. Antwort: nur zur Hälfte. Diagnose und Mediensorge konvergieren weiter, aber die HANDLUNGSempfehlungen kollidieren real: getrennte Klassen gegen koedukative Gleichstellungspädagogik, Rollenbilder stärken gegen Rollenbilder abbauen, Jungen als Jungen fördern gegen Jungen vom Junge-sein-Müssen entlasten. Wo Galloway und Dittmann nur andere Etiketten für dasselbe Programm nutzen, wollen Sax und Dittmann im Klassenzimmer tatsächlich Verschiedenes tun.',
+		dimensions: [
+			{
+				dimension: 'Grundprämisse',
+				a: 'Hard-wired: Jungen lernen, hören, reagieren biologisch anders; Testosteron treibt Motivation; die Schule ignoriert das auf Kosten der Jungen.',
+				b: '„Gehirne sind gleich“: Baby-X, Boy Code, hegemoniale Männlichkeit; die Unterschiede werden gemacht — von Eltern, Schule, Kultur.',
+				delta: 'Die beiden Extrempole des Korpus in Reinform. Die Meta-Analytik (Hyde, Chaplin & Aldao, Davis & Hines, Pahlke) widerspricht BEIDEN Zuspitzungen: Differenzen existieren, sind aber klein und plastisch. Jede Seite zitiert nur die Hälfte der Literatur.'
+			},
+			{
+				dimension: 'Wer ist schuld?',
+				a: 'Die moderne Umwelt: verkopfte Frühpädagogik, Videospiele, ADHD-Stimulanzien, endokrine Disruptoren, verschwundene Initiationsriten. Männlichkeit selbst ist gesund — sie wird vergiftet.',
+				b: 'Die Männlichkeitsnormen: Boy Code, Externalisierung (Böhnisch), hegemoniale Männlichkeit (Connell). Die Kultur der Männlichkeit ist das Gift.',
+				delta: 'Spiegelbildliche Schuldzuweisung mit identischer Struktur: Beide erzählen „gesunde Jungen werden von außen beschädigt“ — nur ist das Außen einmal die moderne (entmännlichte) Welt und einmal die traditionelle (männliche) Norm. Beide Erzählungen immunisieren das eigene Weltbild.'
+			},
+			{
+				dimension: 'Schule konkret',
+				a: 'Geschlechtergetrennte Klassen, später einschulen, experientielles Lernen, Wettbewerb zurückholen, Zero-Tolerance abschaffen.',
+				b: 'Koedukation mit Gleichstellungs-Pädagogik, mehr männliche Erzieher/Grundschullehrer, anti-stereotype Erziehung, Konflikt- und Konsens-Kultur.',
+				delta: 'Der einzige echte Praxis-Konflikt der bisherigen Vergleiche: getrennte vs. gemeinsame Klassen sind nicht beides machbar. Die Evidenz: Single-Sex zeigt meta-analytisch ~null Effekt (Pahlke) — Punkt für Dittmann; mehr männliche Lehrkräfte fordern BEIDE — der gemeinsame Rest ist zugleich der belastbarste.'
+			},
+			{
+				dimension: 'Medien & Porn',
+				a: 'Videospiele kapern den Willen (Dopamin/„Will to Power“), Porn ersetzt Beziehungen — zwei der fünf Kernfaktoren.',
+				b: 'Tate-Pipeline: Algorithmen spülen Jungen Frauenhass zu; Porn erfordert Konsens- und Medienkompetenz-Erziehung.',
+				delta: 'Die stabilste Konvergenz auch am Extrempol: Beide fürchten dieselben Bildschirme, nur einmal als Motivations- und einmal als Ideologie-Gefahr. Wie bei NBM-vs-JVH gilt: zusammen ergeben beide Sorgen das vollständige Bild.'
+			},
+			{
+				dimension: 'Männliche Bezugspersonen & Übergänge',
+				a: 'Initiationsriten, Männergemeinschaften, Vater/Mentoren als Entwicklungs-Notwendigkeit — deren Verlust ist Kernfaktor 5.',
+				b: 'Männliche Erzieher und Grundschullehrer, Väter in Care-Verantwortung — als Gleichstellungs- und Vorbild-Frage.',
+				delta: 'Konvergenz mit verschiedener Begründung: Sax will Männer, die Jungen ins MANN-Sein führen; Dittmann will Männer, die Jungen zeigen, dass Männer SORGEN können. Die Forderung „mehr Männer um Jungen herum“ teilt der gesamte Korpus — nur ihr Zweck ist umkämpft.'
+			},
+			{
+				dimension: 'Evidenzprofil',
+				a: 'Deskriptiv grün, kausal gelb-rot: umstrittene Gaming-Metas, unbewiesene Medikamenten-These, spekulative Endokrin-Kette, Anekdoten als Beleg.',
+				b: 'Beobachtungen solide (Destatis, BMFSFJ, DCU, Way), aber zwei tragende Prämissen-Schwächen (Gehirn-Gleichheit, Sozialisations-Monokausalität).',
+				delta: 'Symmetrische Schwäche auf verschiedenen Etagen: Sax’ Fundament (Diagnose) ist stark und sein Überbau (Faktoren) weich; Dittmanns Überbau (Praxis-Kapitel) ist brauchbar und ihr Fundament (Prämisse) weich. Keiner von beiden taugt als alleinige Quelle.'
+			}
+		],
+		nearIdentical: [
+			'Die Diagnose: Jungen fallen in der Schule zurück und verlieren Anschluss — von beiden mit nationalen Daten belegt (NAEP vs. deutsche Bildungsstatistik).',
+			'Bildschirm-Sorge: Videospiele/Algorithmen als spezifische Jungen-Gefahr (Dopamin-Mechanik bei Sax, Tate-Pipeline bei Dittmann).',
+			'Porn als Erziehungsthema, das Eltern nicht ignorieren dürfen.',
+			'Mehr männliche Lehrer, Erzieher und Bezugspersonen — die einzige Schulforderung, die beide teilen.',
+			'Väter/Mentoren sind entwicklungsrelevant und fehlen zu oft.',
+			'Anti-Fatalismus: Eltern können und müssen handeln (bei beiden die letzte Kettenstufe — und bei beiden die am schwächsten belegte).'
+		],
+		divergent: [
+			'Nature vs. Nurture in Reinform: hard-wired Differenz vs. Baby-X-Gleichheit — die Extrempole des Korpus.',
+			'Single-Sex vs. Gleichstellungs-Koedukation: der einzige echte, unvereinbare Praxis-Konflikt der Vergleichsreihe.',
+			'Männlichkeit: von der Moderne bedrohtes Gut (Sax) vs. zu überwindende Norm (Dittmann).',
+			'Wettbewerb & Raufen: zurückholen (Sax) vs. als Boy-Code-Erbe problematisieren (Dittmann).',
+			'Testosteron: Motivations-Motor vs. „ist komplex“-Entkräftung.',
+			'Schuldrichtung: entmännlichte Umwelt vs. männliche Norm — spiegelbildliche Kausalerzählungen.'
+		],
+		verdict:
+			'Am Extrempol bricht die „heimliche Verbündete“-These zur Hälfte: Diagnose, Mediensorge und der Ruf nach männlichen Bezugspersonen konvergieren auch hier — aber im Klassenzimmer wollen Sax und Dittmann tatsächlich Unvereinbares (getrennt vs. gleichgestellt-gemeinsam, Rollenbilder stärken vs. abbauen). Damit markiert dieses Paar die tatsächliche Konfliktlinie der Jungendebatte: Sie verläuft nicht zwischen Diagnose-Leugnern und Alarmisten, sondern zwischen zwei Therapien für dieselbe anerkannte Krankheit. Die Meta-Analytik gibt keiner Therapie recht, dem gemeinsamen Rest aber schon: mehr Männer um Jungen herum, Bildschirme ernst nehmen, Eltern nicht aus der Verantwortung lassen. Alles darüber hinaus ist einstweilen Weltanschauung.'
+	},
+	{
+		id: 'ba-vs-nbm',
+		bookA: 'ba',
+		bookB: 'nbm',
+		tagline: 'Ist Notes on Being a Man ein Sax-Buch mit Reeves-Etikett?',
+		relationship:
+			'Die unbequemste Frage der Vergleichsreihe. Galloway nennt Reeves seinen „Yoda“ — aber seine KAUSALMECHANIK stammt erkennbar aus der Sax-Tradition: Dopamin-Produkte kapern die Motivation junger Männer (im Graph derselbe Shared Node), Porn ersetzt das Mating (ebenfalls), Testosteron als Motor des Jungen-Verhaltens, „more nature than nurture“. Sogar die Kapitelarchitektur ähnelt sich: Galloways „Enemies of Young Men“ (PFC, Addictions, Complaining) sind funktional Sax’ Fünf-Faktoren-Katalog in Selbsthilfe-Form. Achtzehn Jahre trennen die Bücher — und machen das Paar zum unfreiwilligen Longitudinal-Experiment: Sax’ 2007er-Prognose (Failure to Launch wird sich verschärfen) lässt sich an Galloways 2025er-Zahlen (NEET verdreifacht, 60% der 18-24-Jährigen bei den Eltern) direkt ablesen. Die Diagnose-Prognose hat sich bestätigt; die spezifischen Sax-Ursachen (Stimulanzien, endokrine Disruptoren) sind auch 2025 unbelegt — und tauchen bei Galloway bezeichnenderweise nicht mehr auf.',
+		dimensions: [
+			{
+				dimension: 'Kausalmechanik',
+				a: 'Fünf Faktoren, medizinisch gerahmt: Schule, Videospiele („Will to Power“-Kaperung), ADHD-Stimulanzien, endokrine Disruptoren, verlorene Riten.',
+				b: 'Addiction Economy, PFC-Timing, Porn als Rejection-Killer, Guardrail-Verlust — dieselbe Grundmechanik (Dopamin trifft unreifen männlichen Kortex) ohne die Medikamenten- und Chemie-Faktoren.',
+				delta: 'Kern-Antwort auf die Titelfrage: JA, mechanisch ist Galloway Sax’ Erbe — zwei der zentralen Kausalthesen sind im Graph wörtlich verschmolzen. Aufschlussreich ist, was Galloway WEGLÄSST: die beiden am schlechtesten gealterten Sax-Faktoren (Stimulanzien-Schaden, Endokrin-Feminisierung) sind stillschweigend entsorgt.'
+			},
+			{
+				dimension: 'Etikett & Autorität',
+				a: 'Beruft sich auf die eigene Praxis als Arzt und Psychologe plus Studienapparat (teils umstritten). Autorität: Klinik.',
+				b: 'Beruft sich auf Reeves/AIBM und erzählt die eigene Biografie. Autorität: Erfahrung + geliehene Brookings-Glaubwürdigkeit — bei Sax-artiger Argumentationsmechanik.',
+				delta: 'Die Reeves-Zitate funktionieren bei Galloway als Seriositäts-Anker für Thesen, die Reeves so nicht vertritt („more nature than nurture“, Dopamin als Hauptursache). Wer Galloway liest, bekommt öfter Sax, als das Namensregister verrät.'
+			},
+			{
+				dimension: 'Der 18-Jahre-Test',
+				a: '2007 prognostiziert: eine Generation unmotivierter junger Männer, die den Start ins Leben nicht schafft — damals als Alarmismus kritisiert.',
+				b: '2025 dokumentiert: NEET-Quote verdreifacht, 60% der 18-24-Jährigen bei den Eltern, Sexless-Statistiken, Manosphere — Galloways Zahlen sind Sax’ eingetroffene Prognose.',
+				delta: 'Das Paar als Longitudinal-Experiment: Die DIAGNOSE-Prognose hat sich bestätigt (Punkt für Sax), die Ursachen-Prognosen nicht überprüfbar besser geworden — die Dopamin-These ist von Sax’ Randposition zum Haidt-Mainstream gewandert, OHNE kausal besser belegt zu sein (Odgers/Przybylski-Kritik trifft beide Bücher gleichermaßen).'
+			},
+			{
+				dimension: 'Männlichkeits-Bild',
+				a: 'Jungen brauchen Initiation ins Mann-Sein: Riten, Männergemeinschaften, Verantwortungsübernahme — Gemeinschaft macht den Mann.',
+				b: 'Protect/Provide/Procreate plus Code, Frat-Erfahrung, Boy Scouts, Mentoren — strukturell dieselbe Initiations-Idee, autobiografisch beglaubigt statt anthropologisch begründet.',
+				delta: 'Fast deckungsgleich, und beide gegen den Zeitgeist formuliert. Unterschied im Ton: Sax paternalistisch (Eltern sollen Riten organisieren), Galloway peer-förmig (such dir deinen Stamm selbst). Galloways Version ist dadurch für junge Männer anschlussfähiger.'
+			},
+			{
+				dimension: 'Gleichstellungs-Verhältnis',
+				a: 'Defensiv bis kulturkämpferisch: die „feminisierte“ Schule als Täterin; Frauenbewegungs-Errungenschaften kommen kaum vor.',
+				b: 'Explizit feminismus-kompatibel: „No one should want to slow the arrow of this trajectory“; Empathie sei kein Nullsummenspiel; Kritik trifft Tech-Konzerne und Politik, nicht Frauen.',
+				delta: 'Der wichtigste echte Unterschied — und Reeves’ sichtbarster Einfluss auf Galloway: dieselbe Krise ohne Gegner-Konstruktion Richtung Feminismus. Das macht Galloway koalitionsfähig, wo Sax polarisiert.'
+			},
+			{
+				dimension: 'Evidenzprofil',
+				a: 'Deskriptiv grün, kausal gelb-rot; klinische Anekdoten als Belege; zwei Faktoren bis heute empirisch nicht eingelöst.',
+				b: '12 grün / 12 gelb / 2 ROT / 4 untestbar; Blog-Sekundärquellen und eine retracted Studie; stark nur, wo Reeves nacherzählt wird.',
+				delta: 'Ehrliches Fazit: Die beiden evidenziell schwächsten Bücher der Vergleichsreihe — beide leben von starker Erzählung über dünner Kausal-Evidenz. Sax’ Fehler sind die eines Klinikers (Überkausalisierung), Galloways die eines Podcasters (Quellenhygiene).'
+			}
+		],
+		nearIdentical: [
+			'Die Dopamin-These: Videospiele/Addiction Economy kapern die Motivation junger Männer — im Graph derselbe Shared Node, 2007 und 2025 fast wortgleich.',
+			'Porn ersetzt reale Beziehungsanbahnung/Mating — ebenfalls verschmolzener Shared Node.',
+			'Testosteron als Motor männlichen Verhaltens, „more nature than nurture“.',
+			'Failure to Launch als Kern-Diagnose (bei Galloway mit den 2025er-Zahlen, die Sax’ Prognose bestätigen).',
+			'Initiation/Männergemeinschaft als Entwicklungs-Notwendigkeit (Riten vs. Frat/Scouts/Mentoren).',
+			'Anti-Verweichlichungs-Motive: Risiko, Wettbewerb und Bewährung als gesunde Jungen-Bedürfnisse.'
+		],
+		divergent: [
+			'Stimulanzien- und Endokrin-Faktoren: Sax’ zwei riskanteste Thesen fehlen bei Galloway vollständig — stille Selbstkorrektur der Tradition.',
+			'Gleichstellung: Kulturkampf-Rahmung (Sax) vs. explizite Feminismus-Kompatibilität (Galloway) — Reeves’ sichtbarster Einfluss.',
+			'Adressat: Eltern/Pädagogik (Sax) vs. der junge Mann selbst (Galloway).',
+			'Schul-Programm: Single-Sex und Lehrplan-Reform (Sax) vs. praktisch keine Schulforderungen (Galloway).',
+			'Autoritätsquelle: klinische Praxis vs. Memoir + geliehene Brookings-Seriosität.',
+			'Emotionalität: bei Sax Randthema; bei Galloway (via hooks/Pollack-Konvergenz, ohne deren Namen) zentral — „lean into your emotions“.'
+		],
+		verdict:
+			'Die Antwort auf die Titelfrage lautet: mechanisch ja, politisch nein. Galloways Kausal-Kern (Dopamin, Porn, T, Initiation) ist die Sax-Tradition — modernisiert, von ihren zwei am schlechtesten gealterten Faktoren befreit und mit Reeves-Zitaten beglaubigt. Sein echter Fortschritt gegenüber Sax liegt nicht in der Evidenz (beide sind kausal dünn), sondern in der Rahmung: Feminismus-kompatibel statt kulturkämpferisch, Selbstformung statt Paternalismus, Emotionsöffnung statt reiner Härtung. Als Longitudinal-Paar gelesen zeigen die Bücher beides: dass die Diagnose von 2007 real war — und dass die populärste Kausalerzählung (Bildschirm-Dopamin) in 18 Jahren vom Rand in den Mainstream wanderte, ohne den Kausalitäts-Beweis mitzubringen.'
 	}
 ];

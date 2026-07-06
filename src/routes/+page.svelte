@@ -427,13 +427,14 @@
 					Ausgearbeitete Paar-Gegenüberstellungen: Dimension für Dimension, fast
 					deckungsgleiche Positionen vs. echte Abweichungen, mit Fazit. Bewusst selektiv
 					&mdash; nur Paare, bei denen der Direktvergleich etwas Eigenes zeigt.
-					Bisher: <em>Notes on Being a Man vs. Of Boys and Men</em> (das Original und seine
-					Selbsthilfe-Übersetzung), <em>Notes on Being a Man vs. Jungs von heute</em>
-					(entgegengesetzte Prämissen, fast dasselbe Zielbild) und
-					<em>Of Boys and Men vs. Jungs von heute</em> (Policy-Empirie trifft
-					Erziehungs-Idealismus).
+					Das Vergleichs-Viereck: <em>Notes on Being a Man</em>, <em>Of Boys and Men</em>,
+					<em>Jungs von heute</em> und <em>Boys Adrift</em> — jedes Paar ausgearbeitet.
+					Höhepunkte: das Original und seine Selbsthilfe-Übersetzung (NBM/OBM), entgegengesetzte
+					Prämissen mit demselben Zielbild (NBM/JVH), das offene Rivalen-Paar (BA/OBM, inkl.
+					der Redshirting-Konvergenz) und die Frage, ob Galloway ein Sax-Buch mit
+					Reeves-Etikett schreibt (BA/NBM).
 				</p>
-				<span class="card-meta">3 Vergleiche &middot; Dimension für Dimension &middot; Deckungsgleich vs. Divergent</span>
+				<span class="card-meta">6 Vergleiche &middot; 4 Bücher im Viereck &middot; Deckungsgleich vs. Divergent</span>
 			</div>
 			<span class="card-arrow">&rarr;</span>
 		</a>
