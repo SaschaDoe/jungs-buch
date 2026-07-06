@@ -427,10 +427,13 @@
 					Ausgearbeitete Paar-Gegenüberstellungen: Dimension für Dimension, fast
 					deckungsgleiche Positionen vs. echte Abweichungen, mit Fazit. Bewusst selektiv
 					&mdash; nur Paare, bei denen der Direktvergleich etwas Eigenes zeigt.
-					Bisher: <em>Notes on Being a Man vs. Of Boys and Men</em> (das Original und
-					seine Selbsthilfe-Übersetzung).
+					Bisher: <em>Notes on Being a Man vs. Of Boys and Men</em> (das Original und seine
+					Selbsthilfe-Übersetzung), <em>Notes on Being a Man vs. Jungs von heute</em>
+					(entgegengesetzte Prämissen, fast dasselbe Zielbild) und
+					<em>Of Boys and Men vs. Jungs von heute</em> (Policy-Empirie trifft
+					Erziehungs-Idealismus).
 				</p>
-				<span class="card-meta">1 Vergleich &middot; 7 Dimensionen &middot; Deckungsgleich vs. Divergent</span>
+				<span class="card-meta">3 Vergleiche &middot; Dimension für Dimension &middot; Deckungsgleich vs. Divergent</span>
 			</div>
 			<span class="card-arrow">&rarr;</span>
 		</a>
