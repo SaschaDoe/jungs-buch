@@ -419,6 +419,22 @@
 			<span class="card-arrow">&rarr;</span>
 		</a>
 
+		<a href="/vergleiche" class="card card-compare">
+			<div class="card-icon">&#9878;&#65039;</div>
+			<div class="card-content">
+				<h2>Buchvergleiche</h2>
+				<p>
+					Ausgearbeitete Paar-Gegenüberstellungen: Dimension für Dimension, fast
+					deckungsgleiche Positionen vs. echte Abweichungen, mit Fazit. Bewusst selektiv
+					&mdash; nur Paare, bei denen der Direktvergleich etwas Eigenes zeigt.
+					Bisher: <em>Notes on Being a Man vs. Of Boys and Men</em> (das Original und
+					seine Selbsthilfe-Übersetzung).
+				</p>
+				<span class="card-meta">1 Vergleich &middot; 7 Dimensionen &middot; Deckungsgleich vs. Divergent</span>
+			</div>
+			<span class="card-arrow">&rarr;</span>
+		</a>
+
 		<a href="/forschungslandschaft" class="card card-fields">
 			<div class="card-icon">&#127891;</div>
 			<div class="card-content">
@@ -614,6 +630,7 @@
 	.card-outline { --card-color: #60a5fa; }
 	.card-read { --card-color: #f59e0b; }
 	.card-causal { --card-color: #f472b6; }
+	.card-compare { --card-color: #f59e0b; }
 	.card-fields { --card-color: #60a5fa; }
 
 	.card-icon {
