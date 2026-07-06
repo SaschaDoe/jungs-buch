@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Jungs von heute, Männer von morgen — Buchanalyse</title>
+	<title>Real Boys — Buchanalyse</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
@@ -12,9 +12,9 @@
 	<header class="hero">
 		<a href="/" class="back-link">&larr; Alle Bücher</a>
 		<p class="book-label">Interaktive Buchanalyse</p>
-		<h1>Jungs von heute, Männer von morgen</h1>
-		<p class="subtitle">Was unsere Söhne für eine gleichberechtigte Zukunft brauchen</p>
-		<p class="author">Anne Dittmann</p>
+		<h1>Real Boys</h1>
+		<p class="subtitle">Rescuing Our Sons from the Myths of Boyhood</p>
+		<p class="author">William S. Pollack, Ph.D. (Random House, 1998)</p>
 		<p class="description">
 			Diese Seite begleitet das Buch mit interaktiven Datenvisualisierungen,
 			Quellenanalysen und weiterführenden Perspektiven.
@@ -22,7 +22,7 @@
 	</header>
 
 	<main class="cards">
-		<a href="/jungs-von-heute/evidence" class="card card-evidence">
+		<a href="/real-boys/evidence" class="card card-evidence">
 			<div class="card-icon">&#128300;</div>
 			<div class="card-content">
 				<h2>Evidenz-Audit &amp; Argumentationskette</h2>
@@ -35,7 +35,7 @@
 			<span class="card-arrow">&rarr;</span>
 		</a>
 
-		<a href="/jungs-von-heute/references" class="card card-refs">
+		<a href="/real-boys/references" class="card card-refs">
 			<div class="card-icon">&#128218;</div>
 			<div class="card-content">
 				<h2>Quellenverzeichnis</h2>
@@ -48,22 +48,10 @@
 			<span class="card-arrow">&rarr;</span>
 		</a>
 
-		<a href="/jungs-von-heute/reading" class="card card-reading">
-			<div class="card-icon">&#128214;</div>
-			<div class="card-content">
-				<h2>Weiterführende Literatur</h2>
-				<p>
-					Bücher die das Thema ergänzen, vertiefen oder widersprechen &mdash;
-					für ein vollständiges Bild der Debatte.
-				</p>
-				<span class="card-meta">Mehrere Kategorien &middot; DE &amp; EN</span>
-			</div>
-			<span class="card-arrow">&rarr;</span>
-		</a>
 	</main>
 
 	<footer class="app-footer">
-		<p>Interaktive Analyse zu: <em>Jungs von heute, Männer von morgen</em></p>
+		<p>Interaktive Analyse zu: <em>Real Boys</em></p>
 	</footer>
 </div>
 
@@ -113,11 +101,11 @@
 	.hero h1 {
 		font-size: 2.8rem;
 		font-weight: 800;
-		background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+		background: linear-gradient(135deg, #14b8a6, #2dd4bf, #5eead4);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
-		margin: 0 0 10px;
+		margin: 0 0 6px;
 		line-height: 1.15;
 	}
 
@@ -171,8 +159,8 @@
 	}
 
 	.card-evidence { --card-color: #8b5cf6; }
-	.card-refs { --card-color: #10b981; }
-	.card-reading { --card-color: #f59e0b; }
+	.card-refs { --card-color: #14b8a6; }
+	.card-reading { --card-color: #2dd4bf; }
 
 	.card-icon {
 		font-size: 2.2rem;
@@ -209,6 +197,10 @@
 		color: #64748b;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
+	}
+
+	.coming-soon-label {
+		color: #14b8a6;
 	}
 
 	.card-arrow {

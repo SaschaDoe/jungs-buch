@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Jungs von heute, Männer von morgen — Buchanalyse</title>
+	<title>Männliche Sozialisation — Buchanalyse</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
@@ -12,22 +12,28 @@
 	<header class="hero">
 		<a href="/" class="back-link">&larr; Alle Bücher</a>
 		<p class="book-label">Interaktive Buchanalyse</p>
-		<h1>Jungs von heute, Männer von morgen</h1>
-		<p class="subtitle">Was unsere Söhne für eine gleichberechtigte Zukunft brauchen</p>
-		<p class="author">Anne Dittmann</p>
+		<h1>Männliche Sozialisation</h1>
+		<p class="subtitle">Eine Einführung (2., überarbeitete Auflage)</p>
+		<p class="author">Lothar Böhnisch &mdash; Beltz Juventa, 2013. Mit Gastbeiträgen von Alexander Wedel und Reinhard Winter.</p>
 		<p class="description">
-			Diese Seite begleitet das Buch mit interaktiven Datenvisualisierungen,
-			Quellenanalysen und weiterführenden Perspektiven.
+			Das Standardwerk der deutschsprachigen sozialpädagogisch-soziologischen Männerforschung.
+			Böhnisch verbindet Connells Konzept der hegemonialen Männlichkeit mit der psychoanalytischen
+			Sozialisationsforschung und der deutschen Sozialpädagogik. Kernkonzepte: <em>Externalisierung</em>,
+			<em>Bedürftigkeit</em>, <em>Männlichkeit als Medium der Lebensbewältigung</em>,
+			<em>hidden gender curriculum</em>, <em>Gespenst des rollenlosen Mannes</em> und das
+			<em>balancierte Mann-Sein</em> als normatives Ziel. Die akademische Grundlage, auf der
+			Dittmanns <em>Jungs von heute</em> aufbaut.
 		</p>
 	</header>
 
 	<main class="cards">
-		<a href="/jungs-von-heute/evidence" class="card card-evidence">
+		<a href="/maennliche-sozialisation/evidence" class="card card-evidence">
 			<div class="card-icon">&#128300;</div>
 			<div class="card-content">
 				<h2>Evidenz-Audit &amp; Argumentationskette</h2>
 				<p>
-					Wie belastbar sind die Quellen des Buches? Wo bricht die Argumentationskette?
+					Wie belastbar ist Böhnischs Argumentation? Welche Glieder sind solide,
+					welche theoretische Rahmen, welche Interpretation aus Beratungspraxis?
 					Evidenz-Ampel und interaktiver Argument-Graph.
 				</p>
 				<span class="card-meta">Evidenz-Ampel &middot; Argument-Graph</span>
@@ -35,35 +41,23 @@
 			<span class="card-arrow">&rarr;</span>
 		</a>
 
-		<a href="/jungs-von-heute/references" class="card card-refs">
+		<a href="/maennliche-sozialisation/references" class="card card-refs">
 			<div class="card-icon">&#128218;</div>
 			<div class="card-content">
 				<h2>Quellenverzeichnis</h2>
 				<p>
-					Alle zitierten Autoren, Studien und Institutionen &mdash;
-					durchsuchbar nach Fachgebiet und Schlüsselfiguren.
+					Alle zitierten Autorinnen, Studien und Institutionen &mdash;
+					von Connell und Bourdieu über Gruen, Chodorow, Meuser, Scholz
+					bis zu Böhnischs eigenen Südtiroler und Sächsischen Männerstudien.
 				</p>
 				<span class="card-meta">Autoren &middot; Studien &middot; Institutionen</span>
-			</div>
-			<span class="card-arrow">&rarr;</span>
-		</a>
-
-		<a href="/jungs-von-heute/reading" class="card card-reading">
-			<div class="card-icon">&#128214;</div>
-			<div class="card-content">
-				<h2>Weiterführende Literatur</h2>
-				<p>
-					Bücher die das Thema ergänzen, vertiefen oder widersprechen &mdash;
-					für ein vollständiges Bild der Debatte.
-				</p>
-				<span class="card-meta">Mehrere Kategorien &middot; DE &amp; EN</span>
 			</div>
 			<span class="card-arrow">&rarr;</span>
 		</a>
 	</main>
 
 	<footer class="app-footer">
-		<p>Interaktive Analyse zu: <em>Jungs von heute, Männer von morgen</em></p>
+		<p>Interaktive Analyse zu: <em>Männliche Sozialisation</em></p>
 	</footer>
 </div>
 
@@ -85,11 +79,7 @@
 		flex-direction: column;
 	}
 
-	/* Hero */
-	.hero {
-		padding: 60px 0 40px;
-		text-align: center;
-	}
+	.hero { padding: 60px 0 40px; text-align: center; }
 
 	.back-link {
 		color: #60a5fa;
@@ -98,9 +88,7 @@
 		display: inline-block;
 		margin-bottom: 20px;
 	}
-	.back-link:hover {
-		color: #93c5fd;
-	}
+	.back-link:hover { color: #93c5fd; }
 
 	.book-label {
 		font-size: 0.75rem;
@@ -113,11 +101,11 @@
 	.hero h1 {
 		font-size: 2.8rem;
 		font-weight: 800;
-		background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+		background: linear-gradient(135deg, #fcd34d, #fbbf24, #f59e0b);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
-		margin: 0 0 10px;
+		margin: 0 0 6px;
 		line-height: 1.15;
 	}
 
@@ -138,11 +126,11 @@
 		color: #94a3b8;
 		font-size: 0.95rem;
 		line-height: 1.6;
-		max-width: 560px;
+		max-width: 640px;
 		margin: 0 auto;
 	}
+	.description em { color: #fde68a; font-style: italic; }
 
-	/* Cards */
 	.cards {
 		display: flex;
 		flex-direction: column;
@@ -170,9 +158,8 @@
 		border-color: rgba(148, 163, 184, 0.25);
 	}
 
-	.card-evidence { --card-color: #8b5cf6; }
-	.card-refs { --card-color: #10b981; }
-	.card-reading { --card-color: #f59e0b; }
+	.card-evidence { --card-color: #fbbf24; }
+	.card-refs { --card-color: #f59e0b; }
 
 	.card-icon {
 		font-size: 2.2rem;
@@ -186,9 +173,7 @@
 		border-radius: 12px;
 	}
 
-	.card-content {
-		flex: 1;
-	}
+	.card-content { flex: 1; }
 
 	.card-content h2 {
 		font-size: 1.2rem;
@@ -223,7 +208,6 @@
 		transform: translateX(4px);
 	}
 
-	/* Footer */
 	.app-footer {
 		text-align: center;
 		padding: 30px 0;
@@ -232,28 +216,13 @@
 		border-top: 1px solid rgba(148, 163, 184, 0.1);
 		margin-top: 40px;
 	}
-	.app-footer em {
-		color: #64748b;
-	}
+	.app-footer em { color: #64748b; }
 
 	@media (max-width: 640px) {
-		.hero h1 {
-			font-size: 1.8rem;
-		}
-		.hero {
-			padding: 40px 0 24px;
-		}
-		.card {
-			padding: 18px 16px;
-			gap: 14px;
-		}
-		.card-icon {
-			width: 44px;
-			height: 44px;
-			font-size: 1.6rem;
-		}
-		.card-content h2 {
-			font-size: 1.05rem;
-		}
+		.hero h1 { font-size: 1.8rem; }
+		.hero { padding: 40px 0 24px; }
+		.card { padding: 18px 16px; gap: 14px; }
+		.card-icon { width: 44px; height: 44px; font-size: 1.6rem; }
+		.card-content h2 { font-size: 1.05rem; }
 	}
 </style>

@@ -288,6 +288,153 @@ export const evidenceItems: EvidenceItem[] = [
 		detail:
 			'Man kann nicht "testen" ob Caring Masculinities "richtig" sind — es ist ein Wertvorschlag, ' +
 			'kein wissenschaftlicher Befund. Das Buch stellt dies angemessen als konzeptionellen Rahmen dar.'
+	},
+
+	// ============ NEW GREEN ============
+	{
+		claim: 'Frauen weinen bis zu 64 Mal pro Jahr, Männer maximal 17 Mal. Der Unterschied entsteht erst nach der Kindheit — Kleinkinder weinen geschlechtsunabhängig gleich viel.',
+		source: 'Entwicklungspsychologische Studien (kulturübergreifend repliziert).',
+		pages: 'S. 26-27',
+		centrality: 'supporting',
+		status: 'green',
+		statusLabel: 'Repliziert und kulturübergreifend dokumentiert',
+		detail:
+			'Repliziert cross-kulturell; das entwicklungspsychologische Timing (Divergenz erst nach der Kindheit) ' +
+			'belegt die Rolle der Sozialisation. Die Zahlen stammen aus mehreren unabhängigen Studien.'
+	},
+	{
+		claim: 'Niobe Way: Jungen beschreiben mit 13-14 tiefe, liebevolle Freundschaften, die mit 17 an "Boy Culture"-Druck sterben.',
+		source: 'Way (2011), "Deep Secrets". Längsschnitt-Qualitativstudie.',
+		pages: 'S. 101-102',
+		centrality: 'supporting',
+		status: 'green',
+		statusLabel: 'Methodisch solide Längsschnittstudie mit großer Stichprobe',
+		detail:
+			'Longitudinale qualitative Studie mit großer Stichprobe. Konsistent mit quantitativen ' +
+			'Freundschaftsdaten, die eine männliche Freundschaftsrezession zeigen.'
+	},
+	{
+		claim: '15% der Männer haben keinen einzigen engen Freund — 1990 waren es nur 3%.',
+		source: 'Survey of American Life / AEI.',
+		pages: 'S. 105',
+		centrality: 'supporting',
+		status: 'green',
+		statusLabel: 'Große repräsentative Umfrage, replizierter Trend',
+		detail:
+			'Große repräsentative Umfrage, replizierter Trend über mehrere Datenquellen hinweg.'
+	},
+	{
+		claim: '65% der Jugendlichen interessieren sich für soziale Berufe, aber der Männeranteil liegt nur bei ~20%. Väter bremsen Care-Karrieren stärker als Mütter.',
+		source: 'BMFSFJ (2024), Men in Care Studie.',
+		pages: 'S. 209-210',
+		centrality: 'supporting',
+		status: 'green',
+		statusLabel: 'Regierungsbeauftragte repräsentative Studie',
+		detail: 'Government-commissioned representative study.'
+	},
+	{
+		claim: 'Junge Frauen werden progressiver, junge Männer wählen zunehmend rechts — ein wachsender politischer Gender Gap in allen Demokratien.',
+		source: 'Financial Times Analyse; europäische Wahldaten.',
+		pages: 'S. 213-214',
+		centrality: 'supporting',
+		status: 'green',
+		statusLabel: 'Querschnittliche Wahldatenanalyse über OECD-Länder',
+		detail:
+			'Cross-nationale Wahldatenanalyse, die ein konsistentes Muster über OECD-Länder zeigt.'
+	},
+	{
+		claim: 'Kinder verstehen "Schülerinnen und Schüler" (92%) besser als das generische Maskulinum "Schüler" (68%).',
+		source: 'KiKa-Studie (Kinderkanal).',
+		pages: 'S. 220',
+		centrality: 'minor',
+		status: 'green',
+		statusLabel: 'Experimentelle Studie mit Kindern als Teilnehmern',
+		detail: 'Experimentelle Studie mit Kindern als Teilnehmern.'
+	},
+	{
+		claim: 'Gender Care Gap bei Kindern (10-17) beträgt ~41,5% und hat sich seit 2012 kaum verändert. Jungen machen WENIGER Hausarbeit als vor zehn Jahren.',
+		source: 'Destatis, Zeitverwendungsstudie (2022).',
+		pages: 'S. 135-137',
+		centrality: 'supporting',
+		status: 'green',
+		statusLabel: 'Amtliche Regierungsstatistik, repräsentative Stichprobe',
+		detail: 'Offizielle Zeitverwendungserhebung des Statistischen Bundesamts, repräsentative Stichprobe.'
+	},
+
+	// ============ NEW YELLOW ============
+	{
+		claim: 'Testosteron verursacht NICHT automatisch Aggression. Reimers-Studie (Hamburg, Fußballfans): T kann kooperatives Verhalten fördern.',
+		source: 'Reimers (2019), Hamburg-Studie.',
+		pages: 'S. 73-74',
+		centrality: 'supporting',
+		status: 'yellow',
+		statusLabel: 'Einzelstudie, aber wichtiges Korrektiv zur T=Aggression-Vereinfachung',
+		detail:
+			'Einzelstudie, aber sie korrigiert die weit verbreitete Vereinfachung. Konsistent mit breiterer ' +
+			'Endokrinologie, die zeigt, dass T sozialen Kontext verstärkt, nicht nur Aggression.'
+	},
+	{
+		claim: 'Jeder 5. Junge (9-16) sieht Andrew Tate als gutes Vorbild. Jeder 2. junge Vater (25-34) stimmt zu.',
+		source: 'Umfragedaten, zitiert im Buch.',
+		pages: 'S. 41-42',
+		centrality: 'supporting',
+		status: 'yellow',
+		statusLabel: 'Umfragedaten, Methodik unklar',
+		detail:
+			'Umfragedaten — Methodik und Stichprobendetails aus der Buchzitation unklar. Aber breit konsistent ' +
+			'mit anderen Erhebungen zur Reichweite Tates.'
+	},
+	{
+		claim: 'Drei-Ampeln-Modell für Konsens: Kopf, Bauchgefühl und Körper müssen alle "grün" zeigen.',
+		source: 'Magdalena Zidi (Sexualpädagogin).',
+		pages: 'S. 118-119',
+		centrality: 'minor',
+		status: 'yellow',
+		statusLabel: 'Pädagogisches Modell, keine empirische Validierung',
+		detail:
+			'Pädagogisches Modell, nicht empirisch validiert als solches, aber aufgebaut auf etablierter Konsensforschung.'
+	},
+	{
+		claim: 'Japanische Eltern nehmen an, Kinder seien zu jung um es besser zu wissen. Deutsche Eltern nehmen feindliche Absicht an — was zu mehr Aggression bei deutschen Kindern führt.',
+		source: 'Trommsdorff & Kornadt, kulturvergleichende Studie.',
+		pages: 'S. 153-154',
+		centrality: 'supporting',
+		status: 'yellow',
+		statusLabel: 'Cross-cultural comparison, replicated pattern but causal direction debated',
+		detail:
+			'Etablierte kulturvergleichende Forschung, aber die Kausalrichtung (Eltern-Attribution → Kinder-Aggression) ' +
+			'ist eine Vereinfachung. Kulturelle Unterschiede in Aggression haben auch genetische und gesellschaftliche Komponenten.'
+	},
+	{
+		claim: 'Häufigster Grund von Jungen für Nicht-Sex: "Habe noch nicht die richtige Person gefunden."',
+		source: 'BZgA (Bundeszentrale für gesundheitliche Aufklärung), Jugendsexualität 9. Welle.',
+		pages: 'S. 121',
+		centrality: 'minor',
+		status: 'yellow',
+		statusLabel: 'Representative Befragung, aber Selbstauskünfte',
+		detail: 'Große staatliche Jugendsexualitätsbefragung, aber Selbstauskunftsdaten.'
+	},
+	{
+		claim: 'Mütter entwickeln nach der Geburt mehr psychische Gesundheitsprobleme als Väter.',
+		source: 'RWI Leibniz-Institut (2024).',
+		pages: 'S. 146',
+		centrality: 'minor',
+		status: 'yellow',
+		statusLabel: 'Aktuelle Studie, Kausalrichtung diskutiert',
+		detail:
+			'Aktuelle Studie, aber psychische Gesundheitsunterschiede könnten auch auf vorbestehende Faktoren zurückgehen, ' +
+			'nicht nur auf die Auswirkungen der Elternschaft.'
+	},
+	{
+		claim: 'Care-Praktiken EXISTIEREN in Jungenfreundschaften, werden aber von Forschern systematisch übersehen.',
+		source: 'Leja & Schwarzenbacher, GISo-Projekt.',
+		pages: 'S. 107-108',
+		centrality: 'supporting',
+		status: 'yellow',
+		statusLabel: 'Qualitative Studie, wichtige Perspektive aber kleine Stichprobe',
+		detail:
+			'Qualitative Forschung, die das Narrativ in Frage stellt, dass Jungen relationale Fürsorge fehlt. ' +
+			'Kleine Stichprobe, aber wertvolles Korrektiv.'
 	}
 ];
 
@@ -303,10 +450,10 @@ export const auditSummary = {
 	criticalRed: evidenceItems.filter((e) => e.status === 'red' && e.centrality === 'critical').length,
 	criticalYellow: evidenceItems.filter((e) => e.status === 'yellow' && e.centrality === 'critical').length,
 	verdict:
-		'Das Buch baut auf einer Mischung aus solider Evidenz (Resilienzforschung, amtliche Statistiken, ' +
-		'Längsschnittstudien) und methodisch wackligen Fundamenten (Pollacks "Boy Code", Baby-X, ' +
-		'überstrapazierte Neuroplastizitäts-These). Die tragenden Theorien (Connell, Böhnisch, Chodorow) ' +
-		'sind soziologische Rahmenwerke, die sich dem empirischen Test grundsätzlich entziehen. ' +
-		'Die größte Schwäche: Biologische Gegenpositionen werden nicht diskutiert, wodurch ' +
+		'Das Buch baut auf einer Mischung aus solider Evidenz (Resilienzforschung, amtliche Statistiken, Längsschnittstudien, Freundschaftsforschung) ' +
+		'und methodisch wackligen Fundamenten (Pollacks "Boy Code", Baby-X, überstrapazierte Neuroplastizitäts-These). ' +
+		'Neue Stärken zeigen sich bei den empirisch gut belegten Themen Freundschaftskrise, Care Gap, Radikalisierung und Medieneffekte. ' +
+		'Die tragenden Theorien (Connell, Böhnisch, Chodorow) sind soziologische Rahmenwerke, die sich dem empirischen Test grundsätzlich entziehen. ' +
+		'Die größte Schwäche bleibt: Biologische Gegenpositionen werden nicht diskutiert, wodurch ' +
 		'die Darstellung einseitiger wirkt als der Forschungsstand es rechtfertigt.'
 };

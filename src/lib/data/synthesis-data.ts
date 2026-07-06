@@ -22,6 +22,7 @@ export interface SynthNode {
 	externalSources: SynthSource[];
 	dependsOn: string[];
 	explanation: string;
+	isNewSource?: boolean;
 }
 
 export const domains = [
@@ -264,6 +265,46 @@ export const synthNodes: SynthNode[] = [
 		explanation: 'DCU TikTok study (Regehr 2024), BKA data. The pipeline exploits unmet needs for purpose and community.'
 	},
 
+	// ── Boy Friendships ──────────────────────────────────
+	{
+		id: 'friendship-crisis-real',
+		label: 'Boy Friendships Die in Adolescence',
+		claim: 'Boys describe deep, intimate friendships at 13-14 that systematically erode by 17 due to masculine norm pressure. Male friendship recession: 15% of men report zero close friends, up from 3% in 1990.',
+		tier: 'core', strength: 'green', domain: 'social',
+		sourceBooks: ['jvh', 'rc'],
+		externalSources: [
+			{ label: 'Way (2011) — Deep Secrets: Boys\' Friendships' },
+		],
+		dependsOn: ['boys-born-emotional', 'emotional-suppression-learned'],
+		explanation: 'Way\'s longitudinal qualitative research with large samples, confirmed by multiple representative surveys showing male friendship decline.',
+	},
+
+	// ── Care Gap ─────────────────────────────────────────
+	{
+		id: 'care-gap-children',
+		label: 'Gender Care Gap Starts in Childhood',
+		claim: 'The gender care gap among children (10-17) stands at ~41.5% and has barely changed since 2012. Boys do less housework than a decade ago.',
+		tier: 'core', strength: 'green', domain: 'society',
+		sourceBooks: ['jvh'],
+		externalSources: [
+			{ label: 'Destatis — Zeitverwendungsstudie (2022)' },
+		],
+		dependsOn: ['emotional-suppression-learned'],
+		explanation: 'Official German government time-use survey (Destatis 2022), representative sample, consistent pattern across multiple waves.',
+	},
+
+	// ── Political Gender Gap ─────────────────────────────
+	{
+		id: 'political-gender-gap',
+		label: 'Young Men Shifting Right Politically',
+		claim: 'Young women are becoming more progressive while young men shift right across democracies — a growing political gender gap visible in electoral data from Europe, US, and Asia.',
+		tier: 'core', strength: 'green', domain: 'society',
+		sourceBooks: ['jvh'],
+		externalSources: [],
+		dependsOn: ['radicalization-real', 'failure-to-launch'],
+		explanation: 'Cross-national electoral data analysis (Financial Times, European election data) showing consistent pattern across OECD countries.',
+	},
+
 	// ══════════════════════════════════════════════════════
 	// TIER: DERIVED — Suggestions from green evidence
 	// ══════════════════════════════════════════════════════
@@ -382,6 +423,46 @@ export const synthNodes: SynthNode[] = [
 		],
 		dependsOn: ['radicalization-real', 'boys-groups-hierarchical', 'failure-to-launch'],
 		explanation: 'If boys need hierarchy and purpose (Benenson, Geary) and algorithms exploit this (Regehr), the preventive move is to fill those needs first.'
+	},
+
+	// ── Consent Education ────────────────────────────────
+	{
+		id: 'consent-education-early',
+		label: 'Consent Education Before Smartphone Age',
+		claim: 'Consent education must begin before boys get smartphones, since first porn exposure is typically 12-15 and often involuntary. Framework: active, ongoing, shame-free conversations.',
+		tier: 'derived', strength: 'yellow', domain: 'society',
+		sourceBooks: ['jvh'],
+		externalSources: [
+			{ label: 'BZgA — Jugendsexualität Survey' },
+		],
+		dependsOn: ['radicalization-real', 'boys-problems-real'],
+		explanation: 'Derived from early porn exposure data (BZgA) and algorithm amplification research (DCU). The "three green traffic lights" model provides a practical framework.',
+	},
+
+	// ── Housework Socialization ──────────────────────────
+	{
+		id: 'housework-from-toddlerhood',
+		label: 'Housework Socialization From Toddlerhood',
+		claim: 'Start care labor education in toddlerhood (play kitchens, child tools). Specifically encourage sons toward traditionally "female" tasks. Create family cleaning schedules with negotiated standards.',
+		tier: 'derived', strength: 'yellow', domain: 'society',
+		sourceBooks: ['jvh'],
+		externalSources: [],
+		dependsOn: ['care-gap-children'],
+		explanation: 'Derived from care gap data (Destatis) and relationship research (Harvard 80-year study). Care work activates brain reward centers and extends lifespan.',
+	},
+
+	// ── Conflict & Intent Attribution ────────────────────
+	{
+		id: 'cultural-conflict-training',
+		label: 'Intent Attribution Shapes Aggression',
+		claim: 'Parents who assume hostile intent in children produce more aggressive children (German vs. Japanese parenting comparison). Teaching boys to argue well requires assuming ignorance, not malice.',
+		tier: 'derived', strength: 'yellow', domain: 'family',
+		sourceBooks: ['jvh'],
+		externalSources: [
+			{ label: 'Trommsdorff & Kornadt — Cross-cultural Parenting' },
+		],
+		dependsOn: ['harsh-discipline-backfires', 'aggression-reactive'],
+		explanation: 'Derived from Trommsdorff & Kornadt cross-cultural parenting research and aggression literature.',
 	},
 
 	// ══════════════════════════════════════════════════════
@@ -514,4 +595,425 @@ export const synthNodes: SynthNode[] = [
 		dependsOn: ['boys-problems-real'],
 		explanation: 'All 8 books are written from Western, middle-class perspectives. The immigrant paradox (Sax) hints at cultural variation but none addresses it systematically.'
 	},
+
+	// ── Care Professions ─────────────────────────────────
+	{
+		id: 'care-profession-pathways',
+		label: 'Pathways Into Care Professions for Boys',
+		claim: '65% of youth are interested in social professions but male share is only ~20%. Fathers discourage care careers more than mothers. Structural barriers (stigma, pay) compound socialization effects.',
+		tier: 'gap', strength: 'new', domain: 'identity',
+		sourceBooks: ['jvh'],
+		externalSources: [
+			{ label: 'BMFSFJ — Men in Care (2024)' },
+		],
+		dependsOn: ['narrative-identity-purpose', 'failure-to-launch'],
+		explanation: 'BMFSFJ Men in Care study (2024) provides the data. No book in the set except Dittmann addresses this. Connects to narrative identity and purpose.',
+	},
+
+	// ══════════════════════════════════════════════════════
+	// NEW SOURCE NODES — Claims from external research literature
+	// These form their own causal chains (Kausalketten)
+	// ══════════════════════════════════════════════════════
+
+	// ── Attachment chain ──────────────────────────────────
+	{
+		id: 'ext-attachment-theory',
+		label: 'Secure attachment predicts all outcomes',
+		claim: 'Secure attachment to at least one caregiver is the single strongest predictor of resilience, emotional regulation, and social competence. Meta-analysis of 100+ studies (Groh et al. 2017) shows attachment security at 12 months predicts social competence, behavioral problems, and emotional health across childhood.',
+		tier: 'core', strength: 'green', domain: 'family',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Bowlby (1969/1982) — Attachment Theory' },
+			{ label: 'Sroufe et al. (2005) — Minnesota 30-year longitudinal study' },
+			{ label: 'Groh et al. (2017) — Attachment and development meta-analysis' },
+		],
+		dependsOn: [],
+		explanation: 'The foundational framework that connects emotional development, parenting, and social outcomes. None of the 8 books names attachment theory explicitly, yet it undergirds all their claims about father involvement, emotional bonds, and resilience.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-attachment-exploration',
+		label: 'Secure base enables exploration and learning',
+		claim: 'Children with secure attachment explore more freely, take more cognitive risks, and learn more effectively. The "secure base" phenomenon: safety enables adventure. Insecurely attached boys are more likely to avoid challenges or react aggressively to failure.',
+		tier: 'core', strength: 'green', domain: 'family',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Bowlby (1969/1982) — Secure base concept' },
+			{ label: 'Ainsworth et al. (1978) — Strange Situation studies' },
+		],
+		dependsOn: ['ext-attachment-theory'],
+		explanation: 'The mechanism: attachment doesn\'t just make children feel good — it makes them braver learners. Connects attachment to education and risk-taking.',
+		isNewSource: true,
+	},
+
+	// ── Executive function chain ──────────────────────────
+	{
+		id: 'ext-ef-trainable',
+		label: 'Executive functions are highly trainable',
+		claim: 'Meta-analysis shows EF training (working memory, inhibitory control, cognitive flexibility) produces reliable improvements in children, with transfer to academic performance. Programs like Tools of the Mind show 0.5–1.0 SD improvements.',
+		tier: 'core', strength: 'green', domain: 'education',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Diamond (2012) — EF interventions meta-analysis' },
+			{ label: 'Diamond & Lee (2011) — Programs that improve EF' },
+		],
+		dependsOn: ['neural-plasticity'],
+		explanation: 'If boys\' EF matures later (from the 8 books) AND EF is trainable (Diamond), the intervention point is clear. None of the 8 books connects these two findings.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-ef-predicts-school',
+		label: 'EF predicts school success better than IQ',
+		claim: 'Executive function at age 5 is a stronger predictor of school readiness and academic achievement than IQ, SES, or prior knowledge. EF explains much of the gender gap in early school performance.',
+		tier: 'core', strength: 'green', domain: 'education',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Blair & Razza (2007) — EF and school readiness' },
+			{ label: 'Zelazo & Carlson (2012) — EF developmental cascades' },
+		],
+		dependsOn: ['ext-ef-trainable', 'boys-mature-slower'],
+		explanation: 'Connects the maturation gap (books) to the education gap (books) through a trainable mechanism (external research). The missing puzzle piece.',
+		isNewSource: true,
+	},
+
+	// ── Parenting chain ──────────────────────────────────
+	{
+		id: 'ext-authoritative-parenting',
+		label: 'Authoritative parenting is universally superior',
+		claim: 'Five decades of research across cultures show authoritative parenting (high warmth + high structure) produces the best outcomes. Authoritarian (harsh) and permissive (lax) both produce worse results. Effect sizes are large (d > 0.5).',
+		tier: 'core', strength: 'green', domain: 'family',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Baumrind (1991) — Parenting styles framework' },
+			{ label: 'Steinberg et al. (1994) — Cross-ethnic replication' },
+		],
+		dependsOn: [],
+		explanation: 'Baumrind\'s parenting styles framework is the most replicated finding in developmental psychology. Provides the theoretical backing for what Kindlon/Thompson observe clinically.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-emotion-coaching',
+		label: 'Emotion coaching produces emotionally competent children',
+		claim: 'Gottman\'s longitudinal research shows parents who notice, validate, label emotions, and help problem-solve produce children with better emotional regulation, health, academics, and peer relationships. Effect is stronger for boys.',
+		tier: 'core', strength: 'green', domain: 'emotion',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Gottman et al. (1996) — Emotion coaching longitudinal study' },
+			{ label: 'Brackett (2019) — RULER emotion literacy program' },
+		],
+		dependsOn: ['ext-authoritative-parenting', 'ext-attachment-theory'],
+		explanation: 'The HOW of emotional development. While the 8 books say "boys need emotional literacy," Gottman provides the validated method.',
+		isNewSource: true,
+	},
+
+	// ── Physical activity chain ──────────────────────────
+	{
+		id: 'ext-activity-brain',
+		label: 'Physical activity directly improves brain function',
+		claim: 'Children who are physically fit show larger hippocampal volumes, better attentional control, and superior academic performance. Meta-analysis of 59 studies shows moderate-to-large effects (d = 0.32–0.57) of physical activity on cognition.',
+		tier: 'core', strength: 'green', domain: 'physical',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Hillman et al. (2008) — Fitness and brain function in children' },
+			{ label: 'Donnelly et al. (2016) — Physical activity and cognition meta-analysis' },
+		],
+		dependsOn: [],
+		explanation: 'Not just "exercise is healthy" — physical activity literally builds the brain structures boys need for self-regulation and learning.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-team-sports-depression',
+		label: 'Team sports specifically prevent depression',
+		claim: 'Participation in team sports (not solo exercise) significantly reduces depression risk in adolescent boys. The combination of physical activity + social belonging + structured hierarchy makes team sports uniquely protective.',
+		tier: 'derived', strength: 'yellow', domain: 'physical',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Eggert et al. (2015) — Team sports and depression prevention' },
+			{ label: 'Bidzan-Bluma & Lipowska (2018) — Physical activity and EF' },
+		],
+		dependsOn: ['ext-activity-brain', 'boys-groups-hierarchical'],
+		explanation: 'Connects the physical (exercise improves brain) with the social (boys thrive in teams) to explain why team sports are uniquely therapeutic for boys.',
+		isNewSource: true,
+	},
+
+	// ── Play chain ──────────────────────────────────────
+	{
+		id: 'ext-play-decline',
+		label: 'Decline of play correlates with psychopathology rise',
+		claim: 'Over the past 60 years, children\'s free play has declined dramatically. Over the same period, child/adolescent anxiety, depression, and suicide have risen steadily. The causal mechanism (play builds coping skills) is plausible and supported.',
+		tier: 'core', strength: 'green', domain: 'physical',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Gray (2011) — The decline of play and rise of psychopathology' },
+			{ label: 'Gray (2013) — Free to Learn' },
+		],
+		dependsOn: [],
+		explanation: 'A macro-level finding that frames individual observations about boys\' play needs. When play disappears, boys lose their primary developmental laboratory.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-risky-play-courage',
+		label: 'Risky play builds courage (anti-phobic effect)',
+		claim: 'Children who engage in age-appropriate risky play (heights, speed, rough-and-tumble, exploring alone) develop lower anxiety and fewer phobias. The evolutionary function of thrilling play is to inoculate against fear.',
+		tier: 'core', strength: 'green', domain: 'physical',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Sandseter & Kennair (2011) — Risky play and anti-phobic effects' },
+		],
+		dependsOn: ['ext-play-decline', 'risk-taking-biological'],
+		explanation: 'The mechanism: play fighting and risky play serve the same function as exposure therapy — graduated doses of fear build mastery and reduce anxiety.',
+		isNewSource: true,
+	},
+
+	// ── Social chain ────────────────────────────────────
+	{
+		id: 'ext-boys-lose-friendships',
+		label: 'Boys\' deep friendships are lost to culture',
+		claim: 'Way\'s longitudinal interviews reveal boys in early adolescence form deep, emotionally intimate friendships — then lose them by late adolescence under cultural pressure. Boys describe this loss with grief. The stoicism is acquired, not desired.',
+		tier: 'core', strength: 'green', domain: 'social',
+		sourceBooks: ['jvh'],
+		externalSources: [
+			{ label: 'Way (2011) — Deep Secrets: Boys\' Friendships' },
+		],
+		dependsOn: ['boys-shoulder-to-shoulder', 'emotional-suppression-learned'],
+		explanation: 'Way\'s qualitative data fills a gap the 8 books don\'t address: boys WANT deep friendships and grieve their loss. This is not biological — it\'s cultural destruction of a natural capacity.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-prosocial-status',
+		label: 'Prosocial strategies achieve high peer status',
+		claim: 'Hawley\'s research shows highest-status children use prosocial strategies (resource sharing, alliance building) more than coercive ones. Purely prosocial children outrank purely coercive ones. Status through competence and generosity is possible.',
+		tier: 'derived', strength: 'yellow', domain: 'social',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Hawley (2014) — Prosocial and coercive status strategies' },
+			{ label: 'Faris & Felmlee (2011) — Status and aggression in schools' },
+		],
+		dependsOn: ['boys-groups-hierarchical', 'aggression-reactive'],
+		explanation: 'Challenges the assumption that status requires domination. Shows boys CAN achieve high rank through competence and generosity — but need explicit coaching.',
+		isNewSource: true,
+	},
+
+	// ── Identity chain ──────────────────────────────────
+	{
+		id: 'ext-narrative-identity',
+		label: 'Boys build identity through stories of competence',
+		claim: 'McAdams\' narrative identity theory shows adolescents construct their sense of self through stories of agency, competence, and contribution. Boys who lack positive narratives adopt available ones — manosphere, gang identity, or nihilism.',
+		tier: 'derived', strength: 'yellow', domain: 'identity',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'McAdams (2001) — Narrative identity theory' },
+			{ label: 'Arnett (2014) — Emerging adulthood' },
+		],
+		dependsOn: ['failure-to-launch'],
+		explanation: 'The theoretical framework for why purpose and meaning matter. Without it, the "failure to launch" phenomenon has no solution.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-mentorship-outcomes',
+		label: 'Structured mentorship transforms at-risk boys',
+		claim: 'Meta-analyses show structured mentoring programs reduce delinquency, improve academic outcomes, and build positive identity in at-risk boys. Key ingredients: consistent relationship, shared activity, and narrative scaffolding.',
+		tier: 'derived', strength: 'yellow', domain: 'identity',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Kidd et al. (2018) — Mentorship outcomes for at-risk boys' },
+			{ label: 'DuBois et al. (2011) — Mentoring meta-analysis' },
+		],
+		dependsOn: ['ext-narrative-identity', 'father-son-gulf'],
+		explanation: 'When fathers are emotionally absent and boys need narrative identity, structured mentorship fills both gaps.',
+		isNewSource: true,
+	},
+
+	// ── Media/society chain ─────────────────────────────
+	{
+		id: 'ext-social-media-harm',
+		label: 'Social media causally harms teen mental health',
+		claim: 'Converging evidence from experiments, natural experiments, and longitudinal studies shows social media use causally increases anxiety, depression, and loneliness in adolescents. Boys are harmed through social comparison, algorithmic radicalization, and displacement of real-world activity.',
+		tier: 'core', strength: 'green', domain: 'society',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Haidt & Twenge (2023) — Social media and teen mental health' },
+			{ label: 'Haidt (2024) — The Anxious Generation' },
+		],
+		dependsOn: ['boys-problems-real'],
+		explanation: 'Moves beyond correlation to causal evidence. Establishes that reducing screen time is not just prudential but medically indicated.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-inoculation-effective',
+		label: 'Inoculation training prevents radicalization',
+		claim: 'Psychological inoculation — exposing people to weakened forms of misinformation with refutation — produces lasting resistance to manipulation. RCTs show 20–30% improvement in detecting misinformation. Scalable via games and curricula.',
+		tier: 'derived', strength: 'yellow', domain: 'society',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Roozenbeek & van der Linden (2019) — Inoculation theory' },
+			{ label: 'Livingstone & Helsper (2010) — Digital literacy frameworks' },
+		],
+		dependsOn: ['ext-social-media-harm', 'radicalization-real'],
+		explanation: 'The actionable solution to the radicalization pipeline. Instead of banning screens (impractical), inoculate boys against manipulation (effective and scalable).',
+		isNewSource: true,
+	},
+
+	// ── Clinical chain ──────────────────────────────────
+	{
+		id: 'ext-male-depression-scale',
+		label: 'Male-specific depression scales double detection',
+		claim: 'Rice et al.\'s Male Depression Risk Scale measures externalizing symptoms (anger, aggression, risk-taking, substance use) that standard instruments miss. Using it doubles detection rates in young men.',
+		tier: 'derived', strength: 'yellow', domain: 'emotion',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Rice et al. (2013) — Male Depression Risk Scale' },
+			{ label: 'Pollack (1998) — Real Boys' },
+		],
+		dependsOn: ['hidden-depression'],
+		explanation: 'The clinical tool that the 8 books\' observation demands. If boy depression looks different (Kindlon), screening must look different (Rice).',
+		isNewSource: true,
+	},
+
+	// ── Education chain ─────────────────────────────────
+	{
+		id: 'ext-school-age-effect',
+		label: 'Later school entry improves long-term outcomes',
+		claim: 'Dee & Sievertsen\'s quasi-experimental study (QJE) shows children who start school one year later have significantly better self-regulation at age 7 and 11. The effect is larger for boys. Starting early creates artificial disability.',
+		tier: 'core', strength: 'green', domain: 'education',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Dee & Sievertsen (2018) — School starting age effects (QJE)' },
+		],
+		dependsOn: ['boys-mature-slower'],
+		explanation: 'The strongest causal evidence for what the 8 books suggest: boys aren\'t ready at 5. A policy-level finding with clear action implications.',
+		isNewSource: true,
+	},
+	{
+		id: 'ext-recess-restores-attention',
+		label: 'Recess restores attention, especially in boys',
+		claim: 'Pellegrini\'s classroom studies show recess breaks restore attentional capacity, with stronger effects for younger children and boys. Cutting recess to increase instruction time is counterproductive.',
+		tier: 'derived', strength: 'yellow', domain: 'education',
+		sourceBooks: [],
+		externalSources: [
+			{ label: 'Pellegrini & Bohn (2005) — Recess and attention' },
+		],
+		dependsOn: ['ext-school-age-effect', 'school-mismatch'],
+		explanation: 'If schools disadvantage boys by requiring sustained sitting (books) and breaks restore attention (Pellegrini), the intervention is obvious and cost-free.',
+		isNewSource: true,
+	},
 ];
+
+// ══════════════════════════════════════════════════════
+// SOURCE REGISTRY — All sources (books + external research)
+// ══════════════════════════════════════════════════════
+
+export interface SourceInfo {
+	id: string;
+	label: string;
+	type: 'book' | 'external';
+}
+
+export const allSources: SourceInfo[] = [
+	// Books
+	{ id: 'pb', label: 'Pink Brain Blue Brain (Eliot)', type: 'book' },
+	{ id: 'mf', label: 'Male/Female (Geary)', type: 'book' },
+	{ id: 'wgm', label: 'Why Gender Matters (Sax)', type: 'book' },
+	{ id: 'ba', label: 'Boys Adrift (Sax)', type: 'book' },
+	{ id: 'rc', label: 'Raising Cain (Kindlon & Thompson)', type: 'book' },
+	{ id: 'ww', label: 'Warriors & Worriers (Benenson)', type: 'book' },
+	{ id: 'jvh', label: 'Jungs von heute (Dittmann)', type: 'book' },
+	{ id: 'wb', label: 'Wonder of Boys (Gurian)', type: 'book' },
+	// External research
+	{ id: 'bowlby', label: 'Bowlby — Attachment Theory', type: 'external' },
+	{ id: 'sroufe', label: 'Sroufe — Minnesota 30-yr Study', type: 'external' },
+	{ id: 'groh', label: 'Groh — Attachment Meta-analysis', type: 'external' },
+	{ id: 'ainsworth', label: 'Ainsworth — Strange Situation', type: 'external' },
+	{ id: 'diamond', label: 'Diamond — EF Interventions', type: 'external' },
+	{ id: 'blair', label: 'Blair & Razza — EF & School', type: 'external' },
+	{ id: 'zelazo', label: 'Zelazo — EF Cascades', type: 'external' },
+	{ id: 'baumrind', label: 'Baumrind — Parenting Styles', type: 'external' },
+	{ id: 'gottman', label: 'Gottman — Emotion Coaching', type: 'external' },
+	{ id: 'brackett', label: 'Brackett — RULER Program', type: 'external' },
+	{ id: 'hillman', label: 'Hillman — Fitness & Brain', type: 'external' },
+	{ id: 'donnelly', label: 'Donnelly — Activity & Cognition', type: 'external' },
+	{ id: 'gray', label: 'Gray — Decline of Play', type: 'external' },
+	{ id: 'sandseter', label: 'Sandseter — Risky Play', type: 'external' },
+	{ id: 'way', label: 'Way — Deep Secrets', type: 'external' },
+	{ id: 'hawley', label: 'Hawley — Prosocial Status', type: 'external' },
+	{ id: 'faris', label: 'Faris — Status & Aggression', type: 'external' },
+	{ id: 'mcadams', label: 'McAdams — Narrative Identity', type: 'external' },
+	{ id: 'arnett', label: 'Arnett — Emerging Adulthood', type: 'external' },
+	{ id: 'haidt', label: 'Haidt — Anxious Generation', type: 'external' },
+	{ id: 'roozenbeek', label: 'Roozenbeek — Inoculation Theory', type: 'external' },
+	{ id: 'livingstone', label: 'Livingstone — Digital Literacy', type: 'external' },
+	{ id: 'rice', label: 'Rice — Male Depression Scale', type: 'external' },
+	{ id: 'pollack', label: 'Pollack — Real Boys', type: 'external' },
+	{ id: 'dee', label: 'Dee & Sievertsen — School Age (QJE)', type: 'external' },
+	{ id: 'pellegrini', label: 'Pellegrini — Recess & Attention', type: 'external' },
+	{ id: 'eggert', label: 'Eggert — Sports & Depression', type: 'external' },
+	{ id: 'kidd', label: 'Kidd — Mentorship Outcomes', type: 'external' },
+	{ id: 'dubois', label: 'DuBois — Mentoring Meta-analysis', type: 'external' },
+	{ id: 'lamb', label: 'Lamb — Father\'s Role', type: 'external' },
+	{ id: 'pleck', label: 'Pleck — Paternal Involvement', type: 'external' },
+	{ id: 'slavin', label: 'Slavin — Cooperative Learning', type: 'external' },
+	{ id: 'siegel', label: 'Siegel & Bryson — No-Drama Discipline', type: 'external' },
+	{ id: 'barkley', label: 'Barkley — ADHD & Self-Regulation', type: 'external' },
+	{ id: 'baron-cohen', label: 'Baron-Cohen — Systemizing Theory', type: 'external' },
+	{ id: 'garcia-coll', label: 'García Coll — Cultural Context', type: 'external' },
+	{ id: 'chetty', label: 'Chetty — Intergenerational Mobility', type: 'external' },
+	{ id: 'rosenberg', label: 'Rosenberg — NVC', type: 'external' },
+	{ id: 'marantz', label: 'Marantz — Online Radicalization', type: 'external' },
+	{ id: 'yeager', label: 'Yeager — Anti-Bullying', type: 'external' },
+	{ id: 'way-deep-secrets', label: 'Way — Deep Secrets (2011)', type: 'external' },
+	{ id: 'destatis-zeit', label: 'Destatis — Zeitverwendungsstudie (2022)', type: 'external' },
+	{ id: 'bmfsfj-mic', label: 'BMFSFJ — Men in Care (2024)', type: 'external' },
+	{ id: 'trommsdorff', label: 'Trommsdorff & Kornadt — Cross-cultural Parenting', type: 'external' },
+	{ id: 'reimers', label: 'Reimers — Testosterone & Cooperation (2019)', type: 'external' },
+	{ id: 'bzga', label: 'BZgA — Jugendsexualität Survey', type: 'external' },
+];
+
+/** Maps external source IDs to the synthesis node IDs they contribute to */
+export const sourceToNodes: Record<string, string[]> = {
+	'bowlby': ['ext-attachment-theory', 'ext-attachment-exploration', 'secure-attachment-foundation'],
+	'sroufe': ['ext-attachment-theory', 'secure-attachment-foundation'],
+	'groh': ['ext-attachment-theory', 'secure-attachment-foundation'],
+	'ainsworth': ['ext-attachment-exploration'],
+	'diamond': ['ext-ef-trainable', 'executive-function-scaffolding'],
+	'blair': ['ext-ef-predicts-school', 'executive-function-scaffolding'],
+	'zelazo': ['ext-ef-predicts-school', 'executive-function-scaffolding'],
+	'baumrind': ['ext-authoritative-parenting', 'discipline-through-connection', 'cross-cultural-adaptation'],
+	'gottman': ['ext-emotion-coaching', 'teach-emotional-vocabulary'],
+	'brackett': ['ext-emotion-coaching', 'teach-emotional-vocabulary', 'emotional-literacy-not-vulnerability'],
+	'hillman': ['ext-activity-brain', 'physical-activity-regulates-emotion'],
+	'donnelly': ['ext-activity-brain', 'activity-based-learning'],
+	'gray': ['ext-play-decline', 'allow-managed-risk'],
+	'sandseter': ['ext-risky-play-courage', 'allow-managed-risk'],
+	'way': ['ext-boys-lose-friendships', 'emotional-literacy-not-vulnerability'],
+	'hawley': ['ext-prosocial-status', 'peer-status-without-cruelty'],
+	'faris': ['ext-prosocial-status', 'peer-status-without-cruelty'],
+	'mcadams': ['ext-narrative-identity', 'narrative-identity-purpose'],
+	'arnett': ['ext-narrative-identity', 'narrative-identity-purpose'],
+	'haidt': ['ext-social-media-harm', 'counter-radicalization-belonging', 'media-literacy-inoculation'],
+	'roozenbeek': ['ext-inoculation-effective', 'media-literacy-inoculation'],
+	'livingstone': ['ext-inoculation-effective', 'media-literacy-inoculation'],
+	'rice': ['ext-male-depression-scale', 'screen-depression-differently'],
+	'pollack': ['ext-male-depression-scale', 'screen-depression-differently'],
+	'dee': ['ext-school-age-effect', 'delay-academics'],
+	'pellegrini': ['ext-recess-restores-attention', 'activity-based-learning'],
+	'eggert': ['ext-team-sports-depression', 'physical-activity-regulates-emotion'],
+	'kidd': ['ext-mentorship-outcomes', 'narrative-identity-purpose'],
+	'dubois': ['ext-mentorship-outcomes'],
+	'lamb': ['fathers-must-engage-emotionally'],
+	'pleck': ['fathers-must-engage-emotionally'],
+	'slavin': ['leverage-group-dynamics'],
+	'siegel': ['discipline-through-connection'],
+	'barkley': ['neurodiversity-not-pathology'],
+	'baron-cohen': ['neurodiversity-not-pathology'],
+	'garcia-coll': ['cross-cultural-adaptation'],
+	'chetty': ['cross-cultural-adaptation'],
+	'rosenberg': ['emotional-literacy-not-vulnerability'],
+	'marantz': ['counter-radicalization-belonging'],
+	'yeager': ['peer-status-without-cruelty'],
+	'way-deep-secrets': ['friendship-crisis-real', 'ext-boys-lose-friendships'],
+	'destatis-zeit': ['care-gap-children'],
+	'bmfsfj-mic': ['care-profession-pathways'],
+	'trommsdorff': ['cultural-conflict-training'],
+	'reimers': ['testosterone-complex'],
+	'bzga': ['consent-education-early'],
+};

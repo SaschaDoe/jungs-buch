@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { synthNodes, domains, type SynthNode } from '$lib/data/synthesis-data';
+	import { synthNodes, domains, allSources, sourceToNodes, type SynthNode } from '$lib/data/synthesis-data';
 	import { books } from '$lib/data/cross-book-data';
 
 	let graphEl: HTMLDivElement;
@@ -11,6 +11,7 @@
 	let tooltipX = $state(0);
 	let tooltipY = $state(0);
 	let filterTier = $state<string>('all');
+	let selectedSource = $state<string>('');
 
 	const tierColors = {
 		core: '#10b981',
@@ -40,16 +41,24 @@
 		return books.find(b => b.id === id)?.shortTitle || id;
 	}
 
-	function applyFilter() {
+	function applyFilters() {
 		if (!cy) return;
-		cy.elements().removeClass('filtered-out');
+		cy.elements().removeClass('filtered-out dimmed active source-highlighted selected-node connected');
+		selectedNode = null;
+
+		// Step 1: Tier filter (hides nodes)
 		if (filterTier !== 'all') {
-			// Show only selected tier + its dependencies
 			const showIds = new Set<string>();
 			for (const n of synthNodes) {
-				if (n.tier === filterTier) showIds.add(n.id);
-				// In 'derived' filter, also show core (foundations)
-				if (filterTier === 'derived' && (n.tier === 'core' || n.tier === 'derived')) showIds.add(n.id);
+				if (filterTier === 'external') {
+					if (n.isNewSource) showIds.add(n.id);
+				} else if (filterTier === 'core') {
+					if (n.tier === 'core') showIds.add(n.id);
+				} else if (filterTier === 'derived') {
+					if (n.tier === 'core' || n.tier === 'derived') showIds.add(n.id);
+				} else if (filterTier === 'gap') {
+					if (n.tier === 'gap') showIds.add(n.id);
+				}
 			}
 			cy.nodes().forEach((n: any) => {
 				if (!showIds.has(n.id())) n.addClass('filtered-out');
@@ -57,6 +66,34 @@
 			cy.edges().forEach((e: any) => {
 				if (!showIds.has(e.source().id()) || !showIds.has(e.target().id())) e.addClass('filtered-out');
 			});
+		}
+
+		// Step 2: Source filter (highlights/dims nodes)
+		if (selectedSource) {
+			const src = allSources.find(s => s.id === selectedSource);
+			if (src) {
+				let nodeIds: Set<string>;
+				if (src.type === 'book') {
+					nodeIds = new Set(synthNodes.filter(n => n.sourceBooks.includes(selectedSource)).map(n => n.id));
+				} else {
+					nodeIds = new Set(sourceToNodes[selectedSource] || []);
+				}
+
+				cy.nodes().filter((n: any) => !n.hasClass('filtered-out')).forEach((n: any) => {
+					if (nodeIds.has(n.id())) {
+						n.addClass('source-highlighted');
+					} else {
+						n.addClass('dimmed');
+					}
+				});
+				cy.edges().filter((e: any) => !e.hasClass('filtered-out')).forEach((e: any) => {
+					if (nodeIds.has(e.source().id()) && nodeIds.has(e.target().id())) {
+						e.addClass('active');
+					} else {
+						e.addClass('dimmed');
+					}
+				});
+			}
 		}
 	}
 
@@ -72,8 +109,8 @@
 		const gapNodes = synthNodes.filter(n => n.tier === 'gap');
 
 		const centerX = 0, centerY = 0;
-		const derivedRadius = 1200;
-		const gapRadius = 1800;
+		const derivedRadius = 1500;
+		const gapRadius = 2200;
 
 		// Core nodes: fill the center area organically (not a perfect circle)
 		function scatteredDisk(items: SynthNode[], maxRadius: number) {
@@ -104,7 +141,7 @@
 		}
 
 		const posMap = new Map<string, { x: number; y: number }>();
-		scatteredDisk(coreNodes, 700).forEach((v, k) => posMap.set(k, v));
+		scatteredDisk(coreNodes, 900).forEach((v, k) => posMap.set(k, v));
 		circlePositions(derivedNodes, derivedRadius).forEach((v, k) => posMap.set(k, v));
 		circlePositions(gapNodes, gapRadius).forEach((v, k) => posMap.set(k, v));
 
@@ -197,6 +234,10 @@
 					style: { 'opacity': 1, 'z-index': 50 }
 				},
 				{
+					selector: 'node.source-highlighted',
+					style: { 'border-width': 5, 'opacity': 1, 'z-index': 100, 'border-color': '#60a5fa' }
+				},
+				{
 					selector: '.filtered-out',
 					style: { 'display': 'none' as any }
 				}
@@ -219,7 +260,8 @@
 			const bookList = sn.sourceBooks.length > 0
 				? sn.sourceBooks.map(getBookName).join(', ')
 				: 'External research';
-			tooltipContent = `<span style="color:${tierColors[sn.tier]};font-weight:800">${tierLabels[sn.tier]}</span><br/><strong>${sn.label}</strong><br/><span style="color:${dom?.color || '#64748b'}">${dom?.label || sn.domain}</span><br/><span style="color:#94a3b8">${bookList}</span>`;
+			const newBadge = sn.isNewSource ? '<br/><span style="color:#60a5fa;font-size:0.7rem">NEW SOURCE</span>' : '';
+			tooltipContent = `<span style="color:${tierColors[sn.tier]};font-weight:800">${tierLabels[sn.tier]}</span>${newBadge}<br/><strong>${sn.label}</strong><br/><span style="color:${dom?.color || '#64748b'}">${dom?.label || sn.domain}</span><br/><span style="color:#94a3b8">${bookList}</span>`;
 			tooltipX = e.clientX;
 			tooltipY = e.clientY - 12;
 			tooltipVisible = true;
@@ -235,9 +277,10 @@
 			const sn = synthNodes.find(n => n.id === node.id());
 			if (!sn) return;
 			selectedNode = sn;
+			selectedSource = '';
 
 			// Highlight connected subgraph
-			cy.elements().removeClass('selected-node connected dimmed active');
+			cy.elements().removeClass('selected-node connected dimmed active source-highlighted');
 			node.addClass('selected-node');
 
 			// Find all connected nodes (upstream and downstream)
@@ -281,7 +324,8 @@
 		cy.on('tap', (evt: any) => {
 			if (evt.target === cy) {
 				selectedNode = null;
-				cy.elements().removeClass('selected-node connected dimmed active');
+				selectedSource = '';
+				cy.elements().removeClass('selected-node connected dimmed active source-highlighted');
 			}
 		});
 
@@ -290,7 +334,7 @@
 
 	function clearSelection() {
 		selectedNode = null;
-		cy?.elements().removeClass('selected-node connected dimmed active');
+		cy?.elements().removeClass('selected-node connected dimmed active source-highlighted');
 	}
 
 	function handlePageClick(e: MouseEvent) {
@@ -319,12 +363,13 @@
 			<div class="nav-links">
 				<a href="/" class="back-link">&larr; Hauptseite</a>
 				<a href="/kausalpfade" class="back-link">Causal Paths</a>
+				<a href="/outline" class="back-link">Book Outline</a>
 			</div>
 			<p class="book-label">Synthesis</p>
 			<h1>The Perfect Book on Raising Boys</h1>
 			<p class="subtitle">
 				What would a book look like that only includes well-evidenced claims?
-				Green core = strong evidence. Yellow = derived suggestions. Purple = missing research from external sources.
+				Green core = strong evidence (8 books + external research). Yellow = derived suggestions. Purple = research gaps. Use the source dropdown to see each source's contribution.
 			</p>
 		</div>
 	</header>
@@ -332,11 +377,26 @@
 	<!-- Tier filter -->
 	<div class="filter-bar">
 		<span class="filter-label">Show:</span>
-		{#each [['all', 'All tiers'], ['core', 'Core evidence only'], ['derived', 'Core + Derived'], ['gap', 'Gaps only']] as [val, label]}
-			<button class="tier-btn" class:tier-active={filterTier === val} onclick={() => { filterTier = val; applyFilter(); }}>
+		{#each [['all', 'All tiers'], ['core', 'Core evidence only'], ['derived', 'Core + Derived'], ['gap', 'Gaps only'], ['external', 'New sources only']] as [val, label]}
+			<button class="tier-btn" class:tier-active={filterTier === val} onclick={() => { filterTier = val; applyFilters(); }}>
 				{label}
 			</button>
 		{/each}
+		<span class="filter-sep"></span>
+		<span class="filter-label">Source:</span>
+		<select class="source-select" bind:value={selectedSource} onchange={() => applyFilters()}>
+			<option value="">All sources</option>
+			<optgroup label="Books (8)">
+				{#each allSources.filter(s => s.type === 'book') as src}
+					<option value={src.id}>{src.label}</option>
+				{/each}
+			</optgroup>
+			<optgroup label="External Research">
+				{#each allSources.filter(s => s.type === 'external') as src}
+					<option value={src.id}>{src.label}</option>
+				{/each}
+			</optgroup>
+		</select>
 	</div>
 
 	<!-- Tooltip -->
@@ -369,7 +429,7 @@
 			<div class="nd-header">
 				<span class="nd-tier" style="background: {tierColors[selectedNode.tier]}">{tierLabels[selectedNode.tier]}</span>
 				<span class="nd-domain" style="color: {dom?.color}">{dom?.label}</span>
-				<button class="nd-close" onclick={() => { selectedNode = null; cy?.elements().removeClass('selected-node connected dimmed active'); }}>&#10005;</button>
+				<button class="nd-close" onclick={() => { selectedNode = null; cy?.elements().removeClass('selected-node connected dimmed active source-highlighted'); }}>&#10005;</button>
 			</div>
 			<h3 class="nd-name">{selectedNode.label}</h3>
 			<p class="nd-claim">{selectedNode.claim}</p>
@@ -462,6 +522,15 @@
 	}
 	.tier-btn:hover { background: rgba(148, 163, 184, 0.12); }
 	.tier-active { background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.4); color: #60a5fa; }
+	.filter-sep { width: 1px; height: 24px; background: rgba(148, 163, 184, 0.2); margin: 0 4px; }
+	.source-select {
+		padding: 6px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 500;
+		border: 1px solid rgba(148, 163, 184, 0.15); background: rgba(15, 23, 42, 0.8);
+		color: #e2e8f0; cursor: pointer; font-family: inherit; max-width: 260px;
+	}
+	.source-select:focus { outline: none; border-color: rgba(96, 165, 250, 0.5); }
+	.source-select option { background: #1e293b; color: #e2e8f0; }
+	.source-select optgroup { color: #94a3b8; font-weight: 600; }
 
 	.graph-tooltip {
 		position: fixed; transform: translate(-50%, -100%);

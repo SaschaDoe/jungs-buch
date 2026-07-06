@@ -44,6 +44,16 @@ export const nodePositions: Record<string, { x: number; y: number; row: number }
 	'parenting-can-fix':     { x: 12, y: 76, row: 5 },
 	'caring-masculinity':    { x: 42, y: 76, row: 5 },
 	'male-teachers':         { x: 74, y: 76, row: 5 },
+	'friendship-crisis':     { x: 22, y: 18, row: 1 },
+	'testosterone-complex':  { x: 82, y: 4, row: 0 },
+	'porn-consent':          { x: 82, y: 18, row: 1 },
+	'housework-gap':         { x: 22, y: 32, row: 2 },
+	'conflict-resolution':   { x: 82, y: 32, row: 2 },
+	'tate-role-model':       { x: 82, y: 60, row: 4 },
+	'body-selfcare':         { x: 42, y: 46, row: 3 },
+	'care-professions':      { x: 82, y: 46, row: 3 },
+	'political-gap':         { x: 42, y: 60, row: 4 },
+	'housework-education':   { x: 12, y: 90, row: 6 },
 };
 
 export const rowLabels = [
@@ -52,7 +62,8 @@ export const rowLabels = [
 	'Kausalbehauptungen',
 	'Theorie',
 	'Schlussfolgerungen',
-	'Handlungsempfehlungen'
+	'Handlungsempfehlungen',
+	'Neue Handlungsempfehlungen'
 ];
 
 export const typeLabels: Record<string, { label: string; color: string }> = {
@@ -411,6 +422,212 @@ export const chain: ChainLink[] = [
 			{ label: 'DCU TikTok-Studie', authorSearch: 'Regehr' },
 			{ label: 'Harvard Study', authorSearch: 'Harvard' }
 		]
+	},
+
+	// ======== NEUE BEOBACHTUNGEN (fehlende Kapitel) ========
+	{
+		id: 'friendship-crisis',
+		step: 14,
+		type: 'observation',
+		claim: 'Jungen beschreiben mit 13-14 tiefe, liebevolle Freundschaften — die mit 17 sterben. 15% der Männer haben keinen einzigen engen Freund (1990: nur 3%).',
+		shortLabel: 'Freundschaftskrise',
+		evidence: 'Way (2011), "Deep Secrets"; Survey of American Life.',
+		status: 'green',
+		explanation:
+			'Ways Längsschnittstudie ist methodisch solide und die Freundschaftsrezession wird durch ' +
+			'multiple repräsentative Umfragen bestätigt. Der Befund ist robust und kulturübergreifend dokumentiert.',
+		dependsOn: ['socialization', 'boys-mask'],
+		collapseRisk: 'Gering — die Daten sind robust. Die Kausaldeutung (Boy Culture als Ursache) ist diskutierbarer als der Befund selbst.',
+		bookLocations: [
+			{ pages: 'S. 101-110', chapter: 'Platonische Liebe: Zwischen Bros und Friendship-Goals', context: 'Niobe Way: Jungenfreundschaften sterben in der Adoleszenz' }
+		],
+		evidenceRefs: [
+			{ label: 'Niobe Way (2011)', authorSearch: 'Way' }
+		]
+	},
+	{
+		id: 'testosterone-complex',
+		step: 15,
+		type: 'observation',
+		claim: 'Testosteron verursacht NICHT automatisch Aggression. Reimers-Studie: T kann kooperatives Verhalten fördern. Vor der Pubertät sind T-Werte bei Jungen und Mädchen gleich.',
+		shortLabel: 'Testosteron ist komplex',
+		evidence: 'Reimers (2019), Hamburg-Studie; Interview Gatinho.',
+		status: 'yellow',
+		explanation:
+			'Die Reimers-Studie ist eine Einzelstudie, aber konsistent mit der breiteren Endokrinologie-Forschung, ' +
+			'die zeigt, dass T sozialen Kontext verstärkt (nicht nur Aggression). ' +
+			'Die Gleichheit der T-Werte vor der Pubertät ist medizinischer Standard.',
+		dependsOn: [],
+		collapseRisk: 'Gering — korrigiert eine Übervereinfahcung. Allerdings ist die Reimers-Studie selbst nicht repliziert.',
+		bookLocations: [
+			{ pages: 'S. 73-74', chapter: 'Risikoverhalten & Selfcare', context: 'Gatinho-Interview: T vor Pubertät gleich; Reimers-Studie' }
+		],
+		evidenceRefs: [
+			{ label: 'Luise Reimers (2019)', authorSearch: 'Reimers' }
+		]
+	},
+	{
+		id: 'porn-consent',
+		step: 16,
+		type: 'observation',
+		claim: 'Erste Pornografie-Exposition liegt bei 12-15 Jahren, oft unfreiwillig (durch Peers geteilt). Porn dient Jungen als soziale Währung mehr als als sexueller Stimulus. Konsens-Bildung fehlt.',
+		shortLabel: 'Porn & fehlende Konsensbildung',
+		evidence: 'BZgA Jugendsexualität 9. Welle; Oeming (Interview); Zidi (Interview).',
+		status: 'yellow',
+		explanation:
+			'BZgA-Daten sind repräsentativ. Die "soziale Währung"-These stammt aus Interviews, nicht aus ' +
+			'quantitativer Forschung. Das "Drei-Ampeln-Modell" (Zidi) ist ein pädagogisches Werkzeug, keine empirisch validierte Methode.',
+		dependsOn: ['boys-struggle'],
+		collapseRisk: 'Gering — der Befund über frühe Exposition ist robust. Die pädagogischen Modelle sind normativ, nicht testbar.',
+		bookLocations: [
+			{ pages: 'S. 113-128', chapter: 'Porn & Konsens', context: 'Pornografie als soziale Währung unter Jungen; Drei-Ampeln-Modell' }
+		],
+		evidenceRefs: [
+			{ label: 'BZgA Jugendsexualität', authorSearch: 'BZgA' },
+			{ label: 'Madita Oeming', authorSearch: 'Oeming' }
+		]
+	},
+	{
+		id: 'housework-gap',
+		step: 17,
+		type: 'observation',
+		claim: 'Der Gender Care Gap bei Kindern (10-17) beträgt ~41,5% und hat sich seit 2012 kaum verändert. Jungen machen WENIGER Hausarbeit als vor zehn Jahren.',
+		shortLabel: 'Care Gap bei Kindern',
+		evidence: 'Destatis Zeitverwendungsstudie (2022); BusyKid App-Daten.',
+		status: 'green',
+		explanation:
+			'Amtliche Statistik des Statistischen Bundesamts, repräsentative Stichprobe. ' +
+			'Der Befund ist robust. BusyKid-Daten sind ergänzend (Convenience-Stichprobe), bestätigen aber das Muster.',
+		dependsOn: ['socialization'],
+		collapseRisk: 'Gering — amtliche Statistik.',
+		bookLocations: [
+			{ pages: 'S. 135-142', chapter: 'Hausarbeit: Wie wir Jungen motivieren', context: 'Zeitverwendungsstudie: Jungen-Mädchen Care Gap' }
+		],
+		evidenceRefs: [
+			{ label: 'Destatis Zeitverwendungsstudie (2022)', authorSearch: 'Destatis' }
+		]
+	},
+	{
+		id: 'conflict-resolution',
+		step: 18,
+		type: 'observation',
+		claim: 'Japanische Eltern nehmen an, Kinder seien zu jung um es besser zu wissen. Deutsche Eltern nehmen feindliche Absicht an — was zu mehr Aggression führt.',
+		shortLabel: 'Kulturelle Konflikterziehung',
+		evidence: 'Trommsdorff & Kornadt, kulturvergleichende Studie.',
+		status: 'yellow',
+		explanation:
+			'Etablierte kulturvergleichende Forschung, aber die Kausalrichtung (Eltern-Attribution → Kinder-Aggression) ' +
+			'ist eine Vereinfachung. Kulturelle Unterschiede in Aggression haben auch genetische und gesellschaftliche Komponenten.',
+		dependsOn: ['socialization'],
+		collapseRisk: 'Mittel — der kulturelle Unterschied ist real, aber die monokausale Erklärung über Elternverhalten ist zu einfach.',
+		bookLocations: [
+			{ pages: 'S. 153-154', chapter: 'Nähe-Dominanz-Konflikt', context: 'Japanische vs. deutsche Eltern: Intentionszuschreibung' }
+		],
+		evidenceRefs: [
+			{ label: 'Trommsdorff & Kornadt', authorSearch: 'Trommsdorff' }
+		]
+	},
+	{
+		id: 'tate-role-model',
+		step: 19,
+		type: 'observation',
+		claim: 'Jeder 5. Junge (9-16) sieht Andrew Tate als gutes Vorbild. Jeder 2. junge Vater (25-34) stimmt zu. TikTok serviert männlichen Teenager-Profilen innerhalb von 9 Minuten antifeministischen Content.',
+		shortLabel: 'Tate & Algorithmen',
+		evidence: 'Umfragedaten; DCU-Studie (2024).',
+		status: 'green',
+		explanation:
+			'Die DCU-Studie ist methodisch solide (experimentelles Design mit Dummy-Accounts). ' +
+			'Die Tate-Umfragedaten sind weniger klar in ihrer Methodik, aber konsistent mit anderen Erhebungen zur Reichweite.',
+		dependsOn: ['radicalization'],
+		collapseRisk: 'Gering — die Verbreitung ist gut dokumentiert.',
+		bookLocations: [
+			{ pages: 'S. 41-42', chapter: 'Wanted: Männliche Vorbilder', context: 'Andrew Tate als Vorbild für Jungen' },
+			{ pages: 'S. 186-187', chapter: 'Minecraft, TikTok & Killerspiele', context: 'DCU-Studie: TikTok-Algorithmus' }
+		],
+		evidenceRefs: [
+			{ label: 'DCU Antibullying Centre (2024)', authorSearch: 'Regehr' }
+		]
+	},
+	{
+		id: 'body-selfcare',
+		step: 20,
+		type: 'observation',
+		claim: 'Männer vermeiden Vorsorge und Selbstfürsorge systematisch. Der Einstieg über Körperpflege-Routinen (Hautpflege) kann Zugang zu breiterer Selbstfürsorge schaffen.',
+		shortLabel: 'Körper & Selbstfürsorge',
+		evidence: 'Statistiken zur Gesundheitsvorsorge; Interview Maher.',
+		status: 'yellow',
+		explanation:
+			'Dass Männer Vorsorge meiden ist statistisch belegt (RKI, KiGGS). Die Hautpflege-als-Einstieg-These ' +
+			'stammt aus klinischer Erfahrung (Maher), nicht aus kontrollierter Forschung.',
+		dependsOn: ['boys-mask'],
+		collapseRisk: 'Gering — der Befund über Vorsorge-Meidung ist robust. Die pädagogische Empfehlung ist plausibel, aber nicht empirisch getestet.',
+		bookLocations: [
+			{ pages: 'S. 78-80', chapter: 'Risikoverhalten & Selfcare', context: 'Selfcare-Routinen als Zugang; Interview Maher' }
+		],
+		evidenceRefs: [
+			{ label: 'RKI / KiGGS', authorSearch: 'Robert Koch' }
+		]
+	},
+	{
+		id: 'care-professions',
+		step: 21,
+		type: 'observation',
+		claim: '65% der Jugendlichen interessieren sich für soziale Berufe, aber der Männeranteil liegt nur bei ~20%. Väter bremsen stärker als Mütter.',
+		shortLabel: 'Care-Berufe meiden',
+		evidence: 'Men in Care Studie (BMFSFJ 2024).',
+		status: 'green',
+		explanation:
+			'Regierungsbeauftragte repräsentative Studie. Der Befund über die Väter-Bremse ist neu und wichtig.',
+		dependsOn: ['socialization', 'trad-masc-harms'],
+		collapseRisk: 'Gering — amtliche Studie.',
+		bookLocations: [
+			{ pages: 'S. 209-210', chapter: 'Ehrenmann, Ehrenamt, Lehramt', context: 'Men in Care Studie über Berufswahl' }
+		],
+		evidenceRefs: [
+			{ label: 'BMFSFJ Men in Care (2024)', authorSearch: 'BMFSFJ' }
+		]
+	},
+	{
+		id: 'political-gap',
+		step: 22,
+		type: 'consequence',
+		claim: 'Junge Männer wählen zunehmend rechts, junge Frauen zunehmend progressiv — ein wachsender politischer Gender Gap in allen Demokratien.',
+		shortLabel: 'Politischer Gender Gap',
+		evidence: 'Financial Times Analyse; europäische Wahldaten.',
+		status: 'green',
+		explanation:
+			'Querschnittliche Wahldatenanalyse über mehrere Demokratien hinweg. Konsistentes Muster in Europa, USA und Asien.',
+		dependsOn: ['radicalization', 'boys-struggle'],
+		collapseRisk: 'Gering — die Daten sind robust. Die Ursachendeutung ist umstrittener als der Befund.',
+		bookLocations: [
+			{ pages: 'S. 213-214', chapter: 'Ehrenmann, Ehrenamt, Lehramt', context: 'Gender Gap bei Europawahlen, AfD-TikTok-Strategie' }
+		],
+		evidenceRefs: [
+			{ label: 'Financial Times Analyse', authorSearch: 'Financial Times' }
+		]
+	},
+
+	// ======== NEUE HANDLUNGSEMPFEHLUNGEN ========
+	{
+		id: 'housework-education',
+		step: 23,
+		type: 'solution',
+		claim: 'Hausarbeit ab dem Kleinkindalter einführen: Spielküchen, Kinderbesen, Söhne gezielt an "weibliche" Aufgaben heranführen. Familienputzplan erstellen.',
+		shortLabel: 'Hausarbeit erziehen',
+		evidence: 'Cammarata (Interview); Harvard 80-Jahres-Studie (Beziehungen = Gesundheit).',
+		status: 'yellow',
+		explanation:
+			'Die Harvard-Studie belegt den Wert von Beziehungsfähigkeit. Die konkreten pädagogischen ' +
+			'Empfehlungen (Spielküche, Kinderbesen) basieren auf Experten-Meinung, nicht auf RCTs.',
+		dependsOn: ['housework-gap', 'caring-masculinity'],
+		collapseRisk: 'Gering — die Empfehlungen sind "no-regret"-Maßnahmen.',
+		bookLocations: [
+			{ pages: 'S. 140-142', chapter: 'Hausarbeit', context: 'Cammarata: Hausarbeit ab Kleinkindalter; Familienputzplan' }
+		],
+		evidenceRefs: [
+			{ label: 'Patricia Cammarata', authorSearch: 'Cammarata' },
+			{ label: 'Harvard Study', authorSearch: 'Harvard' }
+		]
 	}
 ];
 
@@ -450,11 +667,9 @@ export const chainSummary = {
 	green: chain.filter((c) => c.status === 'green').length,
 	untestable: chain.filter((c) => c.status === 'untestable').length,
 	verdict:
-		'Die Argumentationskette hat zwei kritische Schwachstellen: ' +
-		'(1) Die Prämisse "Gehirne sind gleich" (Schritt 1) und ' +
-		'(2) die Kausalbehauptung "Sozialisation verursacht die Probleme" (Schritt 5). ' +
-		'Beide sind ROT oder GELB. Da fast alle Handlungsempfehlungen auf diesen Schritten aufbauen, ' +
-		'steht die gesamte Lösung ("geschlechterbewusste Erziehung verändert Jungen grundlegend") auf wackligem Fundament. ' +
-		'AUSNAHME: Die strukturellen Maßnahmen (Schritt 13: mehr männliche Erzieher, Medienkompetenz, Beziehungsqualität) ' +
-		'sind unabhängig von den Prämissen sinnvoll — sie funktionieren auch aus einer biologisch-interaktionistischen Perspektive.'
+		'Die erweiterte Argumentationskette zeigt: Das Buch hat neben den bekannten Schwachstellen (Prämissen 1-2, Kausalbehauptung 5) ' +
+		'eine Reihe empirisch gut belegter Beobachtungen: Freundschaftskrise (Way), Care Gap bei Kindern (Destatis), ' +
+		'Radikalisierung/Tate-Phänomen (DCU), Care-Berufe-Meidung (BMFSFJ), politischer Gender Gap. ' +
+		'Die zwei kritischen Schwachstellen bleiben: (1) Die Prämisse "Gehirne sind gleich" und (2) die Kausalbehauptung ' +
+		'"Sozialisation verursacht die Probleme". Die strukturellen Maßnahmen (Schritte 13, 21, 23) sind unabhängig von den Prämissen sinnvoll.'
 };

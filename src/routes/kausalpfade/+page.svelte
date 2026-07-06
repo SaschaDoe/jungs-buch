@@ -8,12 +8,23 @@
 	import { chain as mfChain } from '$lib/data/mf-argument-chain-data';
 	import { chain as wwChain } from '$lib/data/ww-argument-chain-data';
 	import { chain as rcChain } from '$lib/data/rc-argument-chain-data';
+	import { chain as rbChain } from '$lib/data/rb-argument-chain-data';
+	import { chain as gmChain } from '$lib/data/gm-argument-chain-data';
+	import { chain as wtcChain } from '$lib/data/wtc-argument-chain-data';
+	import { chain as msChain } from '$lib/data/ms-argument-chain-data';
+	import { chain as mseChain } from '$lib/data/mse-argument-chain-data';
+	import { chain as bdcChain } from '$lib/data/bdc-argument-chain-data';
+	import { chain as obmChain } from '$lib/data/obm-argument-chain-data';
+	import { chain as dsChain } from '$lib/data/ds-argument-chain-data';
+	import { chain as prChain } from '$lib/data/pr-argument-chain-data';
+	import { chain as nbmChain } from '$lib/data/nbm-argument-chain-data';
 	import {
 		books,
 		scienceFields,
 		themeClusters,
 		type BookMeta
 	} from '$lib/data/cross-book-data';
+	import { convergences, verdictInfo, convergenceSummary, type Verdict } from '$lib/data/convergence-data';
 
 	const bookChains: { id: string; chain: any[] }[] = [
 		{ id: 'jvh', chain: jvhChain },
@@ -24,6 +35,16 @@
 		{ id: 'mf', chain: mfChain },
 		{ id: 'ww', chain: wwChain },
 		{ id: 'rc', chain: rcChain },
+		{ id: 'rb', chain: rbChain },
+		{ id: 'gm', chain: gmChain },
+		{ id: 'wtc', chain: wtcChain },
+		{ id: 'ms', chain: msChain },
+		{ id: 'mse', chain: mseChain },
+		{ id: 'bdc', chain: bdcChain },
+		{ id: 'obm', chain: obmChain },
+		{ id: 'ds', chain: dsChain },
+		{ id: 'pr', chain: prChain },
+		{ id: 'nbm', chain: nbmChain },
 	];
 
 	function getStatus(link: any): string { return link.status ?? link.strength ?? 'yellow'; }
@@ -37,6 +58,7 @@
 	let selectedFields = $state<Set<string>>(new Set(scienceFields.map(f => f.id)));
 	let showFilters = $state(true);
 	let showOverlaps = $state(true);
+	let highlightShared = $state(true);
 	let viewMode = $state<'overlaps' | 'chains'>('overlaps');
 	let selectedNode = $state<any>(null);
 	let selectedLink = $state<any>(null);
@@ -93,17 +115,302 @@
 		type: string;
 		bookIds: string[];       // books that share this claim
 		replacedIds: string[];   // original node IDs that get merged
+		convergenceId?: string;  // maps to convergence-data.ts for rich audit info
 	}
 
 	const sharedNodes: SharedNode[] = [
 		{
 			id: 'shared--boys-emotional-reactive',
-			label: 'Boys born MORE emotional',
-			claim: 'Newborn boys are more emotionally reactive than girls (cry more when frustrated). Parents differentially suppress boys\' emotional expression. The adult pattern of male emotional restraint is learned through cultural training, not innate.',
+			label: 'Jungen starten emotional (mindestens) genauso expressiv',
+			claim: 'Die anti-essentialistische Kern-Konvergenz: Jungen sind im Säuglings- und Kindesalter mindestens genauso emotional expressiv wie Mädchen — die Geschlechterdifferenz entsteht durch differentielle Sozialisation und kulturelle Sanktionierung, nicht durch angeborene Unterschiede. Way (2011) ergänzt den longitudinalen observational anchor: auch in der frühen/mittleren Adoleszenz (13–15) sind die Jungen emotional hochartikuliert in ihren engsten männlichen Freundschaften.',
 			status: 'green',
 			type: 'premise',
-			bookIds: ['pb', 'rc'],
-			replacedIds: ['pb--boys-more-emotional', 'rc--emotional-potential'],
+			bookIds: ['pb', 'rc', 'rb', 'wtc', 'jvh', 'ds', 'pr'],
+			replacedIds: [
+				'pb--boys-more-emotional',
+				'rc--emotional-potential',
+				'rb--boys-expressive',
+				'wtc--boys-expressive',
+				'jvh--born-same',
+				'ds--boys-emotionally-articulate-early-adolescence',
+				'pr--pr-geschlechterunterschied-sozial',
+			],
+			convergenceId: 'boys-born-more-expressive',
+		},
+		{
+			id: 'shared--mask-boy-code',
+			label: 'Die Maske / Boy Code / Identitätslüge',
+			claim: 'Die stärkste Konvergenz der Bibliothek: Jungen und Männer tragen eine defensive Fassade, die emotionales Innenleben verbirgt. Rb (Pollack) nennt es „Mask of Masculinity" und „Boy Code"; wtc (hooks) gleich; mse (Süfke) „Identitätslüge"; bdc (Urwin) „Stiff Upper Lip"; jvh (Dittmann) „Pseudoresilienz"; ds (Way) liefert die DIREKTE longitudinale Beobachtung — dieselben Jungen zwischen 13 und 18 bauen die Maske live in den Interview-Transkripten auf. Upgradet die Konvergenz von klinischer Inferenz zu observational evidence.',
+			status: 'yellow',
+			type: 'consequence',
+			bookIds: ['rb', 'wtc', 'mse', 'bdc', 'jvh', 'ds', 'pr'],
+			replacedIds: [
+				'rb--mask-of-masculinity',
+				'wtc--mask-of-masculinity',
+				'mse--identitaetsluege',
+				'bdc--passive-toxicity',
+				'jvh--boys-mask',
+				'ds--directly-observes-mask',
+				'pr--pr-weinen-kulturell-sozialisiert',
+			],
+			convergenceId: 'mask-boy-code',
+		},
+		{
+			id: 'shared--hidden-male-depression',
+			label: 'Verdeckte männliche Depression',
+			claim: 'Männliche Depression präsentiert sich oft als Reizbarkeit, Wut, Alkoholismus, Workaholismus oder Rückzug — nicht als klassische Traurigkeit. Darum wird sie unterdiagnostiziert, und darum ist die Suizidrate 3–4× höher als bei Frauen. Terrence Reals „covert depression" als gemeinsame theoretische Quelle (Pollack, Süfke, Urwin, hooks). Way (2011) liefert den Timing-Anker: Suizidrate steigt scharf im Altersfenster (16–18), in dem ihre Panel-Jungen die engen Freundschaften verlieren.',
+			status: 'yellow',
+			type: 'consequence',
+			bookIds: ['rb', 'rc', 'mse', 'bdc', 'ds'],
+			replacedIds: [
+				'rb--hidden-depression',
+				'rc--hidden-depression',
+				'mse--maennliche-depression',
+				'bdc--mortality-stats',
+				'ds--suicide-timing-correlation',
+			],
+			convergenceId: 'hidden-male-depression',
+		},
+		{
+			id: 'shared--reactive-violence',
+			label: 'Männliche Gewalt ist reaktiv, nicht prädatorisch',
+			claim: 'Die meiste männliche Gewalt entsteht aus Scham, Hilflosigkeit oder Bedrohung der Identität — nicht aus biologischem Aggressionsdrang. Testosteron amplifiziert, triggert aber nicht. Klinische Konvergenz zwischen Pollack, Kindlon/Thompson, Böhnisch, Süfke (Hilflosigkeit als Kerngefühl), hooks („disconnection is masculinity") und Connell (Gewalt als Gender-Order-Policing). Reeves nuanciert mit Carole Hoovens Mittelposition.',
+			status: 'green',
+			type: 'causal',
+			bookIds: ['rc', 'rb', 'ms', 'mse', 'wtc', 'gm', 'pr'],
+			replacedIds: [
+				'rc--reactive-violence',
+				'rb--reactive-violence',
+				'ms--gewalt-als-hilflosigkeit',
+				'mse--hilflosigkeit-kern',
+				'wtc--disconnection-is-masc',
+				'gm--crisis-tendencies',
+				'pr--pr-bestrafung-schadet',
+			],
+			convergenceId: 'violence-reactive-not-testosterone',
+		},
+		{
+			id: 'shared--father-hunger',
+			label: 'Vater-Hunger / Vater-Entkopplung',
+			claim: 'Abwesende oder emotional unverfügbare Väter produzieren die nächste Generation desselben Musters. Klinische Konvergenz zwischen Pollack (Father hunger, Glueck Harvard-Studie), Kindlon/Thompson (father-son gulf), Gurian (fathers essential), Sax (fatherhood degraded), Böhnisch (Eventvater), Urwin (drei-Generationen-Trauma), hooks (patriarchal fathers) und Reeves (Dad Deficit + Direct Dads + Eggebeen-Daten).',
+			status: 'yellow',
+			type: 'causal',
+			bookIds: ['rb', 'rc', 'wb', 'ba', 'ms', 'bdc', 'obm', 'nbm'],
+			replacedIds: [
+				'rb--father-disengagement',
+				'rc--father-son-gulf',
+				'wb--fathers-essential',
+				'ba--fatherhood-degraded',
+				'ms--event-father',
+				'bdc--relationship-damage',
+				'obm--dad-deficit',
+			],
+			convergenceId: 'father-hunger',
+		},
+		{
+			id: 'shared--friendship-crisis',
+			label: 'Jungen-Freundschafts-Krise (13→18)',
+			claim: 'Boys describe deep, emotionally articulate friendships at 13–15; the same boys lose them by 16–18. Dittmann zitiert Way direkt; Pollack adoptiert Sullivans „chumships" mit derselben Altersdynamik; Way liefert die longitudinale Primärquelle mit hunderten Interview-Transkripten; Raising Cain beschreibt „emotional isolation" als „rite of passage" für dieselbe Altersgruppe. Galloway (2025) liefert die ERWACHSENEN-Fortsetzung derselben Kurve: Friendship Recession (Cox 2021: keine engen Freunde 3%→12-15%), Loneliness-Mortalität (Holt-Lunstad), eigene „Scott Island"-Dekade — plus Gegenprogramm (Friendship-Cold-Calling, „go first").',
+			status: 'green',
+			type: 'observation',
+			bookIds: ['ds', 'jvh', 'rc', 'pr', 'nbm'],
+			replacedIds: [
+				'ds--friendship-loss-late-adolescence',
+				'jvh--friendship-crisis',
+				'rc--emotional-isolation',
+				'pr--pr-freundschaft-qualitaet',
+				'nbm--loneliness-friendship',
+			],
+			convergenceId: 'boy-friendship-crisis',
+		},
+
+		// ── Biology cluster shared nodes ──────────────────────────
+		{
+			id: 'shared--aggression-innate',
+			label: 'Aggression: biologisch-dimorphe Grundlage',
+			claim: 'Geschlechterdifferenzen in physischer Aggression haben eine bedeutende biologisch-evolutionäre Grundlage. Jungen zeigen ~20× mehr physische Aggression; Raufkampf-Spiel ist Primaten-universal und geschlechtsdifferent. Male-male-Kompetition hat Körperbau, Armierungen und Verhaltensstrategien geformt. Benenson dokumentiert Kriegs-Adaptationen (coalitional fighting), Geary leitet es aus sexueller Selektion ab, Sax argumentiert, dass Unterdrückung von Raufkampf-Spiel echte Gewalt steigern kann.',
+			status: 'green',
+			type: 'observation',
+			bookIds: ['wgm', 'mf', 'ww'],
+			replacedIds: [
+				'wgm--aggression',
+				'mf--male-competition',
+				'ww--boys-play-fighting',
+			],
+			convergenceId: 'bio-aggression-innate',
+		},
+		{
+			id: 'shared--risk-taking-biological',
+			label: 'Risikobereitschaft: biologisch männlich-typisch',
+			claim: 'Männliche Risikobereitschaft hat biologische Wurzeln. Sax: Jungen überschätzen ihre Fähigkeiten systematisch (Primaten-Evidenz). Geary: das kompetitivere Geschlecht entwickelt sich langsamer und spielt riskanter als Vorbereitung auf erwachsene Kompetition. Benenson: Weibchen zeigen von Geburt an größere Furcht und Risikoaversion (Meta-Analyse von 150 Studien). Die Differenz ist kulturübergreifend und beginnt im Säuglingsalter.',
+			status: 'green',
+			type: 'observation',
+			bookIds: ['wgm', 'mf', 'ww'],
+			replacedIds: [
+				'wgm--risk-taking',
+				'mf--life-history',
+				'ww--females-fear-risk',
+			],
+			convergenceId: 'bio-risk-taking',
+		},
+		{
+			id: 'shared--group-dynamics-dimorphic',
+			label: 'Gruppen-Dynamik: evolutionär geschlechtsdifferent',
+			claim: 'Männliche und weibliche Gruppendynamik unterscheidet sich fundamental und hat evolutionäre Wurzeln. Sax: Männerfreundschaften „shoulder-to-shoulder" (gemeinsame Aktivität), Frauenfreundschaften „face-to-face" (geteilte Gefühle). Geary: Männliche Koalitions-Kompetition und Geschlechts-Segregation. Benenson: Männchen bilden größere, hierarchischere Gruppen mit flexiblen Dominanz-Hierarchien; Weibchen bevorzugen dyadische Intimität und erzwingen Gleichheit.',
+			status: 'green',
+			type: 'observation',
+			bookIds: ['wgm', 'mf', 'ww'],
+			replacedIds: [
+				'wgm--friendships-differ',
+				'mf--sex-segregation',
+				'ww--males-larger-groups',
+			],
+			convergenceId: 'bio-group-dynamics',
+		},
+
+		// ── Empirically-anchored shared nodes ──────────────────────
+		{
+			id: 'shared--work-identity-crisis',
+			label: 'Arbeit als männliche Identität — und deren Erosion',
+			claim: 'Moderne männliche Identität ist an ökonomische Produktivität geknüpft. Die Erosion männlicher Arbeitsmöglichkeiten (seit den 1970ern) erzeugt eine Identitätskrise, die sich in „deaths of despair" (Case & Deaton), Vaterentkopplung und psychischer Decompensation niederschlägt. Böhnisch (abstrakte Arbeiterform), Süfke/hooks (Arbeit als Flucht), Sax (failure-to-launch), Reeves (labor decline + Dad Deficit). Empirisch verankert durch Case & Deaton 2015/2020/2022, Carbone & Huntington 2024, Killewald 2016, Ruggles 2015.',
+			status: 'yellow',
+			type: 'causal',
+			bookIds: ['ba', 'ms', 'obm', 'wtc', 'nbm'],
+			replacedIds: [
+				'ba--failure-to-launch',
+				'ms--abstract-worker',
+				'obm--labor-decline',
+				'wtc--work-as-flight',
+			],
+			convergenceId: 'work-identity-crisis',
+		},
+		{
+			id: 'shared--schools-fail-boys',
+			label: 'Schulen scheitern an Jungen',
+			claim: 'Das Bildungssystem benachteiligt Jungen strukturell: die pädagogische Umgebung favorisiert frühere weibliche verbale Reife, pathologisiert männliche Aktivität als ADHS, und der Schreibgap ist in jeder Rassen- und Einkommensgruppe ~15 NAEP-Punkte breit. Der Männeranteil an Hochschulabsolventen ist von 57,7% (1970) auf 43,1% (2014) gefallen. Reeves ergänzt die Brain-Timing-Erklärung (präfrontaler Kortex ~2 Jahre später reif bei Jungen). Galloway (2025) übernimmt die Reeves-Erklärung eins zu eins — PFC-Timing, ADHD-Gap, Missing Misters — und illustriert sie autobiografisch (Abstufung von Calculus zu Algebra 1 nach dem Weggang des Vaters).',
+			status: 'green',
+			type: 'observation',
+			bookIds: ['ba', 'rc', 'rb', 'obm', 'pr', 'nbm'],
+			replacedIds: [
+				'ba--education-gap',
+				'rc--school-mismatch',
+				'rb--school-boy-failure',
+				'obm--education-gap',
+				'nbm--pfc-timing',
+			],
+			convergenceId: 'schools-fail-boys',
+		},
+		{
+			id: 'shared--homophobia-policing',
+			label: 'Homophobie als Geschlechternorm-Policing',
+			claim: 'Homophobie funktioniert primär als Mechanismus zur Durchsetzung von Geschlechternormen — nicht als Hass auf Homosexualität. Way: die kulturelle Gleichsetzung von Intimität mit „gay" zerstört Jungen-Freundschaften (direkt longitudinal beobachtet). Urwin: homophobes Verhalten beginnt als Bestrafung für Abweichungen von Männlichkeitsnormen. Connell: homophobe Gewalt poliziert hegemoniale Männlichkeit. hooks: Homophobie als Teil der patriarchalen Sozialisation.',
+			status: 'yellow',
+			type: 'causal',
+			bookIds: ['ds', 'bdc', 'wtc'],
+			replacedIds: [
+				'ds--homophobia-mechanism',
+				'bdc--homophobia-policing',
+				'wtc--normal-traumatization',
+			],
+			convergenceId: 'homophobia-gender-policing',
+		},
+		{
+			id: 'shared--differential-mirroring',
+			label: 'Differentielle Emotions-Spiegelung bei Jungen',
+			claim: 'Der Mechanismus, durch den emotionale Suppression bei Jungen ENTSTEHT: Eltern benennen bei Jungen weniger Gefühle, interpretieren denselben Emotionsausdruck anders (Baby-X-Experimente), verhängen härtere Disziplin, und der Satz „Jungen weinen nicht" wird verankert ohne Alternative. Süfke: mangelnde Spiegelung als Primärmechanismus der Alexithymie. Pollack: shame-hardening als Enforcement-Mechanismus des Boy Code.',
+			status: 'green',
+			type: 'causal',
+			bookIds: ['mse', 'rc', 'rb', 'bdc'],
+			replacedIds: [
+				'mse--mangelnde-spiegelung',
+				'rc--harsh-discipline',
+				'rb--shame-hardening',
+				'bdc--boys-dont-cry',
+			],
+			convergenceId: 'differential-emotional-mirroring',
+		},
+
+		// ── Prüfer-anchored shared nodes (parenting-effect cluster) ──
+		{
+			id: 'shared--parenting-effect-limited',
+			label: 'Elterlicher Einflussspielraum ist begrenzt',
+			claim: 'Behavior Genetics (Polderman 2015 Meta über 50 Jahre Zwillingsforschung) und Harris (1998) Group Socialization Theory konvergieren: Shared Environment (Eltern-Effekt) erklärt nur ~0-10% der Persönlichkeitsvarianz; Heritabilität ~30-50%; der Rest ist Peers/Zufall. Ab der Adoleszenz dominieren Peers. Prüfer macht dies zum expliziten Rahmen (L06/L07/L11/L34); Reeves (OBM) kritisiert den individualistischen Reflex der klinischen Konvergenz; Dittmann dagegen erwartet transformatorische Wirkung von gender-bewusster Erziehung — dieser Knoten relativiert die Wirksamkeitserwartung ohne Dittmanns Empfehlungen zu entwerten.',
+			status: 'yellow',
+			type: 'causal',
+			bookIds: ['pr', 'jvh'],
+			replacedIds: [
+				'pr--pr-kind-praegt-eltern',
+				'pr--pr-kindheit-nicht-schicksal',
+				'pr--pr-iq-begrenzt',
+				'jvh--parenting-can-fix',
+			],
+			convergenceId: 'parenting-effect-size-limited',
+		},
+		{
+			id: 'shared--good-enough-parenting',
+			label: '„Good enough parenting" — Verlässlichkeit schlägt Perfektion',
+			claim: 'Winnicotts „good enough mother" und Bettelheims „good enough parent" als empirisch bester Rahmen: nicht-perfekte, aber verlässliche Reaktion; ~50% prompte Reaktion reicht für sichere Bindung (Woodhouse 2020 Secure Base Provision). Eltern-Perfektionismus führt zu Burnout (Roskam 42-Länder-Studie) und Kind-Angst (Lilley 2020 Meta). Prüfer ist der primäre Anker; Reeves (OBM) unterstützt die Entpathologisierung normaler Familien implizit; Dittmann steht als Kontrast mit ihrer transformations-orientierten Erwartung.',
+			status: 'yellow',
+			type: 'solution',
+			bookIds: ['pr'],
+			replacedIds: [
+				'pr--pr-good-enough-parenting',
+				'pr--pr-autonomie-foerdert',
+			],
+			convergenceId: 'good-enough-parenting',
+		},
+		{
+			id: 'shared--behavior-genetics',
+			label: 'Behavior Genetics: Gene + Peers > Shared Environment',
+			claim: 'Polderman 2015 Nature Genetics Meta-Meta-Analyse über 50 Jahre Zwillingsforschung (14,5 Mio. Zwillingspaare): durchschnittliche Heritabilität ~49%, Shared Environment klein. Turkheimers „Three Laws of Behavior Genetics" sind Konsens. Prüfer macht dies zum expliziten Rahmen (L19/L34, Zitat Kap. 18: „Eltern schaffen nicht die Persönlichkeit ihrer Kinder"); er zitiert Plomin/Polderman als Kern-Evidenz gegen die populäre „Eltern formen den Charakter"-Erwartung. Stützt extern, was der JVH-Audit zu `born-same` bereits markiert.',
+			status: 'green',
+			type: 'premise',
+			bookIds: ['pr'],
+			replacedIds: [
+				'pr--pr-erziehen-ist-entdecken',
+			],
+			convergenceId: 'behavior-genetics-dominates',
+		},
+
+		// ── Galloway (Notes on Being a Man) overlap nodes ──────────
+		{
+			id: 'shared--dopamine-economy',
+			label: 'Dopamin-Ökonomie kapert junge Männer',
+			claim: 'Sax (2007) und Galloway (2025) erzählen dieselbe Kausalstory über zwei Produktgenerationen: Dopamin-Produkte (Videospiele bei Sax; Social Media, Gaming, Sports Betting, Porn, Fast Food bei Galloway) kapern Motivation und Zeitbudget junger Männer mit unreifem PFC — „the world’s most valuable resource isn’t data, oil, or rare earth metals; it’s dopa.“ Dittmann ergänzt die algorithmische Radikalisierung, Prüfer die Moderation (Haidt vs. Orben). Deskriptiv real, Kausalgewicht umstritten (Odgers, Przybylski).',
+			status: 'yellow',
+			type: 'causal',
+			bookIds: ['ba', 'nbm', 'jvh', 'pr'],
+			replacedIds: [
+				'nbm--addiction-economy',
+			],
+			convergenceId: 'dopamine-economy',
+		},
+		{
+			id: 'shared--porn-replaces-mating',
+			label: 'Porn ersetzt den Mating-Antrieb',
+			claim: 'Fast deckungsgleiche Kausalthese bei Sax (2007: Porn konditioniert junge Männer weg von realen Partnerinnen) und Galloway (2025: „Porn is a masculinity killer“ — er eliminiert das Rejection-Training, Prognose „Homo solo“). Dittmann liefert die pädagogische Antwort (Porno-Kompetenz, Consent). Mechanismus plausibel (Supernormal-Stimulus), Längsschnitt-Kausalevidenz fehlt; Grubbs’ Moral-Incongruence-Befunde unterlaufen die Addiction-Rahmung.',
+			status: 'yellow',
+			type: 'causal',
+			bookIds: ['ba', 'nbm', 'jvh'],
+			replacedIds: [
+				'ba--pornography-replacing',
+				'nbm--porn-mating-crisis',
+			],
+			convergenceId: 'porn-replaces-mating',
+		},
+		{
+			id: 'shared--prosocial-masculinity',
+			label: 'Prosoziale Männlichkeit als Zielbild',
+			claim: 'Die lagerübergreifendste normative Konvergenz des Korpus: Reeves („prosocial masculinity for a postfeminist world“), Galloway („aspirational masculinity“ / Surplus Value — explizit von Reeves übernommen), hooks („feminist masculinity“, Liebe als Kern), Dittmann („Caring Masculinity“) und Süfke (emotionale Selbst-Zugänglichkeit) beschreiben mit verschiedenem Vokabular dasselbe Zielbild: geben statt nehmen, schützen statt dominieren, fühlen statt panzern. Nicht falsifizierbar — aber dass Business-Selbsthilfe und Schwarzer Feminismus hier deckungsgleich sind, ist der interessanteste Einzelbefund des Vergleichs.',
+			status: 'untestable',
+			type: 'solution',
+			bookIds: ['obm', 'nbm', 'wtc', 'jvh', 'mse'],
+			replacedIds: [
+				'obm--prosocial-masculinity',
+				'nbm--aspirational-masculinity',
+				'jvh--caring-masculinity',
+			],
+			convergenceId: 'prosocial-masculinity-vision',
 		},
 	];
 
@@ -168,6 +475,7 @@
 								isShared: true,
 								sharedBookIds: shared.bookIds.join(','),
 								sharedBookColors: sharedBookColors.join(','),
+								convergenceId: shared.convergenceId || '',
 							}
 						});
 					}
@@ -180,7 +488,7 @@
 							const edgeId = `e-${sourceId}-${shared.id}-${bookId}`;
 							if (!edges.some(e => e.data.id === edgeId)) {
 								edges.push({
-									data: { id: edgeId, source: sourceId, target: shared.id, bookColor: book.color, isOverlap: false }
+									data: { id: edgeId, source: sourceId, target: shared.id, bookColor: book.color, isOverlap: false, isSharedEdge: true }
 								});
 							}
 						}
@@ -224,12 +532,16 @@
 			}
 		}
 
-		// Also redirect edges that DEPEND ON replaced nodes
+		// Also redirect edges that DEPEND ON replaced nodes, and mark edges touching shared nodes
+		const sharedIds = new Set(sharedNodes.map(s => s.id));
 		for (const edge of edges) {
 			const srcShared = replacedNodeMap.get(edge.data.source);
 			if (srcShared) edge.data.source = srcShared.id;
 			const tgtShared = replacedNodeMap.get(edge.data.target);
 			if (tgtShared) edge.data.target = tgtShared.id;
+			if (sharedIds.has(edge.data.source) || sharedIds.has(edge.data.target)) {
+				edge.data.isSharedEdge = true;
+			}
 		}
 
 		return { nodes, edges };
@@ -247,18 +559,35 @@
 
 		const { nodes, edges } = buildLayoutElements();
 
-		// Book grid positions (3 cols x 3 rows, generous spacing)
-		// Grid arranged so books with most overlap are neighbors:
-		// PB↔RC (shared node), WGM↔BA (same author), JVH near RC
+		// Book grid positions (4 cols x 4 rows, generous spacing).
+		// Layout intent: top rows = biology/evo; middle = mixed; bottom = clinical/social/longitudinal.
+		// Books with most cross-convergence (rb, rc, wtc, mse, bdc, ms, ds) clustered in bottom half.
+		const COL_W = 1800;
+		const ROW_H = 1600;
 		const bookCenters: Record<string, { x: number; y: number }> = {
-			'mf':  { x: 0,    y: 0 },       // top-left
-			'ww':  { x: 1500, y: 0 },       // top-center
-			'wb':  { x: 3000, y: 0 },       // top-right
-			'wgm': { x: 0,    y: 1400 },    // mid-left
-			'ba':  { x: 1500, y: 1400 },    // mid-center (near WGM = same author)
-			'jvh': { x: 3000, y: 1400 },    // mid-right
-			'pb':  { x: 750,  y: 2800 },    // bot-left (next to RC = shared node)
-			'rc':  { x: 2250, y: 2800 },    // bot-right (next to PB + near JVH)
+			// Row 1 — biology / evolutionary
+			'mf':  { x: 0 * COL_W, y: 0 * ROW_H },
+			'ww':  { x: 1 * COL_W, y: 0 * ROW_H },
+			'wb':  { x: 2 * COL_W, y: 0 * ROW_H },
+			'pb':  { x: 3 * COL_W, y: 0 * ROW_H },
+			// Row 2 — medical / popular / sociology
+			'wgm': { x: 0 * COL_W, y: 1 * ROW_H },
+			'ba':  { x: 1 * COL_W, y: 1 * ROW_H },
+			'jvh': { x: 2 * COL_W, y: 1 * ROW_H },
+			'gm':  { x: 3 * COL_W, y: 1 * ROW_H },
+			// Row 3 — clinical core + policy
+			'obm': { x: 0 * COL_W, y: 2 * ROW_H },
+			'rc':  { x: 1 * COL_W, y: 2 * ROW_H },
+			'rb':  { x: 2 * COL_W, y: 2 * ROW_H },
+			'wtc': { x: 3 * COL_W, y: 2 * ROW_H },
+			// Row 4 — german clinical / longitudinal
+			'ms':  { x: 0 * COL_W, y: 3 * ROW_H },
+			'mse': { x: 1 * COL_W, y: 3 * ROW_H },
+			'bdc': { x: 2 * COL_W, y: 3 * ROW_H },
+			'ds':  { x: 3 * COL_W, y: 3 * ROW_H },
+			// Row 5 — parenting science / memoir-selfhelp (later additions)
+			'pr':  { x: 1 * COL_W, y: 4 * ROW_H },
+			'nbm': { x: 2 * COL_W, y: 4 * ROW_H },
 		};
 
 		// Step 1: Create a hidden graph to run dagre per-book
@@ -315,6 +644,19 @@
 			tempCy.destroy();
 		}
 
+		// Override shared-node positions: place them at the centroid of contributing book centers
+		for (const node of nodes) {
+			if (node.data.isShared) {
+				const bookIds: string[] = node.data.sharedBookIds.split(',');
+				const centers = bookIds.map((bid: string) => bookCenters[bid]).filter(Boolean);
+				if (centers.length > 0) {
+					const cx = centers.reduce((s: number, c: any) => s + c.x, 0) / centers.length;
+					const cy2 = centers.reduce((s: number, c: any) => s + c.y, 0) / centers.length;
+					positionMap.set(node.data.id, { x: cx, y: cy2 });
+				}
+			}
+		}
+
 		// Assign positions to all nodes
 		for (const node of nodes) {
 			const pos = positionMap.get(node.data.id);
@@ -356,21 +698,56 @@
 						'label': 'data(label)',
 						'text-valign': 'center' as any,
 						'text-halign': 'center' as any,
-						'color': '#ffffff',
-						'font-size': '11px',
-						'font-weight': 700,
+						'color': '#e2e8f0',
+						'font-size': '10px',
+						'font-weight': 600,
 						'font-family': 'Inter, sans-serif',
-						'background-color': '#1a1a2e',
-						'border-width': 3,
-						'border-color': '#ffffff',
-						'border-style': 'double' as any,
+						'background-color': '#1e293b',
+						'border-width': 2,
+						'border-color': '#64748b',
 						'shape': 'roundrectangle' as any,
-						'width': 185,
-						'height': 42,
+						'width': 160,
+						'height': 36,
 						'text-wrap': 'wrap' as any,
-						'text-max-width': '165px' as any,
+						'text-max-width': '140px' as any,
 						'cursor': 'pointer' as any,
-					}
+					} as any
+				},
+				{
+					selector: 'node.shared-on',
+					style: {
+						'color': '#0f172a',
+						'font-size': '15px',
+						'font-weight': 800,
+						'background-color': '#fbbf24',
+						'background-opacity': 1,
+						'border-width': 6,
+						'border-color': '#fef3c7',
+						'width': 280,
+						'height': 72,
+						'text-max-width': '250px' as any,
+						'text-outline-color': '#fbbf24',
+						'text-outline-width': 2,
+						'shadow-blur': 40,
+						'shadow-color': '#fbbf24',
+						'shadow-opacity': 1,
+						'shadow-offset-x': 0,
+						'shadow-offset-y': 0,
+						'z-index': 500,
+					} as any
+				},
+				{
+					selector: 'edge.shared-on-edge',
+					style: {
+						'width': 6,
+						'line-color': '#fbbf24',
+						'line-opacity': 0.9,
+						'target-arrow-color': '#fbbf24',
+						'target-arrow-shape': 'triangle' as any,
+						'arrow-scale': 1.4,
+						'curve-style': 'bezier' as any,
+						'z-index': 400,
+					} as any
 				},
 				{
 					selector: 'node[?isLabel]',
@@ -460,7 +837,9 @@
 					selector: 'node.dimmed',
 					style: {
 						'opacity': 0.12,
-					}
+						'shadow-opacity': 0,
+						'z-index': 1,
+					} as any
 				},
 				{
 					selector: 'edge.dimmed',
@@ -523,15 +902,23 @@
 			const nodeIds = new Set(nodes.map((n: any) => n.data.id));
 			const seen = new Set<string>();
 			for (const ov of overlaps) {
-				if (!nodeIds.has(ov.source) || !nodeIds.has(ov.target)) continue;
-				const key = `${ov.source}||${ov.target}`;
+				// Redirect endpoints that were merged into a shared node (instead of dropping the edge)
+				const srcShared = replacedNodeMap.get(ov.source);
+				const tgtShared = replacedNodeMap.get(ov.target);
+				const source = srcShared ? srcShared.id : ov.source;
+				const target = tgtShared ? tgtShared.id : ov.target;
+				// Skip if both claims were merged into the SAME shared node (overlap already expressed by the merge)
+				if (source === target) continue;
+				if (!nodeIds.has(source) || !nodeIds.has(target)) continue;
+				// Unordered dedup key so a↔b and b↔a collapse
+				const key = source < target ? `${source}||${target}` : `${target}||${source}`;
 				if (seen.has(key)) continue;
 				seen.add(key);
 				cy.add({
 					data: {
 						id: `ov-${seen.size}`,
-						source: ov.source,
-						target: ov.target,
+						source,
+						target,
 						theme: ov.theme,
 						isOverlap: true,
 					}
@@ -539,10 +926,12 @@
 			}
 		}
 
+		// Apply shared highlight classes based on current toggle state
+		applySharedHighlight();
+
 		// Zoom handler: fade labels when zoomed in, show when zoomed out
 		function updateLabelOpacity() {
 			const zoom = cy.zoom();
-			// Fully visible below 0.3, fade between 0.3-0.6, completely gone above 0.6
 			let opacity = 0;
 			if (zoom < 0.3) {
 				opacity = 0.5;
@@ -559,12 +948,15 @@
 			const node = evt.target;
 			node.addClass('highlighted');
 			const e = evt.originalEvent;
-			const book = getBook(node.data('bookId'));
+			const isShared = !!node.data('isShared');
+			const bookLabel = isShared
+				? `<span style="color:#fbbf24;font-weight:800">★ Shared: ${node.data('bookTitle')}</span>`
+				: (() => { const book = getBook(node.data('bookId')); return `<span style="color:${book.color};font-weight:800">${book.shortTitle}</span>`; })();
 			const ovCount = cy.edges('[?isOverlap]').filter((ed: any) =>
 				ed.source().id() === node.id() || ed.target().id() === node.id()
 			).length;
 			const ovText = ovCount > 0 ? `<br/><span style="color:#60a5fa">${ovCount} overlap(s) with other books</span>` : '';
-			tooltipContent = `<span style="color:${book.color};font-weight:800">${book.shortTitle}</span><br/><strong>${node.data('label')}</strong><br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}${ovText}`;
+			tooltipContent = `${bookLabel}<br/><strong>${node.data('label')}</strong><br/><span style="color:${statusColors[node.data('status')]};font-weight:700">${statusLabelsMap[node.data('status')]}</span> &middot; ${node.data('type')}${ovText}`;
 			tooltipX = e.clientX;
 			tooltipY = e.clientY - 12;
 			tooltipVisible = true;
@@ -580,7 +972,11 @@
 			const d = node.data();
 			selectedNode = d;
 			selectedBookId = d.bookId;
-			selectedLink = findFullLink(d.bookId, d.chainId);
+			if (d.isShared) {
+				selectedLink = { id: d.id, shortLabel: d.label, claim: d.claim, status: d.status, type: d.type, isShared: true, sharedBookIds: d.sharedBookIds, convergenceId: d.convergenceId };
+			} else {
+				selectedLink = findFullLink(d.bookId, d.chainId);
+			}
 
 			clearHighlighting();
 			node.addClass('selected-node');
@@ -648,11 +1044,12 @@
 		cy.on('mouseover', 'edge[?isOverlap]', (evt: any) => {
 			const edge = evt.target;
 			const e = evt.originalEvent;
-			const srcData = edge.source().data();
-			const tgtData = edge.target().data();
-			const srcBook = getBook(srcData.bookId);
-			const tgtBook = getBook(tgtData.bookId);
-			tooltipContent = `<strong>Shared topic:</strong> ${edge.data('theme')}<br/><span style="color:${srcBook.color}">${srcBook.shortTitle}:</span> ${srcData.label}<br/><span style="color:${tgtBook.color}">${tgtBook.shortTitle}:</span> ${tgtData.label}`;
+			const endpointLine = (data: any) => {
+				if (data.isShared) return `<span style="color:#fbbf24">★ ${data.bookTitle}:</span> ${data.label}`;
+				const book = getBook(data.bookId);
+				return `<span style="color:${book.color}">${book.shortTitle}:</span> ${data.label}`;
+			};
+			tooltipContent = `<strong>Shared topic:</strong> ${edge.data('theme')}<br/>${endpointLine(edge.source().data())}<br/>${endpointLine(edge.target().data())}`;
 			tooltipX = e.clientX;
 			tooltipY = e.clientY - 12;
 			tooltipVisible = true;
@@ -685,6 +1082,24 @@
 		createGraph();
 	}
 
+	function applySharedHighlight() {
+		if (!cy) return;
+		cy.batch(() => {
+			if (highlightShared) {
+				cy.nodes('[?isShared]').addClass('shared-on');
+				cy.edges('[?isSharedEdge]').addClass('shared-on-edge');
+			} else {
+				cy.nodes('[?isShared]').removeClass('shared-on');
+				cy.edges('[?isSharedEdge]').removeClass('shared-on-edge');
+			}
+		});
+	}
+
+	$effect(() => {
+		highlightShared;
+		applySharedHighlight();
+	});
+
 	onMount(() => {
 		createGraph();
 	});
@@ -692,6 +1107,48 @@
 	onDestroy(() => {
 		cy?.destroy();
 	});
+
+	// ── Shared-node book analysis ──────────────────────────────
+	// Which books participate in shared nodes and which don't
+	const bookSharedCounts = $derived.by(() => {
+		const counts = new Map<string, string[]>();
+		for (const sn of sharedNodes) {
+			for (const bid of sn.bookIds) {
+				if (!counts.has(bid)) counts.set(bid, []);
+				counts.get(bid)!.push(sn.label);
+			}
+		}
+		return counts;
+	});
+
+	const booksWithShared = $derived(
+		books.filter(b => bookSharedCounts.has(b.id))
+			.sort((a, b) => (bookSharedCounts.get(b.id)?.length ?? 0) - (bookSharedCounts.get(a.id)?.length ?? 0))
+	);
+
+	const booksWithoutShared = $derived(
+		books.filter(b => !bookSharedCounts.has(b.id))
+	);
+
+	// When a shared node is clicked, find other shared nodes that overlap with its books
+	const relatedSharedNodes = $derived.by(() => {
+		if (!selectedLink?.isShared) return [];
+		const clickedBookIds = new Set(selectedLink.sharedBookIds.split(','));
+		return sharedNodes.filter(sn =>
+			sn.id !== selectedLink.id && sn.bookIds.some(bid => clickedBookIds.has(bid))
+		);
+	});
+
+	// ── Convergence panel state ─────────────────────────────────
+	let expandedConvergenceId = $state<string | null>(null);
+	let convergenceVerdictFilter = $state<Verdict | 'all'>('all');
+	let filteredConvergences = $derived.by(() => {
+		if (convergenceVerdictFilter === 'all') return convergences;
+		return convergences.filter((c) => c.verdict === convergenceVerdictFilter);
+	});
+	function toggleConvergence(id: string) {
+		expandedConvergenceId = expandedConvergenceId === id ? null : id;
+	}
 </script>
 
 <svelte:head>
@@ -790,6 +1247,9 @@
 		<button class="mode-btn" class:mode-active={viewMode === 'chains'} onclick={() => { viewMode = 'chains'; if (cy) { cy.edges('[?isOverlap]').style('display', 'none'); clearHighlighting(); } }}>
 			Book Chains Only
 		</button>
+		<button class="mode-btn" class:mode-active={highlightShared} onclick={() => { highlightShared = !highlightShared; }}>
+			{highlightShared ? '★' : '☆'} Shared Nodes
+		</button>
 		<span class="mode-desc">
 			{viewMode === 'overlaps'
 				? 'Dashed lines connect claims from different books on the same topic'
@@ -819,64 +1279,334 @@
 
 	<!-- Detail panel -->
 	{#if selectedNode && selectedLink}
-		{@const book = getBook(selectedNode.bookId)}
-		{@const status = getStatus(selectedLink)}
-		{@const color = statusColors[status]}
-		{@const typeInfo = chainTypeLabels[selectedNode.type] || { label: selectedNode.type, color: '#64748b' }}
-		{@const statusLabel = status === 'red' ? 'Problematisch' : status === 'yellow' ? 'Wacklig' : status === 'green' ? 'Solide belegt' : 'Nicht testbar'}
-		{@const deps = getDependsOn(selectedLink)}
-		{@const bookChain = bookChains.find(b => b.id === selectedNode.bookId)?.chain || []}
-		<div class="node-detail" style="--nd-color: {color}">
-			<div class="nd-header">
-				<span class="nd-num" style="background: {color}">{selectedLink.step ?? '?'}</span>
-				<span class="nd-name">{getShortLabel(selectedLink)}</span>
-				<span class="nd-type" style="color: {typeInfo.color}">{typeInfo.label}</span>
-				<span class="nd-status" style="background: {color}">{statusIcons[status]} {statusLabel}</span>
-				<span class="nd-book" style="color: {book.color}">{book.shortTitle}</span>
-				<button class="nd-close" onclick={() => { selectedNode = null; selectedLink = null; }}>&#10005;</button>
-			</div>
+		{#if selectedLink.isShared}
+			{@const status = selectedLink.status}
+			{@const color = statusColors[status]}
+			{@const typeInfo = chainTypeLabels[selectedNode.type] || { label: selectedNode.type, color: '#64748b' }}
+			{@const statusLabel = status === 'red' ? 'Problematisch' : status === 'yellow' ? 'Wacklig' : status === 'green' ? 'Solide belegt' : 'Nicht testbar'}
+			{@const sharedBookIds = selectedLink.sharedBookIds.split(',')}
+			{@const conv = selectedLink.convergenceId ? convergences.find((c) => c.id === selectedLink.convergenceId) : null}
+			{@const convVerdict = conv ? verdictInfo[conv.verdict] : null}
+			<div class="node-detail shared-detail" style="--nd-color: #fbbf24">
+				<div class="nd-header">
+					<span class="nd-num" style="background: #fbbf24; color: #0f172a">★</span>
+					<span class="nd-name">{selectedLink.shortLabel}</span>
+					<span class="nd-type" style="color: {typeInfo.color}">{typeInfo.label}</span>
+					<span class="nd-status" style="background: {color}">{statusIcons[status]} {statusLabel}</span>
+					<button class="nd-close" onclick={() => { selectedNode = null; selectedLink = null; clearHighlighting(); }}>&#10005;</button>
+				</div>
 
-			<p class="nd-claim">{selectedLink.claim}</p>
+				<p class="nd-claim">{selectedLink.claim}</p>
 
-			{#if deps.length > 0}
-				<div class="nd-deps">
-					<span class="nd-deps-label">Depends on:</span>
-					{#each deps as depId}
-						{@const dep = bookChain.find((c) => c.id === depId)}
-						{#if dep}
-							<button class="nd-dep-chip" style="border-color: {statusColors[getStatus(dep)]}" onclick={() => {
-								const fullDep = findFullLink(selectedNode.bookId, depId);
-								if (fullDep) {
-									selectedLink = fullDep;
-									selectedNode = { ...selectedNode, chainId: depId, label: getShortLabel(fullDep), status: getStatus(fullDep), type: fullDep.type, claim: fullDep.claim };
-								}
-							}}>
-								{statusIcons[getStatus(dep)]} {dep.step ?? ''}. {getShortLabel(dep)}
-							</button>
+				<div class="shared-books">
+					<strong>Geteilt von {sharedBookIds.length} Quellen:</strong>
+					<div class="shared-books-list">
+						{#each sharedBookIds as bid}
+							{@const b = getBook(bid)}
+							{#if b}
+								<a href={b.route} class="shared-book-chip" style="--chip-color: {b.color}">
+									<span class="chip-dot" style="background: {b.color}"></span>
+									{b.shortTitle}
+									<span class="shared-arrow">&rarr;</span>
+								</a>
+							{/if}
+						{/each}
+					</div>
+				</div>
+
+				{#if conv}
+					<div class="conv-audit">
+						<h3 class="conv-audit-title">Konvergenz-Audit</h3>
+
+						{#if convVerdict}
+							<div class="conv-verdict-badge" style="--cv-color: {convVerdict.color}">
+								<span class="cv-icon">{convVerdict.icon}</span>
+								<span class="cv-label">{convVerdict.label}</span>
+							</div>
 						{/if}
-					{/each}
+
+						{#if conv.sharedBy.length > 0}
+							<div class="conv-block">
+								<strong>Wie jedes Buch es formuliert:</strong>
+								<div class="conv-phrasings">
+									{#each conv.sharedBy as entry}
+										{@const b = getBook(entry.bookId)}
+										{#if b}
+											<div class="conv-phrasing">
+												<span class="conv-phrasing-book" style="color: {b.color}">{b.shortTitle}:</span>
+												<span class="conv-phrasing-text">{entry.phrasing}</span>
+											</div>
+										{/if}
+									{/each}
+								</div>
+							</div>
+						{/if}
+
+						<div class="conv-block">
+							<strong>Primärquellen dahinter:</strong>
+							<p>{conv.primarySourcesBeneath}</p>
+						</div>
+
+						<div class="conv-block">
+							<strong>Was die Daten tatsächlich zeigen:</strong>
+							<p>{conv.whatTheDataShows}</p>
+						</div>
+
+						<div class="conv-block conv-counter">
+							<strong>Gegenargumente / Einschränkungen:</strong>
+							<p>{conv.counterEvidence}</p>
+						</div>
+
+						<div class="conv-block conv-bottom-line">
+							<strong>Fazit:</strong>
+							<p>{conv.verdictExplanation}</p>
+						</div>
+					</div>
+				{/if}
+			</div>
+		{:else}
+			{@const book = getBook(selectedNode.bookId)}
+			{@const status = getStatus(selectedLink)}
+			{@const color = statusColors[status]}
+			{@const typeInfo = chainTypeLabels[selectedNode.type] || { label: selectedNode.type, color: '#64748b' }}
+			{@const statusLabel = status === 'red' ? 'Problematisch' : status === 'yellow' ? 'Wacklig' : status === 'green' ? 'Solide belegt' : 'Nicht testbar'}
+			{@const deps = getDependsOn(selectedLink)}
+			{@const bookChain = bookChains.find(b => b.id === selectedNode.bookId)?.chain || []}
+			<div class="node-detail" style="--nd-color: {color}">
+				<div class="nd-header">
+					<span class="nd-num" style="background: {color}">{selectedLink.step ?? '?'}</span>
+					<span class="nd-name">{getShortLabel(selectedLink)}</span>
+					<span class="nd-type" style="color: {typeInfo.color}">{typeInfo.label}</span>
+					<span class="nd-status" style="background: {color}">{statusIcons[status]} {statusLabel}</span>
+					<span class="nd-book" style="color: {book.color}">{book.shortTitle}</span>
+					<button class="nd-close" onclick={() => { selectedNode = null; selectedLink = null; clearHighlighting(); }}>&#10005;</button>
 				</div>
-			{/if}
 
-			{#if selectedLink.evidenceRefs?.length > 0}
-				<div class="nd-evidence">
-					<strong>Evidence:</strong>
-					{#each selectedLink.evidenceRefs as ref, i}
-						<a class="ev-link" href="{book.route}/references?search={encodeURIComponent(ref.authorSearch)}">{ref.label}</a>{#if i < selectedLink.evidenceRefs.length - 1}<span class="ev-sep">&middot;</span>{/if}
-					{/each}
+				<p class="nd-claim">{selectedLink.claim}</p>
+
+				{#if deps.length > 0}
+					<div class="nd-deps">
+						<span class="nd-deps-label">Depends on:</span>
+						{#each deps as depId}
+							{@const dep = bookChain.find((c) => c.id === depId)}
+							{#if dep}
+								<button class="nd-dep-chip" style="border-color: {statusColors[getStatus(dep)]}" onclick={() => {
+									const fullDep = findFullLink(selectedNode.bookId, depId);
+									if (fullDep) {
+										selectedLink = fullDep;
+										selectedNode = { ...selectedNode, chainId: depId, label: getShortLabel(fullDep), status: getStatus(fullDep), type: fullDep.type, claim: fullDep.claim };
+									}
+								}}>
+									{statusIcons[getStatus(dep)]} {dep.step ?? ''}. {getShortLabel(dep)}
+								</button>
+							{/if}
+						{/each}
+					</div>
+				{/if}
+
+				{#if selectedLink.evidenceRefs?.length > 0}
+					<div class="nd-evidence">
+						<strong>Evidence:</strong>
+						{#each selectedLink.evidenceRefs as ref, i}
+							<a class="ev-link" href="{book.route}/references?search={encodeURIComponent(ref.authorSearch)}">{ref.label}</a>{#if i < selectedLink.evidenceRefs.length - 1}<span class="ev-sep">&middot;</span>{/if}
+						{/each}
+					</div>
+				{/if}
+
+				{#if selectedLink.explanation}
+					<div class="nd-explanation">{selectedLink.explanation}</div>
+				{/if}
+
+				<div class="nd-stats">
+					<span class="nd-stat">{book.shortTitle}: {bookChains.find(b => b.id === selectedNode.bookId)?.chain.length ?? 0} nodes in chain</span>
 				</div>
-			{/if}
-
-			{#if selectedLink.explanation}
-				<div class="nd-explanation">{selectedLink.explanation}</div>
-			{/if}
-
-			<div class="nd-stats">
-			<span class="nd-stat">{book.shortTitle}: {bookChains.find(b => b.id === selectedNode.bookId)?.chain.length ?? 0} nodes in chain</span>
-		</div>
-		<a href="{book.route}" class="nd-book-link">View full analysis in {book.shortTitle} &rarr;</a>
-		</div>
+				<a href="{book.route}" class="nd-book-link">View full analysis in {book.shortTitle} &rarr;</a>
+			</div>
+		{/if}
 	{/if}
+
+	<section class="convergence-section">
+		<!-- Book commonalities overview -->
+		<div class="book-commonalities">
+			<h2>Geteilte Knoten — welche Bücher konvergieren?</h2>
+
+			{#if selectedLink?.isShared}
+				{@const clickedBids = selectedLink.sharedBookIds.split(',')}
+				<div class="bc-context">
+					<p class="bc-label">Dieser Knoten wird geteilt von:</p>
+					<div class="bc-books-row">
+						{#each clickedBids as bid}
+							{@const b = getBook(bid)}
+							{#if b}
+								<span class="bc-book-tag" style="--bc-color: {b.color}">
+									<span class="chip-dot" style="background: {b.color}"></span>
+									{b.shortTitle}
+									<span class="bc-count">in {bookSharedCounts.get(bid)?.length ?? 0} geteilten Knoten</span>
+								</span>
+							{/if}
+						{/each}
+					</div>
+				</div>
+
+				{#if relatedSharedNodes.length > 0}
+					<div class="bc-related">
+						<p class="bc-label">Diese Bücher teilen auch:</p>
+						<div class="bc-related-list">
+							{#each relatedSharedNodes as rsn}
+								{@const rsColor = statusColors[rsn.status]}
+								<div class="bc-related-item" style="--rs-color: {rsColor}">
+									<span class="bc-related-name">{rsn.label}</span>
+									<span class="bc-related-books">
+										{rsn.bookIds.map(bid => getBook(bid)?.shortTitle).filter(Boolean).join(', ')}
+									</span>
+								</div>
+							{/each}
+						</div>
+					</div>
+				{/if}
+			{/if}
+
+			<div class="bc-grid">
+				<div class="bc-section">
+					<h3>Bücher MIT geteilten Knoten ({booksWithShared.length})</h3>
+					<p class="bc-desc">Diese Bücher konvergieren auf mindestens einen gemeinsamen Befund.</p>
+					<div class="bc-book-list">
+						{#each booksWithShared as b}
+							{@const sharedLabels = bookSharedCounts.get(b.id) || []}
+							<div class="bc-book-entry" style="--bc-color: {b.color}">
+								<span class="bc-book-name" style="color: {b.color}">{b.shortTitle}</span>
+								<span class="bc-book-author">{b.author}</span>
+								<span class="bc-shared-count">{sharedLabels.length} geteilte Knoten</span>
+								<div class="bc-shared-labels">
+									{#each sharedLabels as lbl}
+										<span class="bc-label-tag">{lbl}</span>
+									{/each}
+								</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+
+				<div class="bc-section bc-isolated">
+					<h3>Bücher OHNE geteilte Knoten ({booksWithoutShared.length})</h3>
+					<p class="bc-desc">Diese Bücher machen Einzelaussagen, die kein anderes Buch in der Bibliothek teilt — oder argumentieren in einer so spezifischen Richtung (biologisch, evolutionär, medizinisch), dass keine direkte Konvergenz entsteht.</p>
+					<div class="bc-book-list">
+						{#each booksWithoutShared as b}
+							<div class="bc-book-entry bc-entry-isolated" style="--bc-color: {b.color}">
+								<span class="bc-book-name" style="color: {b.color}">{b.shortTitle}</span>
+								<span class="bc-book-author">{b.author}</span>
+							</div>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="cv-header">
+			<h2>Konvergenzen — was teilen die Bücher, und stimmt es?</h2>
+			<p class="cv-intro">
+				Mehrere Bücher vertreten dieselben Behauptungen. Aber <strong>Konvergenz ist nicht
+				Wahrheit</strong>: viele dieser Bücher teilen eine gemeinsame theoretische Ahnenlinie
+				(Rogers, Chodorow, Terrence Real, David &amp; Brannon, Connell) und replizieren dieselbe
+				Erzählung, nicht dieselben Daten. Jede Konvergenz wurde hier auf die Primärquelle
+				zurückverfolgt und gegen die aktuelle Meta-Analyse-Literatur geprüft.
+			</p>
+
+			<div class="cv-verdict-filters">
+				<button
+					class="cv-filter"
+					class:active={convergenceVerdictFilter === 'all'}
+					onclick={() => (convergenceVerdictFilter = 'all')}
+				>
+					Alle {convergences.length}
+				</button>
+				{#each Object.entries(verdictInfo) as [key, info]}
+					{@const count = convergences.filter((c) => c.verdict === key).length}
+					<button
+						class="cv-filter"
+						class:active={convergenceVerdictFilter === key}
+						style="--cv-color: {info.color}"
+						onclick={() => (convergenceVerdictFilter = convergenceVerdictFilter === key ? 'all' : key as Verdict)}
+					>
+						<span class="cv-filter-icon" style="color: {info.color}">{info.icon}</span>
+						{info.label} ({count})
+					</button>
+				{/each}
+			</div>
+		</div>
+
+		<div class="cv-list">
+			{#each filteredConvergences as cnv}
+				{@const info = verdictInfo[cnv.verdict]}
+				{@const isExpanded = expandedConvergenceId === cnv.id}
+				<div class="cv-card" class:expanded={isExpanded} style="--cv-color: {info.color}">
+					<button class="cv-card-header" onclick={() => toggleConvergence(cnv.id)}>
+						<div class="cv-card-head-left">
+							<span class="cv-verdict-badge" style="background: {info.color}">
+								{info.icon} {info.label}
+							</span>
+							<span class="cv-card-name">{cnv.name}</span>
+						</div>
+						<div class="cv-card-head-right">
+							<span class="cv-book-count">{cnv.sharedBy.length} Bücher</span>
+							<span class="cv-expand">{isExpanded ? '▼' : '▶'}</span>
+						</div>
+					</button>
+
+					{#if isExpanded}
+						<div class="cv-card-body">
+							<p class="cv-one-liner">{cnv.oneLineClaim}</p>
+
+							<div class="cv-section">
+								<h4>Wer sagt es — und wie?</h4>
+								<div class="cv-shared-by">
+									{#each cnv.sharedBy as entry}
+										{@const book = books.find((b) => b.id === entry.bookId)}
+										{#if book}
+											<div class="cv-share-row" style="border-left-color: {book.color}">
+												<a class="cv-book-tag" href={book.route} style="background: {book.color}">
+													{book.shortTitle}
+												</a>
+												<span class="cv-phrasing">{entry.phrasing}</span>
+											</div>
+										{/if}
+									{/each}
+								</div>
+							</div>
+
+							<div class="cv-section">
+								<h4>Primärquellen (wer hat die Daten wirklich erzeugt?)</h4>
+								<p class="cv-body-text">{cnv.primarySourcesBeneath}</p>
+							</div>
+
+							<div class="cv-section cv-data-section">
+								<h4>Was die Daten tatsächlich zeigen</h4>
+								<p class="cv-body-text">{cnv.whatTheDataShows}</p>
+							</div>
+
+							<div class="cv-section cv-counter-section">
+								<h4>Einschränkungen &amp; Gegenevidenz</h4>
+								<p class="cv-body-text">{cnv.counterEvidence}</p>
+							</div>
+
+							<div class="cv-verdict-box" style="border-left-color: {info.color}">
+								<div class="cv-verdict-header">
+									<span class="cv-verdict-icon" style="color: {info.color}">{info.icon}</span>
+									<strong>Gesamturteil: {cnv.verdictLabel}</strong>
+								</div>
+								<p class="cv-verdict-text">{cnv.verdictExplanation}</p>
+							</div>
+						</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
+
+		<div class="cv-summary">
+			<h3>Zusammenfassung</h3>
+			<p>{convergenceSummary.verdict}</p>
+		</div>
+	</section>
 
 	<footer class="app-footer">
 		<p>Cross-book causal path analysis &middot; <a href="/">Back to all books</a></p>
@@ -1052,6 +1782,88 @@
 	.nd-book-link { font-size: 0.82rem; color: #60a5fa; text-decoration: none; }
 	.nd-book-link:hover { text-decoration: underline; }
 
+	.shared-detail { border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.06); max-height: 80vh; overflow-y: auto; }
+
+	.book-commonalities {
+		padding: 28px; margin-bottom: 32px;
+		background: rgba(30, 41, 59, 0.5); border-radius: 14px;
+		border: 1px solid rgba(148, 163, 184, 0.12);
+	}
+	.book-commonalities h2 { font-size: 1.3rem; font-weight: 700; color: #fbbf24; margin: 0 0 16px; }
+	.bc-context { margin-bottom: 20px; padding: 16px; background: rgba(251, 191, 36, 0.06); border-radius: 10px; border: 1px solid rgba(251, 191, 36, 0.15); }
+	.bc-label { font-size: 0.82rem; color: #94a3b8; margin: 0 0 8px; font-weight: 600; }
+	.bc-books-row { display: flex; flex-wrap: wrap; gap: 8px; }
+	.bc-book-tag {
+		display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+		border-radius: 8px; background: rgba(15, 23, 42, 0.6);
+		border: 1px solid var(--bc-color); font-size: 0.82rem; color: #e2e8f0;
+	}
+	.bc-book-tag .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+	.bc-count { font-size: 0.72rem; color: #64748b; margin-left: 4px; }
+	.bc-related { margin-top: 16px; }
+	.bc-related-list { display: flex; flex-direction: column; gap: 6px; }
+	.bc-related-item {
+		padding: 8px 12px; border-radius: 8px; background: rgba(15, 23, 42, 0.4);
+		border-left: 3px solid var(--rs-color);
+	}
+	.bc-related-name { font-size: 0.88rem; font-weight: 600; color: #e2e8f0; display: block; }
+	.bc-related-books { font-size: 0.75rem; color: #64748b; }
+	.bc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+	.bc-section h3 { font-size: 1rem; font-weight: 700; color: #e2e8f0; margin: 0 0 6px; }
+	.bc-desc { font-size: 0.82rem; color: #64748b; margin: 0 0 12px; line-height: 1.4; }
+	.bc-book-list { display: flex; flex-direction: column; gap: 8px; }
+	.bc-book-entry {
+		padding: 10px 14px; border-radius: 8px; background: rgba(15, 23, 42, 0.5);
+		border-left: 3px solid var(--bc-color);
+	}
+	.bc-book-name { font-weight: 700; font-size: 0.9rem; display: block; }
+	.bc-book-author { font-size: 0.78rem; color: #64748b; display: block; margin-bottom: 4px; }
+	.bc-shared-count { font-size: 0.75rem; color: #fbbf24; font-weight: 600; display: block; margin-bottom: 4px; }
+	.bc-shared-labels { display: flex; flex-wrap: wrap; gap: 4px; }
+	.bc-label-tag {
+		font-size: 0.68rem; padding: 2px 8px; border-radius: 10px;
+		background: rgba(251, 191, 36, 0.1); color: #fde68a; border: 1px solid rgba(251, 191, 36, 0.2);
+	}
+	.bc-isolated h3 { color: #94a3b8; }
+	.bc-entry-isolated { border-left-color: #334155; background: rgba(15, 23, 42, 0.3); }
+
+	@media (max-width: 768px) {
+		.bc-grid { grid-template-columns: 1fr; }
+	}
+
+	.conv-audit { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(251, 191, 36, 0.2); }
+	.conv-audit-title { font-size: 1.05rem; font-weight: 700; color: #fbbf24; margin: 0 0 12px; }
+	.conv-verdict-badge {
+		display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px;
+		border-radius: 20px; background: var(--cv-color); color: #0f172a;
+		font-size: 0.82rem; font-weight: 700; margin-bottom: 16px;
+	}
+	.cv-icon { font-size: 1rem; }
+	.conv-block { margin-bottom: 16px; }
+	.conv-block strong { display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+	.conv-block p { font-size: 0.85rem; color: #cbd5e1; line-height: 1.65; margin: 0; }
+	.conv-counter { padding: 14px; background: rgba(239, 68, 68, 0.06); border-radius: 8px; border-left: 3px solid #ef4444; }
+	.conv-counter strong { color: #fca5a5; }
+	.conv-bottom-line { padding: 14px; background: rgba(251, 191, 36, 0.08); border-radius: 8px; border-left: 3px solid #fbbf24; }
+	.conv-bottom-line strong { color: #fbbf24; }
+	.conv-phrasings { display: flex; flex-direction: column; gap: 8px; }
+	.conv-phrasing { font-size: 0.82rem; line-height: 1.5; }
+	.conv-phrasing-book { font-weight: 700; margin-right: 4px; }
+	.conv-phrasing-text { color: #94a3b8; }
+	.shared-books { margin-top: 12px; font-size: 0.85rem; color: #e2e8f0; }
+	.shared-books strong { display: block; margin-bottom: 8px; color: #fbbf24; }
+	.shared-books-list { display: flex; flex-wrap: wrap; gap: 8px; }
+	.shared-book-chip {
+		display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+		border-radius: 10px; background: rgba(30, 41, 59, 0.8);
+		border: 1.5px solid var(--chip-color, #64748b); color: #e2e8f0;
+		font-size: 0.82rem; font-weight: 500; text-decoration: none;
+		transition: background 0.2s, border-color 0.2s;
+	}
+	.shared-book-chip:hover { background: rgba(30, 41, 59, 1); border-color: var(--chip-color); }
+	.shared-book-chip .chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+	.shared-arrow { color: #475569; font-size: 0.75rem; margin-left: auto; }
+
 	.app-footer {
 		text-align: center; padding: 24px 0; color: #475569; font-size: 0.82rem;
 		border-top: 1px solid rgba(148, 163, 184, 0.1); margin-top: 24px;
@@ -1059,9 +1871,204 @@
 	.app-footer a { color: #60a5fa; text-decoration: none; }
 	.app-footer a:hover { text-decoration: underline; }
 
+	/* ── Convergence section ─────────────────────────────────── */
+	.convergence-section {
+		margin-top: 48px;
+		padding: 32px 28px;
+		background: rgba(30, 41, 59, 0.4);
+		border-radius: 14px;
+		border: 1px solid rgba(148, 163, 184, 0.12);
+	}
+	.cv-header { margin-bottom: 24px; }
+	.cv-header h2 {
+		font-size: 1.5rem;
+		font-weight: 800;
+		color: #e2e8f0;
+		margin: 0 0 12px;
+		background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+	.cv-intro {
+		font-size: 0.9rem; color: #94a3b8; line-height: 1.6; margin: 0 0 18px;
+		max-width: 820px;
+	}
+	.cv-intro strong { color: #fde68a; font-weight: 700; }
+
+	.cv-verdict-filters {
+		display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
+	}
+	.cv-filter {
+		padding: 8px 14px; border-radius: 10px;
+		background: rgba(15, 23, 42, 0.5);
+		border: 1px solid rgba(148, 163, 184, 0.15);
+		color: #cbd5e1; font-size: 0.8rem; font-weight: 600;
+		cursor: pointer; font-family: inherit;
+		transition: all 0.2s;
+		display: flex; align-items: center; gap: 6px;
+	}
+	.cv-filter:hover { border-color: var(--cv-color, #94a3b8); color: #f1f5f9; }
+	.cv-filter.active {
+		border-color: var(--cv-color, #94a3b8);
+		background: rgba(15, 23, 42, 0.9);
+		box-shadow: 0 0 16px -4px var(--cv-color);
+	}
+	.cv-filter-icon { font-weight: 800; font-size: 0.95rem; }
+
+	.cv-list {
+		display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
+	}
+
+	.cv-card {
+		background: rgba(15, 23, 42, 0.6);
+		border-radius: 12px;
+		border: 1px solid rgba(148, 163, 184, 0.1);
+		border-left: 4px solid var(--cv-color);
+		overflow: hidden;
+		transition: border-color 0.2s, box-shadow 0.2s;
+	}
+	.cv-card:hover { border-color: rgba(148, 163, 184, 0.25); }
+	.cv-card.expanded {
+		box-shadow: 0 0 24px -6px var(--cv-color);
+	}
+
+	.cv-card-header {
+		width: 100%;
+		display: flex; align-items: center; justify-content: space-between;
+		padding: 16px 18px;
+		background: transparent; border: none;
+		color: inherit; cursor: pointer;
+		font-family: inherit; text-align: left;
+		gap: 12px; flex-wrap: wrap;
+	}
+	.cv-card-header:hover { background: rgba(148, 163, 184, 0.04); }
+
+	.cv-card-head-left {
+		display: flex; align-items: center; gap: 12px;
+		flex: 1; min-width: 0;
+	}
+	.cv-verdict-badge {
+		font-size: 0.68rem; font-weight: 700;
+		padding: 4px 10px; border-radius: 10px;
+		color: #0f172a; white-space: nowrap;
+		letter-spacing: 0.3px;
+	}
+	.cv-card-name {
+		font-size: 1rem; font-weight: 700; color: #f1f5f9;
+		line-height: 1.35;
+	}
+	.cv-card-head-right {
+		display: flex; align-items: center; gap: 10px;
+		flex-shrink: 0;
+	}
+	.cv-book-count {
+		font-size: 0.75rem; color: #64748b; font-weight: 500;
+	}
+	.cv-expand { font-size: 0.75rem; color: #64748b; }
+
+	.cv-card-body {
+		padding: 4px 22px 22px;
+		border-top: 1px solid rgba(148, 163, 184, 0.08);
+	}
+	.cv-one-liner {
+		font-size: 0.92rem; color: #e2e8f0; line-height: 1.55;
+		margin: 18px 0 20px;
+		font-style: italic;
+		padding-left: 12px; border-left: 2px solid var(--cv-color);
+	}
+
+	.cv-section {
+		margin-bottom: 18px;
+	}
+	.cv-section h4 {
+		font-size: 0.72rem; font-weight: 700;
+		color: #64748b; text-transform: uppercase;
+		letter-spacing: 1.2px;
+		margin: 0 0 8px;
+	}
+	.cv-body-text {
+		font-size: 0.86rem; color: #cbd5e1; line-height: 1.65;
+		margin: 0;
+	}
+	.cv-data-section .cv-body-text {
+		padding: 12px 14px;
+		background: rgba(16, 185, 129, 0.05);
+		border-left: 2px solid rgba(16, 185, 129, 0.4);
+		border-radius: 6px;
+	}
+	.cv-counter-section .cv-body-text {
+		padding: 12px 14px;
+		background: rgba(239, 68, 68, 0.05);
+		border-left: 2px solid rgba(239, 68, 68, 0.4);
+		border-radius: 6px;
+		color: #fca5a5;
+	}
+
+	.cv-shared-by {
+		display: flex; flex-direction: column; gap: 8px;
+	}
+	.cv-share-row {
+		display: flex; align-items: flex-start; gap: 10px;
+		padding: 8px 10px;
+		background: rgba(15, 23, 42, 0.5);
+		border-radius: 8px;
+		border-left: 3px solid;
+	}
+	.cv-book-tag {
+		display: inline-block;
+		padding: 3px 9px; border-radius: 10px;
+		font-size: 0.7rem; font-weight: 700;
+		color: #0f172a; text-decoration: none;
+		flex-shrink: 0; white-space: nowrap;
+		margin-top: 1px;
+	}
+	.cv-book-tag:hover { filter: brightness(1.1); }
+	.cv-phrasing {
+		font-size: 0.82rem; color: #cbd5e1; line-height: 1.55;
+	}
+
+	.cv-verdict-box {
+		margin-top: 20px;
+		padding: 14px 18px;
+		background: rgba(15, 23, 42, 0.8);
+		border-radius: 8px;
+		border-left: 4px solid;
+	}
+	.cv-verdict-header {
+		display: flex; align-items: center; gap: 8px;
+		margin-bottom: 8px;
+		font-size: 0.88rem;
+		color: #f1f5f9;
+	}
+	.cv-verdict-icon { font-size: 1.1rem; font-weight: 800; }
+	.cv-verdict-text {
+		font-size: 0.85rem; color: #cbd5e1;
+		line-height: 1.65; margin: 0;
+	}
+
+	.cv-summary {
+		margin-top: 28px; padding: 22px;
+		background: rgba(15, 23, 42, 0.7);
+		border-radius: 10px;
+		border: 1px solid rgba(148, 163, 184, 0.12);
+	}
+	.cv-summary h3 {
+		font-size: 1rem; font-weight: 700;
+		color: #e2e8f0; margin: 0 0 10px;
+	}
+	.cv-summary p {
+		font-size: 0.86rem; color: #cbd5e1;
+		line-height: 1.65; margin: 0;
+	}
+
 	@media (max-width: 640px) {
 		.hero h1 { font-size: 1.5rem; }
 		.graph-container { height: 60vh; min-height: 400px; }
 		.node-detail { margin: 12px 0; padding: 16px; }
+		.convergence-section { padding: 20px 16px; }
+		.cv-header h2 { font-size: 1.2rem; }
+		.cv-card-header { padding: 14px; }
+		.cv-card-body { padding: 4px 14px 16px; }
 	}
 </style>
