@@ -419,6 +419,22 @@
 			<span class="card-arrow">&rarr;</span>
 		</a>
 
+		<a href="/fuenfeck" class="card card-pentagon">
+			<div class="card-icon">&#11040;</div>
+			<div class="card-content">
+				<h2>Das Fünfeck — der große Überblick</h2>
+				<p>
+					Die Synthese der fünf tief verglichenen Bücher (Galloway, Reeves, Dittmann, Sax,
+					Kindlon/Thompson): interaktive Beziehungs-Karte (jede Kante ein Vergleich,
+					farbcodiert nach Verbündet/Gemischt/Konflikt), der zusammengeführte Kausalpfad
+					aller fünf Ketten als Sanduhr (Konsens &rarr; Glaubenskrieg &rarr; Konsens),
+					die vier Konflikt-Zonen mit Frontverlauf, die 5-Bücher-Matrix und das Gesamtfazit.
+				</p>
+				<span class="card-meta">Beziehungs-Karte &middot; Gemeinsamer Kausalpfad &middot; Konsens vs. Konflikt &middot; Matrix</span>
+			</div>
+			<span class="card-arrow">&rarr;</span>
+		</a>
+
 		<a href="/vergleiche" class="card card-compare">
 			<div class="card-icon">&#9878;&#65039;</div>
 			<div class="card-content">
@@ -637,6 +653,7 @@
 	.card-read { --card-color: #f59e0b; }
 	.card-causal { --card-color: #f472b6; }
 	.card-compare { --card-color: #f59e0b; }
+	.card-pentagon { --card-color: #eab308; }
 	.card-fields { --card-color: #60a5fa; }
 
 	.card-icon {
